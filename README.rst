@@ -3,13 +3,26 @@ shellplot
 =========
 
 
-Plotting from the command line
+"We should have never left the command line." - Unknown, 2020
 
 
 Description
 ===========
 
-A longer description of your project goes here...
+Plotting, straight outta the command line
+
+
+Installation
+============
+
+
+        pip install shellplot
+
+
+Usage
+======
+
+
 
 
 Note
