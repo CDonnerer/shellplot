@@ -5,10 +5,8 @@ shellplot
     "We should have never left the command line." - Unknown, 2020
 
 
-Description
-===========
-
-Plotting, straight outta the command line
+Shellplot is the plotting package that you didn't know you needed. Plotting,
+straight outta the command line.
 
 
 Installation
