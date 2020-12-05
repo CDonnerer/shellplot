@@ -5,7 +5,6 @@ import shellplot.plots as plt
 
 
 def plot(data, kind, **kwargs):
-
     # TODO: check kind
 
     s_x = data[kwargs["x"]]
@@ -15,7 +14,7 @@ def plot(data, kind, **kwargs):
         x=s_x.values,
         y=s_y.values,
         x_title=s_x.name,
-        y_title=s_y.name
+        y_title=s_y.name,
     )
 
 
