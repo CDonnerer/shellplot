@@ -11,25 +11,7 @@ from shellplot.utils import tolerance_round
 DISPLAY_X = 70
 DISPLAY_Y = 25
 
-# def plot(data, kind, **kwargs):
-#
-#     return _plot(
-#         x=data[kwargs["x"]],
-#         y=data[kwargs['y']]
-#     )
-#
-# def hist_series(data, **kwargs):
-#     return hist(data, **kwargs)
-
 def plot(x, y, x_title=None, y_title=None):
-
-    if isinstance(x, pd.Series):
-        x_title = x.name
-        x = x.values
-    if isinstance(y, pd.Series):
-        y_title = y.name
-        y = y.values
-
 
     x_axis = Axis(DISPLAY_X, title=x_title)
     y_axis = Axis(DISPLAY_Y, title=y_title)
@@ -49,9 +31,6 @@ def plot(x, y, x_title=None, y_title=None):
 
 
 def hist(x, bins=10, x_title=None, **kwargs):
-    if isinstance(x, pd.Series):
-        x_title = x.name
-        x = x.values
 
     counts, bin_edges = np.histogram(x, bins)
 
