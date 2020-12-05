@@ -1,5 +1,6 @@
 """Shellplot plots
 """
+import operator
 import math
 
 import numpy as np
@@ -77,8 +78,15 @@ class Axis:
         self._title = title
 
     def fit(self, x):
-        self.min = tolerance_round(min(x)*0.95, tol=1e-1)
-        self.max = tolerance_round(max(x)*1.05, tol=1e-1)
+        plot_min = min(x)
+        plot_max = max(x)
+
+        self.min = tolerance_round(
+            plot_min - 0.05*np.sign(plot_min)*plot_min, tol=1e-1
+        )
+        self.max = tolerance_round(
+            plot_max + 0.05*np.sign(plot_max)*plot_max, tol=1e-1
+        )
         self.scale = float(self.display_length) / (self.max - self.min)
         return self
 
