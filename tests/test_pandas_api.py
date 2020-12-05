@@ -9,9 +9,7 @@ def test_set_shellplot_backed():
 
 
 def test_plot():
-
-    import pdb; pdb.set_trace()
-
+    pd.set_option('plotting.backend', 'shellplot')
     x = np.arange(-3, 3, 0.1)
     df = pd.DataFrame({"x": x, "y": np.cos(x) ** 2 + x/5 })
     df.plot(x="x", y="y")
