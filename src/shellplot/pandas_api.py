@@ -19,8 +19,4 @@ def plot(data, kind, **kwargs):
 
 
 def hist_series(data, **kwargs):
-    return plt.hist(
-        x=data.values,
-        x_title=data.name,
-        **kwargs
-    )
+    return plt.hist(x=data.values, x_title=data.name, **kwargs)

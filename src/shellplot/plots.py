@@ -12,6 +12,7 @@ from shellplot.utils import tolerance_round
 DISPLAY_X = 70
 DISPLAY_Y = 25
 
+
 def plot(x, y, x_title=None, y_title=None):
 
     x_axis = Axis(DISPLAY_X, title=x_title)
@@ -21,13 +22,9 @@ def plot(x, y, x_title=None, y_title=None):
     y_scaled = y_axis.fit_transform(y)
 
     canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
-    canvas[x_scaled, y_scaled] =  1
+    canvas[x_scaled, y_scaled] = 1
 
-    plt_str = draw(
-        canvas=canvas,
-        y_axis=y_axis,
-        x_axis=x_axis
-    )
+    plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
     print(plt_str)
 
 
@@ -44,23 +41,19 @@ def hist(x, bins=10, x_title=None, **kwargs):
     canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
 
     bin = 0
-    bin_width = int((DISPLAY_X-1) / len(counts)) - 1
+    bin_width = int((DISPLAY_X - 1) / len(counts)) - 1
 
     for count in counts_scaled:
         canvas[bin, :count] = 3
-        canvas[bin+1:bin+1+bin_width, count] = 2
-        canvas[bin+1+bin_width, :count] = 3
-        bin += bin_width+1
+        canvas[bin + 1 : bin + 1 + bin_width, count] = 2
+        canvas[bin + 1 + bin_width, :count] = 3
+        bin += bin_width + 1
 
     # this bit doesn't seem entirely right
     display_max = (bin_width + 1) * len(counts)
     x_axis.scale = (display_max + bin_width) / (x_axis.max - x_axis.min)
 
-    plt_str = draw(
-        canvas=canvas,
-        y_axis=y_axis,
-        x_axis=x_axis
-    )
+    plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
     print(plt_str)
 
 
@@ -82,10 +75,10 @@ class Axis:
         plot_max = max(x)
 
         self.min = tolerance_round(
-            plot_min - 0.05*np.sign(plot_min)*plot_min, tol=1e-1
+            plot_min - 0.1 * np.sign(plot_min) * plot_min, tol=1e-1
         )
         self.max = tolerance_round(
-            plot_max + 0.05*np.sign(plot_max)*plot_max, tol=1e-1
+            plot_max + 0.1 * np.sign(plot_max) * plot_max, tol=1e-1
         )
         self.scale = float(self.display_length) / (self.max - self.min)
         return self
@@ -98,11 +91,10 @@ class Axis:
         return self.transform(x)
 
     def ticks(self, n=5):
-        """TODO. this functions is messy
-        """
+        """TODO. this functions is messy"""
         step = tolerance_round((self.max - self.min) / n)
         try:
-            precision = len(str(step).split('.')[1])
+            precision = len(str(step).split(".")[1])
         except:
             precision = 0
 
@@ -132,7 +124,7 @@ def _join_plot_lines(plt_lines, y_lines, x_lines):
     plt_str = "\n"
 
     empty_pad = len(plt_lines) - len(y_lines)
-    plt_lines = ["\n"]*empty_pad + plt_lines
+    plt_lines = ["\n"] * empty_pad + plt_lines
 
     for ax, plt in zip(y_lines, plt_lines):
         plt_str += ax + plt
@@ -142,12 +134,7 @@ def _join_plot_lines(plt_lines, y_lines, x_lines):
 
 
 def _draw_plot(canvas):
-    draw_board = {
-        0: " ",
-        1: "+",
-        2: "_",
-        3: "|"
-    }
+    draw_board = {0: " ", 1: "+", 2: "_", 3: "|"}
 
     plt_lines = list()
 
@@ -172,7 +159,7 @@ def _draw_y_axis(canvas, y_axis, l_pad):
             ax_line += f"{str(y_ticks[-1][1]).rjust(l_pad)}┤"
             y_ticks.pop(-1)
         else:
-            ax_line += " "*l_pad + "|"
+            ax_line += " " * l_pad + "|"
         y_lines.append(ax_line)
 
     if y_axis.title is not None:
@@ -185,18 +172,18 @@ def _draw_x_axis(canvas, x_axis, l_pad):
 
     x_ticks = x_axis.ticks()
 
-    upper_ax = " "*l_pad
-    lower_ax = " "*l_pad
+    upper_ax = " " * l_pad
+    lower_ax = " " * l_pad
     marker = "├"
 
     for j in range(canvas.shape[0]):
         if len(x_ticks) > 0 and j == x_ticks[0][0]:
-            lower_ax = lower_ax[:len(upper_ax)]
-            label = str(round(x_ticks[0][1],2))
-            lower_ax += label + " "*20
+            lower_ax = lower_ax[: len(upper_ax)]
+            label = str(round(x_ticks[0][1], 2))
+            lower_ax += label + " " * 20
 
             upper_ax += marker
-            marker ='┬'
+            marker = "┬"
             x_ticks.pop(0)
         else:
             upper_ax += "-"
@@ -204,8 +191,8 @@ def _draw_x_axis(canvas, x_axis, l_pad):
     ax_lines = [upper_ax + "\n", lower_ax + "\n"]
 
     if x_axis.title is not None:
-        title_pad =  int(canvas.shape[0]/2 - len(x_axis.title)/2)
-        title_str = " "*(l_pad+title_pad) + x_axis.title
+        title_pad = int(canvas.shape[0] / 2 - len(x_axis.title) / 2)
+        title_str = " " * (l_pad + title_pad) + x_axis.title
         ax_lines.append(title_str)
 
-    return  ax_lines
+    return ax_lines
