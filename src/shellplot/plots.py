@@ -92,7 +92,7 @@ class Axis:
 
     def ticks(self, n=5):
         """TODO. this functions is messy"""
-        step = tolerance_round((self.max - self.min) / n)
+        step = tolerance_round((self.max - self.min) / n, tol=1e-1)
         try:
             precision = len(str(step).split(".")[1])
         except:

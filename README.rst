@@ -2,8 +2,7 @@
 shellplot
 =========
 
-
-"We should have never left the command line." - Unknown, 2020
+    "We should have never left the command line." - Unknown, 2020
 
 
 Description
@@ -15,12 +14,29 @@ Plotting, straight outta the command line
 Installation
 ============
 
+Run::
 
         pip install shellplot
 
 
 Usage
 ======
+
+Simply pretend you're using matplotlib's pyplot::
+
+        import shellplot as plt
+
+        plt.plot(x=x, y=y)
+
+
+Shellplot replicates the matplotlib API, except where it doesn't.
+
+Via pandas. For your pleasure, you can use shellplot via pandas::
+
+        import pandas as pd
+        pd.set_option('plotting.backend', 'shellplot')
+
+        df["my_feature"].hist(bins=10)
 
 
 
