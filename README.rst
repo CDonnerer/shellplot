@@ -2,16 +2,16 @@
 .. image:: https://api.cirrus-ci.com/github/CDonnerer/shellplot.svg?branch=initial-concept
   :alt: Built Status
   :target: https://cirrus-ci.com/github/CDonnerer/shellplot?branch=initial-concept
-.. image:: https://coveralls.io/repos/github/CDonnerer/shellplot/badge.svg?branch=master
+.. image:: https://coveralls.io/repos/github/CDonnerer/shellplot/badge.svg?branch=initial-concept
   :alt: Coveralls
-  :target: https://coveralls.io/github/CDonnerer/shellplot?branch=master
+  :target: https://coveralls.io/github/CDonnerer/shellplot?branch=initial-concept
 
 
 =========
 shellplot
 =========
 
-    "We should have never left the command line." - Unknown, 2020
+    "We should have never left the command line."
 
 
 Shellplot is the plotting package that you didn't know you needed. Plotting,
