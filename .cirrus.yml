@@ -2,8 +2,10 @@ container:
   image: python:latest
 
 test_task:
-  pip_cache:
-    folder: ~/.cache/pip
-    fingerprint_script: echo $PYTHON_VERSION #&& cat setup.cfg
-    populate_script: pip install -e .[testing]
-  test_script: py.test
+  # pip_cache:
+  #   folder: ~/.cache/pip
+  #   fingerprint_script: echo $PYTHON_VERSION #&& cat setup.cfg
+  #   populate_script: pip install -e .[testing]
+  test_script:
+    - pip install -e .[testing]
+    - py.test
