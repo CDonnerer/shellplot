@@ -73,7 +73,14 @@ class Axis:
     def title(self, title):
         self._title = title
 
+    @property
+    def limits(self):
+        return None
+
     def fit(self, x):
+        """TODO:
+        - min, max should be taken out as limits property, settable by user
+        """
         plot_min = min(x)
         plot_max = max(x)
 
@@ -94,7 +101,7 @@ class Axis:
         return self.transform(x)
 
     def ticks(self, n=5):
-        """TODO. this functions is messy"""
+        """TODO. this functions is a mess"""
         step, precision = tolerance_round((self.max - self.min) / n, tol=1e-1)
 
         labels = np.around(np.arange(self.min, self.max + step, step), precision)
@@ -133,14 +140,14 @@ def _join_plot_lines(plt_lines, y_lines, x_lines):
 
 
 def _draw_plot(canvas):
-    draw_board = {0: " ", 1: "+", 2: "_", 3: "|"}
+    palette = {0: " ", 1: "+", 2: "_", 3: "|"}
 
     plt_lines = list()
 
     for i in reversed(range(canvas.shape[1])):
         plt_str = ""
         for j in range(canvas.shape[0]):
-            plt_str += draw_board[canvas[j, i]]
+            plt_str += palette[canvas[j, i]]
         plt_str += "\n"
         plt_lines.append(plt_str)
 
