@@ -22,14 +22,50 @@ Usage
 
 Simply pretend you're using matplotlib's pyplot::
 
+        import numpy as np
         import shellplot as plt
 
-        plt.plot(x=x, y=y)
+        x = np.arange(-3, 3, 0.05)
+        y = np.cos(x)**2
+
+        plt.plot(x, y)
+
+        1.0┤                                  +
+           |+                               ++ ++                               +
+           | +                             +     +                             +
+           |  +                           ++     ++                           +
+           |  +                          +         +                          +
+        0.8┤   +                         +         +                         +
+           |    +                       +           +                       +
+           |    +                       +           +                       +
+           |     +                     +             +                     +
+           |     +                     +             +                     +
+        0.6┤      +                   +               +                   +
+           |      +                                                       +
+           |                         +                 +
+           |       +                 +                 +                 +
+           |        +               +                   +               +
+        0.4┤        +               +                   +               +
+           |         +             +                     +             +
+           |         +                                                 +
+           |          +           +                      +            +
+           |          +           +                       +           +
+        0.2┤           +         +                         +         +
+           |            +       ++                         ++       +
+           |            +       +                           +       +
+           |             +    ++                             ++    +
+        0.0┤              +++++                               +++++
+           ├------------┬-------------┬-------------┬-------------┬-------------┬
+           -3.0         -1.8          -0.6          0.6           1.8           3.0
 
 
 Shellplot replicates the matplotlib API, except where it doesn't.
 
-Via pandas. For your pleasure, you can use shellplot via pandas::
+
+Pandas backend
+--------------
+
+For your pleasure, you can use shellplot via pandas::
 
         import pandas as pd
         pd.set_option('plotting.backend', 'shellplot')
