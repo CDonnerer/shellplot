@@ -1,20 +1,15 @@
 """Shellplot plots
 """
-import operator
-import math
-
 import numpy as np
-import pandas as pd
 
 from shellplot.utils import tolerance_round
-
 
 DISPLAY_X = 70
 DISPLAY_Y = 25
 
 
 def plot(x, y, x_title=None, y_title=None):
-    plt_str = _plot(x, y, x_title, y_title)
+    plt_str = _plot(x=x, y=y, x_title=x_title, y_title=y_title)
     print(plt_str)
 
 
@@ -33,7 +28,7 @@ def _plot(x, y, x_title=None, y_title=None):
 
 
 def hist(x, bins=10, x_title=None, **kwargs):
-    plt_str = _hist(x, bins=10, x_title=None, **kwargs)
+    plt_str = _hist(x=x, bins=bins, x_title=x_title, **kwargs)
     print(plt_str)
 
 
@@ -44,7 +39,7 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     x_axis = Axis(DISPLAY_X, title=x_title)
 
     counts_scaled = y_axis.fit_transform(counts)
-    bin_edges_scaled = x_axis.fit_transform(bin_edges)
+    x_axis = x_axis.fit(bin_edges)
 
     canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
 
@@ -82,10 +77,10 @@ class Axis:
         plot_min = min(x)
         plot_max = max(x)
 
-        self.min = tolerance_round(
+        self.min, _ = tolerance_round(
             plot_min - 0.1 * np.sign(plot_min) * plot_min, tol=1e-1
         )
-        self.max = tolerance_round(
+        self.max, _ = tolerance_round(
             plot_max + 0.1 * np.sign(plot_max) * plot_max, tol=1e-1
         )
         self.scale = float(self.display_length) / (self.max - self.min)
@@ -100,11 +95,7 @@ class Axis:
 
     def ticks(self, n=5):
         """TODO. this functions is messy"""
-        step = tolerance_round((self.max - self.min) / n, tol=1e-1)
-        try:
-            precision = len(str(step).split(".")[1])
-        except:
-            precision = 0
+        step, precision = tolerance_round((self.max - self.min) / n, tol=1e-1)
 
         labels = np.around(np.arange(self.min, self.max + step, step), precision)
         ticks = self.transform(labels)
@@ -176,8 +167,6 @@ def _draw_y_axis(canvas, y_axis, l_pad):
 
 
 def _draw_x_axis(canvas, x_axis, l_pad):
-    x_lines = list()
-
     x_ticks = x_axis.ticks()
 
     upper_ax = " " * l_pad

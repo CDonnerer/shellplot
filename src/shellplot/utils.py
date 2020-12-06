@@ -11,4 +11,4 @@ def tolerance_round(x, tol=1e-3):
         error = (x + fudge - x_rounded) / (x + fudge)
         decimals += 1
 
-    return x_rounded
+    return x_rounded, decimals
