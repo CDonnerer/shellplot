@@ -9,3 +9,6 @@ test_task:
   test_script:
     - pip install -e .[testing]
     - py.test
+  coverage_script:
+    - pip install coveralls
+    - coveralls
