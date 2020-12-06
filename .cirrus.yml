@@ -4,6 +4,6 @@ container:
 test_task:
   pip_cache:
     folder: ~/.cache/pip
-    fingerprint_script: echo $PYTHON_VERSION && cat setup.cfg
+    fingerprint_script: echo $PYTHON_VERSION #&& cat setup.cfg
     populate_script: pip install -e .[testing]
   test_script: py.test
