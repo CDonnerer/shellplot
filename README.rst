@@ -1,3 +1,8 @@
+.. image:: https://coveralls.io/repos/github/CDonnerer/shellplot/badge.svg?branch=master
+  :alt: Coveralls
+  :target: https://coveralls.io/github/CDonnerer/shellplot?branch=master
+
+
 =========
 shellplot
 =========
