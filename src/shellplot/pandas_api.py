@@ -7,8 +7,14 @@ import shellplot.plots as plt
 def plot(data, kind, **kwargs):
     # TODO: check kind
 
-    s_x = data[kwargs["x"]]
-    s_y = data[kwargs["y"]]
+    x_col = kwargs.get("x")
+    y_col = kwargs.get("y")
+
+    if x_col is None or y_col is None:
+        raise ValueError("Please provide both x, y column names")
+
+    s_x = data[x_col]
+    s_y = data[y_col]
 
     return plt.plot(
         x=s_x.values,
@@ -20,3 +26,19 @@ def plot(data, kind, **kwargs):
 
 def hist_series(data, **kwargs):
     return plt.hist(x=data.values, x_title=data.name, **kwargs)
+
+
+def boxplot_series(*args, **kwargs):
+    raise NotImplementedError
+
+
+def boxplot_frame(*args, **kwargs):
+    raise NotImplementedError
+
+
+def boxplot_frame_groupby(grouped, **kwargs):
+    raise NotImplementedError
+
+
+def hist_frame(*args, **kwargs):
+    raise NotImplementedError

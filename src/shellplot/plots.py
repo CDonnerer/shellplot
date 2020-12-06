@@ -14,7 +14,11 @@ DISPLAY_Y = 25
 
 
 def plot(x, y, x_title=None, y_title=None):
+    plt_str = _plot(x, y, x_title, y_title)
+    print(plt_str)
 
+
+def _plot(x, y, x_title=None, y_title=None):
     x_axis = Axis(DISPLAY_X, title=x_title)
     y_axis = Axis(DISPLAY_Y, title=y_title)
 
@@ -25,11 +29,15 @@ def plot(x, y, x_title=None, y_title=None):
     canvas[x_scaled, y_scaled] = 1
 
     plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
-    print(plt_str)
+    return plt_str
 
 
 def hist(x, bins=10, x_title=None, **kwargs):
+    plt_str = _hist(x, bins=10, x_title=None, **kwargs)
+    print(plt_str)
 
+
+def _hist(x, bins=10, x_title=None, **kwargs):
     counts, bin_edges = np.histogram(x, bins)
 
     y_axis = Axis(DISPLAY_Y, title="counts")
@@ -54,7 +62,7 @@ def hist(x, bins=10, x_title=None, **kwargs):
     x_axis.scale = (display_max + bin_width) / (x_axis.max - x_axis.min)
 
     plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
-    print(plt_str)
+    return plt_str
 
 
 class Axis:
