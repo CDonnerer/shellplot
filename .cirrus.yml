@@ -1,5 +1,5 @@
 container:
-  image: python:slim
+  image: python:latest
 
 test_task:
   pip_cache:
