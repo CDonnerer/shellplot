@@ -3,7 +3,6 @@ container:
 
 env:
   COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-  COVERAGE: yes
 
 test_task:
   # pip_cache:
