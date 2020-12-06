@@ -1,3 +1,7 @@
+
+.. image:: https://api.cirrus-ci.com/github/CDonnerer/shellplot.svg
+  :alt: Built Status
+  :target: https://cirrus-ci.com/github/CDonnerer/shellplot
 .. image:: https://coveralls.io/repos/github/CDonnerer/shellplot/badge.svg?branch=master
   :alt: Coveralls
   :target: https://coveralls.io/github/CDonnerer/shellplot?branch=master
