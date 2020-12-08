@@ -2,12 +2,14 @@
 .. image:: https://travis-ci.com/CDonnerer/shellplot.svg?branch=master
   :alt: Built Status
   :target: https://travis-ci.com/github/CDonnerer/shellplot?branch=master
+
 .. image:: https://coveralls.io/repos/github/CDonnerer/shellplot/badge.svg?branch=master
   :alt: Coveralls
   :target: https://coveralls.io/github/CDonnerer/shellplot?branch=master
+
 .. image:: https://img.shields.io/pypi/v/shellplot.svg
   :alt: PyPI-Server
-  :target: https://pypi.org/project/pyscaffold/
+  :target: https://pypi.org/project/shellplot/
 
 =========
 shellplot
