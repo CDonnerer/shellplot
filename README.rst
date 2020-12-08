@@ -1,7 +1,7 @@
 
-.. image:: https://api.cirrus-ci.com/github/CDonnerer/shellplot.svg?branch=initial-concept
+.. image:: https://travis-ci.com/CDonnerer/shellplot.svg?branch=initial-concept
   :alt: Built Status
-  :target: https://cirrus-ci.com/github/CDonnerer/shellplot?branch=initial-concept
+  :target: https://travis-ci.com/github/CDonnerer/shellplot?branch=initial-concept
 .. image:: https://coveralls.io/repos/github/CDonnerer/shellplot/badge.svg?branch=initial-concept
   :alt: Coveralls
   :target: https://coveralls.io/github/CDonnerer/shellplot?branch=initial-concept
