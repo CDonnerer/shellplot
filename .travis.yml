@@ -2,7 +2,7 @@ language: python
 notifications:
   email: false
 python:
-  - "3.8"
+  - "3.9"
 install:
   - pip install -e .[testing]
   - pip install coveralls
