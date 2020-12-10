@@ -3,6 +3,10 @@
   :alt: Built Status
   :target: https://travis-ci.com/github/CDonnerer/shellplot?branch=master
 
+.. image:: https://readthedocs.org/projects/shellplot/badge/?version=latest
+  :target: https://shellplot.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation Status
+
 .. image:: https://coveralls.io/repos/github/CDonnerer/shellplot/badge.svg?branch=master
   :alt: Coveralls
   :target: https://coveralls.io/github/CDonnerer/shellplot?branch=master
@@ -21,6 +25,7 @@ shellplot
 Shellplot is the plotting package that you didn't know you needed. Plotting,
 straight outta the command line.
 
+Docs: https://shellplot.readthedocs.io/en/latest/
 
 Installation
 ============
