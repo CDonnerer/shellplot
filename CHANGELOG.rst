@@ -5,6 +5,6 @@ Changelog
 Version 0.1
 ===========
 
-- Feature A added
-- FIX: nasty bug #1729 fixed
-- add your changes here!
+- Basic functionality of shellplot released.
+- Includes `plot` and `hist` functions which print to the command line.
+- Includes pandas backend api for the above
