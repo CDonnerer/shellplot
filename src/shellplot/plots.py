@@ -54,16 +54,17 @@ def _hist(x, bins=10, x_title=None, **kwargs):
 
     # this bit doesn't seem entirely right
     display_max = (bin_width + 1) * len(counts)
-    x_axis.scale = (display_max + bin_width) / (x_axis.max - x_axis.min)
+    x_axis.scale = (display_max + bin_width) / (x_axis.limits[1] - x_axis.limits[0])
 
     plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
     return plt_str
 
 
 class Axis:
-    def __init__(self, display_length, title=None):
+    def __init__(self, display_length, title=None, limits=None):
         self.display_length = display_length - 1
         self._title = title
+        self._limits = limits
 
     @property
     def title(self):
@@ -75,26 +76,22 @@ class Axis:
 
     @property
     def limits(self):
-        return None
+        return self._limits
+
+    @limits.setter
+    def limits(self, limits):
+        self._limits = limits
 
     def fit(self, x):
-        """TODO:
-        - min, max should be taken out as limits property, settable by user
-        """
-        plot_min = min(x)
-        plot_max = max(x)
+        """Fit axis to get conversion from data to plot scale"""
+        if self.limits is None:
+            self.limits = self._determine_limits(x)
 
-        self.min, _ = tolerance_round(
-            plot_min - 0.1 * np.sign(plot_min) * plot_min, tol=1e-1
-        )
-        self.max, _ = tolerance_round(
-            plot_max + 0.1 * np.sign(plot_max) * plot_max, tol=1e-1
-        )
-        self.scale = float(self.display_length) / (self.max - self.min)
+        self.scale = float(self.display_length) / (self.limits[1] - self.limits[0])
         return self
 
     def transform(self, x):
-        return (self.scale * (x - self.min)).astype(int)
+        return (self.scale * (x - self.limits[0])).astype(int)
 
     def fit_transform(self, x):
         self = self.fit(x)
@@ -102,9 +99,13 @@ class Axis:
 
     def ticks(self, n=5):
         """TODO. this functions is a mess"""
-        step, precision = tolerance_round((self.max - self.min) / n, tol=1e-1)
+        step, precision = tolerance_round(
+            (self.limits[1] - self.limits[0]) / n, tol=1e-1
+        )
 
-        labels = np.around(np.arange(self.min, self.max + step, step), precision)
+        labels = np.around(
+            np.arange(self.limits[0], self.limits[1] + step, step), precision
+        )
         ticks = self.transform(labels)
 
         if ticks[-1] > self.display_length:
@@ -112,6 +113,19 @@ class Axis:
             labels = labels[:-1]
 
         return list(zip(ticks, labels))
+
+    def _determine_limits(self, x):
+        plot_min = min(x)
+        plot_max = max(x)
+        rattle_factor = 0.03
+
+        ax_min, _ = tolerance_round(
+            plot_min - rattle_factor * np.sign(plot_min) * plot_min, tol=1e-1
+        )
+        ax_max, _ = tolerance_round(
+            plot_max + rattle_factor * np.sign(plot_max) * plot_max, tol=1e-1
+        )
+        return ax_min, ax_max
 
 
 def draw(canvas, x_axis, y_axis):
