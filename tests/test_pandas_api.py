@@ -12,8 +12,9 @@ def test_set_shellplot_backend():
     set_shellplot_plotting_backend()
 
 
-def test_plot():
+def test_plot_series():
     set_shellplot_plotting_backend()
-    x = np.arange(-3, 3, 0.1)
-    df = pd.DataFrame({"x": x, "y": np.cos(x) ** 2 + x / 5})
-    df.plot(x="x", y="y")
+    x = np.arange(0, 100, 1)
+    s = pd.Series(index=x, data=np.random.randn(100), name="my_series")
+
+    s.plot()

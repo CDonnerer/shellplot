@@ -8,7 +8,7 @@ def tolerance_round(x, tol=1e-3):
         else:
             x_rounded = round(x, decimals)
         fudge = 1e-9  # protect against zero div
-        error = (x + fudge - x_rounded) / (x + fudge)
+        error = (x - x_rounded) / (x + fudge)
         decimals += 1
 
     return x_rounded, decimals
