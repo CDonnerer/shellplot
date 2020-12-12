@@ -45,7 +45,6 @@ parameter::
 
         >>> import pandas as pd
         >>> pd.set_option("plotting.backend", "shellplot")
-
         >>> x = np.random.randn(1000)
         >>> my_series = pd.Series(data=x, name="my_fun_distribution")
         >>> my_series.hist(bins=10)
@@ -82,6 +81,7 @@ For convenience, this dataset can be directly loaded from ``shellplot``::
 
         >>> import pandas as pd
         >>> import shellplot as plt
+        >>> pd.set_option("plotting.backend", "shellplot")
         >>> df = plt.load_dataset("penguins")
         >>> df.sample(5)
 
@@ -129,6 +129,42 @@ Let's start by looking at bill and flipper lengths vary across species::
                                           bill_length_mm
 
 
+Next, we want to understand the distribution of body masses::
+
+
+        >>> df["body_mass_g"].hist(bins=12)
+
+          counts
+           59┤
+             |           ____
+             |          |    |____
+             |          |    |    |
+             |          |    |    |
+           48┤          |    |    |
+             |          |    |    |
+             |          |    |    |____
+             |          |    |    |    |
+             |          |    |    |    |
+           37┤          |    |    |    |____
+             |          |    |    |    |    |____
+             |          |    |    |    |    |    |
+             |          |    |    |    |    |    |
+             |          |    |    |    |    |    |
+           26┤      ____|    |    |    |    |    |____
+             |     |    |    |    |    |    |    |    |     ____
+             |     |    |    |    |    |    |    |    |    |    |
+             |     |    |    |    |    |    |    |    |____|    |
+             |     |    |    |    |    |    |    |    |    |    |
+           15┤     |    |    |    |    |    |    |    |    |    |____
+             |     |    |    |    |    |    |    |    |    |    |    |
+             | ____|    |    |    |    |    |    |    |    |    |    |
+             ||    |    |    |    |    |    |    |    |    |    |    |
+            4┤|    |    |    |    |    |    |    |    |    |    |    |____
+             ├-----------┬------------┬------------┬------------┬-----------┬------
+             2619        3393         4167         4941         5715        6489
+                                          body_mass_g
+
+to be continued...
 
 
 .. _penguins: https://github.com/allisonhorst/palmerpenguins
