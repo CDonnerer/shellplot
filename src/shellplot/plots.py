@@ -45,7 +45,7 @@ def _plot(x, y, x_title=None, y_title=None, color=None):
             mask = val == color
             canvas[x_scaled[mask], y_scaled[mask]] = ii + 1
 
-        legend = {ii: val for ii, val in enumerate(values)}
+        legend = {ii + 1: val for ii, val in enumerate(values)}
     else:
         canvas[x_scaled, y_scaled] = 1
         legend = None
