@@ -38,13 +38,18 @@ def _plot(x, y, x_title=None, y_title=None, color=None):
     canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
 
     if color is not None:
-        for ii, val in enumerate(np.unique(color.values)):
+        values = np.unique(color.values)
+
+        for ii, val in enumerate(values):
             mask = val == color
             canvas[x_scaled[mask], y_scaled[mask]] = ii + 1
+
+        legend = {ii: val for ii, val in enumerate(values)}
     else:
         canvas[x_scaled, y_scaled] = 1
+        legend = None
 
-    plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
+    plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
     return plt_str
 
 
@@ -54,6 +59,8 @@ def hist(x, bins=10, x_title=None, **kwargs):
 
 
 def _hist(x, bins=10, x_title=None, **kwargs):
+    x = x[~np.isnan(x)]
+
     counts, bin_edges = np.histogram(x, bins)
 
     y_axis = Axis(DISPLAY_Y, title="counts")
@@ -68,9 +75,9 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     bin_width = int((DISPLAY_X - 1) / len(counts)) - 1
 
     for count in counts_scaled:
-        canvas[bin, :count] = 3
-        canvas[bin + 1 : bin + 1 + bin_width, count] = 2
-        canvas[bin + 1 + bin_width, :count] = 3
+        canvas[bin, :count] = 20
+        canvas[bin + 1 : bin + 1 + bin_width, count] = 21
+        canvas[bin + 1 + bin_width, :count] = 20
         bin += bin_width + 1
 
     # this bit doesn't seem entirely right
@@ -149,7 +156,7 @@ class Axis:
         return ax_min, ax_max
 
 
-def draw(canvas, x_axis, y_axis):
+def draw(canvas, x_axis, y_axis, legend=None):
     plt_lines = _draw_plot(canvas)
 
     label_len = max([len(str(val)) for (t, val) in y_axis.ticks()])
@@ -158,32 +165,76 @@ def draw(canvas, x_axis, y_axis):
     y_lines = _draw_y_axis(canvas, y_axis, l_pad)
     x_lines = _draw_x_axis(canvas, x_axis, l_pad)
 
-    return _join_plot_lines(plt_lines, y_lines, x_lines)
+    if legend is not None:
+        legend_lines = _draw_legend(legend)
+    else:
+        legend_lines = None
+
+    return _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines)
 
 
-def _join_plot_lines(plt_lines, y_lines, x_lines):
+def _draw_legend(legend):
+    legend_lines = list()
+
+    for marker, name in legend.items():
+        legend_str = f"{PALETTE[marker+1]} {name}"
+        legend_lines.append(legend_str)
+    return legend_lines
+
+
+def _pad_lines(lines, ref_lines):
+    if lines is None:
+        lines = list()
+
+    empty_pad = len(ref_lines) - len(lines)
+    return [""] * empty_pad + lines
+
+
+def _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines):
     plt_str = "\n"
 
-    empty_pad = len(plt_lines) - len(y_lines)
-    plt_lines = ["\n"] * empty_pad + plt_lines
+    # import pdb
+    #
+    # pdb.set_trace()
 
-    for ax, plt in zip(y_lines, plt_lines):
-        plt_str += ax + plt
+    plt_lines = _pad_lines(plt_lines, y_lines)
+    legend_lines = _pad_lines(legend_lines, y_lines)
+    # empty_pad = len(plt_lines) - len(y_lines)
+    # plt_lines = ["\n"] * empty_pad + plt_lines
+
+    for ax, plt, leg in zip(y_lines, plt_lines, legend_lines):
+        plt_str += ax + plt + leg + "\n"
+
     for ax in x_lines:
         plt_str += ax
+
     return plt_str
 
 
+PALETTE = {
+    # empty space
+    0: " ",
+    # scatter points
+    1: "+",
+    2: "x",
+    3: "o",
+    4: ".",
+    5: "_",
+    6: "|",
+    # hist drawing
+    20: "|",
+    21: "_",
+}
+
+
 def _draw_plot(canvas):
-    palette = {0: " ", 1: "+", 2: "x", 3: "o", 4: ".", 5: "_", 6: "|"}
 
     plt_lines = list()
 
     for i in reversed(range(canvas.shape[1])):
         plt_str = ""
         for j in range(canvas.shape[0]):
-            plt_str += palette[canvas[j, i]]
-        plt_str += "\n"
+            plt_str += PALETTE[canvas[j, i]]
         plt_lines.append(plt_str)
 
     return plt_lines
