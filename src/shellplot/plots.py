@@ -2,18 +2,20 @@
 """
 import numpy as np
 
-from shellplot.utils import tolerance_round
+from shellplot.utils import remove_any_nan, tolerance_round
 
 DISPLAY_X = 70
 DISPLAY_Y = 25
 
 
-def plot(x, y, x_title=None, y_title=None):
-    plt_str = _plot(x=x, y=y, x_title=x_title, y_title=y_title)
+def plot(x, y, **kwargs):
+    plt_str = _plot(x=x, y=y, **kwargs)
     print(plt_str)
 
 
-def _plot(x, y, x_title=None, y_title=None):
+def _plot(x, y, x_title=None, y_title=None, color=None):
+    x, y = remove_any_nan(x, y)
+
     x_axis = Axis(DISPLAY_X, title=x_title)
     y_axis = Axis(DISPLAY_Y, title=y_title)
 
@@ -21,7 +23,13 @@ def _plot(x, y, x_title=None, y_title=None):
     y_scaled = y_axis.fit_transform(y)
 
     canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
-    canvas[x_scaled, y_scaled] = 1
+
+    if color is not None:
+        for ii, val in enumerate(np.unique(color.values)):
+            mask = val == color
+            canvas[x_scaled[mask], y_scaled[mask]] = ii + 1
+    else:
+        canvas[x_scaled, y_scaled] = 1
 
     plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
     return plt_str
@@ -154,7 +162,7 @@ def _join_plot_lines(plt_lines, y_lines, x_lines):
 
 
 def _draw_plot(canvas):
-    palette = {0: " ", 1: "+", 2: "_", 3: "|"}
+    palette = {0: " ", 1: "+", 2: "x", 3: "o", 4: ".", 5: "_", 6: "|"}
 
     plt_lines = list()
 

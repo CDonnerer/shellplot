@@ -35,10 +35,11 @@ def _plot_frame(data, **kwargs):
     s_y = data[y_col]
 
     return plt.plot(
-        x=s_x,
-        y=s_y,
-        x_title=s_x.title,
-        y_title=s_y.title,
+        x=s_x.values,
+        y=s_y.values,
+        x_title=s_x.name,
+        y_title=s_y.name,
+        color=kwargs.get("color", None),
     )
 
 
