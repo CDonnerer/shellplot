@@ -1,16 +1,34 @@
 """API for pandas plotting backend
 """
 
+import pandas as pd
+
 import shellplot.plots as plt
 
 
 def plot(data, kind, **kwargs):
     # TODO: check kind
 
+    if isinstance(data, pd.Series):
+        return _plot_series(data)
+    else:
+        return _plot_frame(data, **kwargs)
+
+
+def _plot_series(data):
+    return plt.plot(
+        x=data.index.values,
+        y=data.values,
+        x_title=data.index.name,
+        y_title=data.name,
+    )
+
+
+def _plot_frame(data, **kwargs):
     x_col = kwargs.get("x")
     y_col = kwargs.get("y")
 
-    if x_col is None or y_col is None:
+    if x_col is None and y_col is None:
         raise ValueError("Please provide both x, y column names")
 
     s_x = data[x_col]
@@ -21,6 +39,7 @@ def plot(data, kind, **kwargs):
         y=s_y.values,
         x_title=s_x.name,
         y_title=s_y.name,
+        color=kwargs.get("color", None),
     )
 
 

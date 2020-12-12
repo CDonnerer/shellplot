@@ -10,6 +10,8 @@ except DistributionNotFound:
 finally:
     del get_distribution, DistributionNotFound
 
-from shellplot import pandas_api
+from shellplot import pandas_api  # noqa: F401
 
-from shellplot.plots import plot, hist
+from shellplot.plots import plot, hist  # noqa: F401
+
+from shellplot.utils import load_dataset  # noqa: F401

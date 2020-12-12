@@ -10,3 +10,9 @@ script:
   - py.test
 after_success:
   - coveralls
+deploy:
+  provider: pypi
+  username: "__token__"
+  password: ${{ secrets.PYPI_TOKEN }}
+  on:
+    tags: true

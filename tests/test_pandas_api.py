@@ -1,5 +1,7 @@
 """Testing the pandas backend of shellplot
 """
+import pytest
+
 import numpy as np
 import pandas as pd
 
@@ -12,8 +14,51 @@ def test_set_shellplot_backend():
     set_shellplot_plotting_backend()
 
 
-def test_plot():
+# Test series backend
+
+
+@pytest.fixture
+def random_series():
+    x = np.arange(0, 100, 1)
+    return pd.Series(index=x, data=np.random.randn(100), name="my_series")
+
+
+def test_plot_series(random_series):
     set_shellplot_plotting_backend()
-    x = np.arange(-3, 3, 0.1)
-    df = pd.DataFrame({"x": x, "y": np.cos(x) ** 2 + x / 5})
-    df.plot(x="x", y="y")
+    random_series.plot()
+
+
+def test_hist_series(random_series):
+    set_shellplot_plotting_backend()
+    random_series.hist()
+
+
+@pytest.mark.skip
+def test_boxplot_series(random_series):
+    with pytest.raises(NotImplementedError):
+        random_series.boxplot()
+
+
+# Test frame backend
+
+
+@pytest.fixture
+def random_frame():
+    x = np.arange(0, 100, 1)
+    y = np.random.randn(100)
+    return pd.DataFrame({"x": x, "y": y})
+
+
+def test_plot_frame(random_frame):
+    set_shellplot_plotting_backend()
+    random_frame.plot(x="x", y="y")
+
+
+def test_boxplot_frame(random_frame):
+    with pytest.raises(NotImplementedError):
+        random_frame.boxplot()
+
+
+def test_hist_frame(random_frame):
+    with pytest.raises(NotImplementedError):
+        random_frame.hist()
