@@ -39,7 +39,7 @@ def _plot(x, y, x_title=None, y_title=None, color=None):
     canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
 
     if color is not None:
-        values = np.unique(color.values)
+        values = np.unique(color)
 
         for ii, val in enumerate(values):
             mask = val == color
