@@ -25,6 +25,8 @@ shellplot
 Shellplot is the plotting package that you didn't know you needed. Plotting,
 straight outta the command line.
 
+Please take a look at the `documentation`_, which contains many `examples`_.
+
 Docs: https://shellplot.readthedocs.io/en/latest/
 
 Installation
@@ -35,8 +37,8 @@ Run::
         pip install shellplot
 
 
-Usage
-======
+Quickstart
+===========
 
 Simply pretend you're using matplotlib's pyplot::
 
@@ -110,3 +112,7 @@ Note
 
 This project has been set up using PyScaffold 3.2.3. For details and usage
 information on PyScaffold see https://pyscaffold.org/.
+
+
+.. _documentation: https://shellplot.readthedocs.io/en/latest/
+.. _examples:  https://shellplot.readthedocs.io/en/latest/examples.html
