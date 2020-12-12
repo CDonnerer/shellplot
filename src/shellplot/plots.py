@@ -1,6 +1,7 @@
 """Shellplot plots
 """
 import numpy as np
+import pandas as pd
 
 from shellplot.utils import remove_any_nan, tolerance_round
 
@@ -13,8 +14,20 @@ def plot(x, y, **kwargs):
     print(plt_str)
 
 
+def get_name(x):
+    if isinstance(x, pd.Series):
+        return x.name
+    else:
+        return None
+
+
 def _plot(x, y, x_title=None, y_title=None, color=None):
     x, y = remove_any_nan(x, y)
+
+    if x_title is None:
+        x_title = get_name(x)
+    if y_title is None:
+        y_title = get_name(y)
 
     x_axis = Axis(DISPLAY_X, title=x_title)
     y_axis = Axis(DISPLAY_Y, title=y_title)
