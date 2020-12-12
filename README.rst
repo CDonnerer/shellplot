@@ -27,7 +27,6 @@ straight outta the command line.
 
 Please take a look at the `documentation`_, which contains many `examples`_.
 
-Docs: https://shellplot.readthedocs.io/en/latest/
 
 Installation
 ============
@@ -40,70 +39,42 @@ Run::
 Quickstart
 ===========
 
-Simply pretend you're using matplotlib's pyplot::
-
-        import numpy as np
-        import shellplot as plt
-
-        x = np.arange(-3, 3, 0.05)
-        y = np.cos(x) ** 2
-
-        plt.plot(x, y)
-
-        1.0┤                             +
-           |+                          +++++                          +
-           | +                        +     +                        +
-           |  +                      +       +                      +
-       0.75┤   +                    +         +                    +
-           |    +                  ++         ++                  +
-           |    +                  +           +                  +
-           |     +                +             +                +
-        0.5┤      +              +               +              +
-           |      +              +               +              +
-           |       +            +                 +            +
-           |        +          +                   +          +
-       0.25┤        ++        ++                   ++        ++
-           |         ++       +                     +       ++
-           |          ++    ++                       ++    ++
-        0.0┤           ++++++                         ++++++
-           ├------------------┬-------------------┬-------------------┬
-           -3                 -1                  1                   3
+As shellplot replicates the `matplotlib`_ API, it's as easy as::
 
 
+        >>> import shellplot as plt
+        >>> df = plt.load_dataset("penguins")
+        >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
-Shellplot replicates the matplotlib API, except where it doesn't.
-
-
-Pandas backend
---------------
-
-For your pleasure, you can use shellplot via pandas::
-
-        import pandas as pd
-        pd.set_option("plotting.backend", "shellplot")
-
-        x = np.random.randn(1000)
-        pd.Series(data=x, name="my_fun_distribution").hist(bins=10)
-
-        counts
-         286┤
-            |                          ____
-            |                     ____|    |
-            |                    |    |    |
-         215┤                    |    |    |____
-            |                    |    |    |    |
-            |                    |    |    |    |
-            |                    |    |    |    |
-         144┤                ____|    |    |    |
-            |               |    |    |    |    |____
-            |               |    |    |    |    |    |
-            |               |    |    |    |    |    |
-          73┤               |    |    |    |    |    |
-            |           ____|    |    |    |    |    |____
-            | ____ ____|    |    |    |    |    |    |    |____
-            ├-------------┬-------------┬--------------┬-------------┬--
-            -4.0          -2.0          0.0            2.0           4.0
-                                my_fun_distribution
+          flipper_length_mm
+              |
+           237┤
+              |
+              |                                        o  o   oo    o o         o
+              |                                         ooo o  o        o
+              |                                          ooooo
+           223┤                                o oooo ooo  oo   o
+              |                            o o ooo oo  oo oo o    o
+              |                           oo  oo ooooo  oo o
+              |                      o   o o  ooooo o  oo o
+           209┤                        oo oo + oooo o oo*   *  *
+              |                      +   o oo  o       o       *        *
+              |                       +                o *  **   **
+              |          +          + +++  *             * *** *    *
+              |        +     ++++    + +++++   * +  * *   ** * **
+           195┤          +++  + +++ +++++++  +  ** * *  * * * *
+              |       + ++  +++ +++++++++  +   ** **   * *  **
+              |  +  +  ++++++ ++++++ ++ +       ****      *
+              |      + ++++++ ++ ++ +*   * *     * *          *
+              |       +    + ++    + ++
+           181┤            + +++++  +   +*                                   *
+              |    +         +    + +            *
+              |               +                                                      + Adelie
+              |               +                                                      * Chinstrap
+           167┤                                                                      o Gentoo
+              ├------------┬-------------┬-------------┬-------------┬-------------┬
+              31           37            43            49            55            61
+                                          bill_length_mm
 
 
 
