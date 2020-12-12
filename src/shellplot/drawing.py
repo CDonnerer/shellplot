@@ -7,9 +7,9 @@ PALETTE = {
     0: " ",
     # scatter points
     1: "+",
-    2: "x",
+    2: "*",
     3: "o",
-    4: "@",
+    4: "x",
     5: "_",
     6: "|",
     # hist drawing
@@ -39,7 +39,7 @@ def _draw_legend(legend):
     legend_lines = list()
 
     for marker, name in legend.items():
-        legend_str = f"{PALETTE[marker+1]} {name}"
+        legend_str = f"{PALETTE[marker]} {name}"
         legend_lines.append(legend_str)
     return legend_lines
 
