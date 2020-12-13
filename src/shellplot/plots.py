@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 
+from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import remove_any_nan, tolerance_round
+from shellplot.utils import remove_any_nan
 
 DISPLAY_X = 70
 DISPLAY_Y = 25
@@ -89,69 +90,25 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     return plt_str
 
 
-class Axis:
-    def __init__(self, display_length, title=None, limits=None):
-        self.display_length = display_length - 1
-        self._title = title
-        self._limits = limits
+def barh(x):
+    y_axis = Axis(DISPLAY_Y, title=None)
+    x_axis = Axis(DISPLAY_X, title=None)
 
-    @property
-    def title(self):
-        return self._title
+    x_scaled = x_axis.fit_transform(x)
+    y_axis = y_axis.fit(list(range(len(x))))
+    y_axis.ticks = np.array([0.25, 1, 1.75])
+    y_axis.labels = ["my_label_1", "2", "3"]
 
-    @title.setter
-    def title(self, title):
-        self._title = title
+    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
 
-    @property
-    def limits(self):
-        return self._limits
+    bin = 0
+    bin_width = int((DISPLAY_Y - 1) / len(x)) - 1
 
-    @limits.setter
-    def limits(self, limits):
-        self._limits = limits
+    for val in x_scaled:
+        canvas[:val, bin] = 21
+        canvas[val, bin + 1 : bin + 1 + bin_width] = 20
+        canvas[:val, bin + 1 + bin_width] = 21
+        bin += bin_width + 1
 
-    def fit(self, x):
-        """Fit axis to get conversion from data to plot scale"""
-        if self.limits is None:
-            self.limits = self._determine_limits(x)
-
-        self.scale = float(self.display_length) / (self.limits[1] - self.limits[0])
-        return self
-
-    def transform(self, x):
-        return (self.scale * (x - self.limits[0])).astype(int)
-
-    def fit_transform(self, x):
-        self = self.fit(x)
-        return self.transform(x)
-
-    def ticks(self, n=5):
-        """TODO. this functions is a mess"""
-        step, precision = tolerance_round(
-            (self.limits[1] - self.limits[0]) / n, tol=1e-1
-        )
-
-        labels = np.around(
-            np.arange(self.limits[0], self.limits[1] + step, step), precision
-        )
-        ticks = self.transform(labels)
-
-        if ticks[-1] > self.display_length:
-            ticks = ticks[:-1]
-            labels = labels[:-1]
-
-        return list(zip(ticks, labels))
-
-    def _determine_limits(self, x):
-        plot_min = min(x)
-        plot_max = max(x)
-        rattle_factor = 0.03
-
-        ax_min, _ = tolerance_round(
-            plot_min - rattle_factor * np.sign(plot_min) * plot_min, tol=1e-1
-        )
-        ax_max, _ = tolerance_round(
-            plot_max + rattle_factor * np.sign(plot_max) * plot_max, tol=1e-1
-        )
-        return ax_min, ax_max
+    plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
+    return plt_str
