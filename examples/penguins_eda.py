@@ -12,5 +12,4 @@ df = plt.load_dataset("penguins")
 
 plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
-
 df["species"].value_counts().plot.barh()
