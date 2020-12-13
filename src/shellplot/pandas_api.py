@@ -27,9 +27,9 @@ def _plot_series(data, kind, **kwargs):
 
 
 def _series_barh(data, **kwargs):
-    plt_str = plt.barh(data.values)
-
-    return print(plt_str)
+    return plt.barh(
+        x=data.values, labels=data.index, x_title=data.name, y_title=data.index.name
+    )
 
 
 def _series_line(data, **kwargs):
