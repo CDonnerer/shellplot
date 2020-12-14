@@ -1,3 +1,16 @@
+"""Module that contains Axis class (usable for both x and y axis)
+
+The main function of an axis is to transform from the data-coordinates to the
+coordinates of the plot, hence we loosely follow an sklearn transfomer api.
+
+It can be used like so:
+
+x_axis = Axis(display)
+x_axis = x_axis.fit(x)
+x_plot = x_axis.transform(x)
+"""
+import operator
+
 import numpy as np
 
 from shellplot.utils import tolerance_round
@@ -8,6 +21,10 @@ class Axis:
         self.display_length = display_length - 1
         self._title = title
         self._limits = limits
+
+    # -------------------------------------------------------------------------
+    # Public properties that can be set by the user
+    # -------------------------------------------------------------------------
 
     @property
     def title(self):
@@ -45,10 +62,14 @@ class Axis:
     def labels(self, labels):
         self._labels = labels
 
+    # -------------------------------------------------------------------------
+    # Methods
+    # -------------------------------------------------------------------------
+
     def fit(self, x):
         """Fit axis to get conversion from data to plot scale"""
         if self.limits is None:
-            self.limits = self._determine_limits(x)
+            self.limits = self._auto_limits(x)
 
         self.scale = float(self.display_length) / (self.limits[1] - self.limits[0])
         return self
@@ -78,15 +99,25 @@ class Axis:
             np.arange(self.limits[0], self.limits[1] + step, step), precision
         )
 
-    def _determine_limits(self, x):
-        plot_min = min(x)
-        plot_max = max(x)
-        rattle_factor = 0.03
+    def _auto_limits(self, x):
+        """automatically find `good` axis limits"""
 
-        ax_min, _ = tolerance_round(
-            plot_min - rattle_factor * np.sign(plot_min) * plot_min, tol=1e-1
-        )
-        ax_max, _ = tolerance_round(
-            plot_max + rattle_factor * np.sign(plot_max) * plot_max, tol=1e-1
-        )
+        ax_min = self._rattle_min(min(x))
+        ax_max = self._rattle_max(max(x))
         return ax_min, ax_max
+
+    def _rattle_min(self, start_val):
+        return self._rattle_val(start_val, op=operator.sub, cond=operator.le)
+
+    def _rattle_max(self, start_val):
+        return self._rattle_val(start_val, op=operator.add, cond=operator.ge)
+
+    def _rattle_val(self, start_val, op, cond, rattle_factor=0.025, nround=50):
+        for i in range(nround):
+            rattle_val, _ = tolerance_round(
+                op(start_val, abs(rattle_factor * start_val)), tol=1e-1
+            )
+            if cond(rattle_val, start_val):
+                return rattle_val
+            rattle_factor += rattle_factor
+        return start_val
