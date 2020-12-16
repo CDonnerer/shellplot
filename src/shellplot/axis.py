@@ -75,7 +75,7 @@ class Axis:
         return self
 
     def transform(self, x):
-        return (self.scale * (x - self.limits[0])).astype(int)
+        return np.around(self.scale * (x - self.limits[0])).astype(int)
 
     def fit_transform(self, x):
         self = self.fit(x)
@@ -100,7 +100,14 @@ class Axis:
         )
 
     def _auto_limits(self, x):
-        """automatically find `good` axis limits"""
+        """Automatically find `good` axis limits
+
+        This works by using tolerance_round, which round to the closest
+        decimals within a 10 % threshold. If this round does not end up in the
+        desired direction, we keep `rattling`, i.e. adding a small factor until
+        we reach a round number that is suitable
+
+        """
 
         ax_min = self._rattle_min(min(x))
         ax_max = self._rattle_max(max(x))

@@ -8,7 +8,7 @@ from shellplot.drawing import draw
 from shellplot.utils import remove_any_nan
 
 DISPLAY_X = 70
-DISPLAY_Y = 25
+DISPLAY_Y = 26
 
 
 def plot(x, y, **kwargs):

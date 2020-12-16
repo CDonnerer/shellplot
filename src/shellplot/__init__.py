@@ -10,8 +10,11 @@ except DistributionNotFound:
 finally:
     del get_distribution, DistributionNotFound
 
+
+# -----------------------------------------------------------------------------
+# Expose imports to be directly available via import shellplot as plt
+# -----------------------------------------------------------------------------
+
 from shellplot import pandas_api  # noqa: F401
-
 from shellplot.plots import plot, hist  # noqa: F401
-
 from shellplot.utils import load_dataset  # noqa: F401
