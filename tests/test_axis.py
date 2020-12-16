@@ -37,9 +37,34 @@ def test_axis_auto_limits(x, expected_limits):
     ],
 )
 def test_axis_transform(x, expected_display_x):
-    """"""
+    """Test axis transform from plot to display coordinates"""
     axis = Axis(display_length=80)
     axis.limits = (0, 100)
     display_x = axis.fit_transform(x)
 
     np.testing.assert_array_equal(display_x, expected_display_x)
+
+
+@pytest.mark.parametrize(
+    # fmt: off
+    "limits,n_ticks,expected_ticks",
+    [
+        ((0, 1), 5, np.array([0, 0.2, 0.4, 0.6, 0.8, 1.0])),
+        ((1, 9), 5, np.array([1, 3, 5, 7, 9])),
+    ],
+)
+def test_axis_ticks(limits, n_ticks, expected_ticks):
+    """Test axis ticks generation"""
+    axis = Axis(display_length=80)
+    axis.limits = limits
+    ticks = axis._get_ticks(n_ticks)
+
+    np.testing.assert_array_equal(ticks, expected_ticks)
+
+
+def test_axis_properties():
+    axis = Axis(display_length=80)
+    axis.title = "title"
+    axis.limits = (1, 9)
+    axis.ticks = np.array([1, 3, 5, 7, 9])
+    axis.labels = np.array(["a", "b", "c", "d", "e"])

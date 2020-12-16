@@ -103,10 +103,9 @@ class Axis:
         """Automatically find `good` axis limits
 
         This works by using tolerance_round, which round to the closest
-        decimals within a 10 % threshold. If this round does not end up in the
-        desired direction, we keep `rattling`, i.e. adding a small factor until
-        we reach a round number that is suitable
-
+        decimals within a 10 % threshold. If this rounding does not ends up
+        higher (lower) than the min of the data, we keep adding small factors
+        and try the rounding again until we reach a suitable, round value.
         """
 
         ax_min = self._rattle_min(min(x))
