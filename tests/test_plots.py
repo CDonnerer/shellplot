@@ -2,23 +2,32 @@
 
 import numpy as np
 
-from shellplot.plots import _hist, _plot
+from shellplot.plots import _barh, _hist, _plot
 
 
 def test_plot():
     x = np.arange(-3, 3, 0.01)
     y = np.cos(x) ** 2
-    _plot(x, y)
+    plt_str = _plot(x, y)
+    assert isinstance(plt_str, str)
 
 
 def test_scatter():
     x = np.arange(0, 100, 1)
     y = np.random.randn(100)
     color = np.array(["one"] * 70 + ["two"] * 30)
-    _plot(x, y, color=color)
+    plt_str = _plot(x, y, color=color)
+    assert isinstance(plt_str, str)
 
 
 def test_hist():
-    np.random.seed(22)  # TODO fails with seed 42. fix it.
     x = np.random.randn(1000)
-    _hist(x, bins=20)
+    plt_str = _hist(x, bins=20)
+    assert isinstance(plt_str, str)
+
+
+def test_barh():
+    x = np.array([10, 56, 121, 67])
+    labels = np.array(["one", "two", "three", "four"])
+    plt_str = _barh(x, labels=labels)
+    assert isinstance(plt_str, str)

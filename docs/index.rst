@@ -52,7 +52,7 @@ Contents
    :maxdepth: 2
 
    Installation <installation>
-   Examples <examples>
+   Examples <examples/index>
    License <license>
    Authors <authors>
    Changelog <changelog>

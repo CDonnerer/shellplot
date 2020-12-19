@@ -1,4 +1,8 @@
-"""Drawing module
+"""Drawing module.
+
+Functions for taking the elements of the plot (e.g. canvas, axis, legend) and
+converts them to strings. Please note that drawing is entirely agnostic to the
+type of plot.
 """
 
 
@@ -12,16 +16,18 @@ PALETTE = {
     4: "x",
     5: "_",
     6: "|",
-    # hist drawing
+    # bar drawing
     20: "|",
     21: "_",
+    22: "-",
+    23: "┐",
 }
 
 
 def draw(canvas, x_axis, y_axis, legend=None):
     plt_lines = _draw_plot(canvas)
 
-    label_len = max([len(str(val)) for (t, val) in y_axis.ticks()])
+    label_len = max([len(str(val)) for (t, val) in y_axis.tick_labels()])
     l_pad = label_len + 1
 
     y_lines = _draw_y_axis(canvas, y_axis, l_pad)
@@ -83,7 +89,7 @@ def _draw_plot(canvas):
 def _draw_y_axis(canvas, y_axis, l_pad):
     y_lines = list()
 
-    y_ticks = y_axis.ticks()
+    y_ticks = y_axis.tick_labels()
 
     for i in reversed(range(canvas.shape[1])):
         ax_line = ""
@@ -100,7 +106,7 @@ def _draw_y_axis(canvas, y_axis, l_pad):
 
 
 def _draw_x_axis(canvas, x_axis, l_pad):
-    x_ticks = x_axis.ticks()
+    x_ticks = x_axis.tick_labels()
 
     upper_ax = " " * l_pad
     lower_ax = " " * l_pad

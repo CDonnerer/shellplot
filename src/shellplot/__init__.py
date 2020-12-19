@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pkg_resources import get_distribution, DistributionNotFound
+from pkg_resources import DistributionNotFound, get_distribution
 
 try:
     # Change here if project is renamed and does not equal the package name
@@ -10,8 +10,11 @@ except DistributionNotFound:
 finally:
     del get_distribution, DistributionNotFound
 
+
+# -----------------------------------------------------------------------------
+# Expose imports to be directly available via import shellplot as plt
+# -----------------------------------------------------------------------------
+
 from shellplot import pandas_api  # noqa: F401
-
-from shellplot.plots import plot, hist  # noqa: F401
-
+from shellplot.plots import barh, hist, plot  # noqa: F401
 from shellplot.utils import load_dataset  # noqa: F401
