@@ -8,7 +8,7 @@ from shellplot.drawing import draw
 from shellplot.utils import remove_any_nan
 
 DISPLAY_X = 80
-DISPLAY_Y = 26
+DISPLAY_Y = 25
 
 
 def plot(x, y, **kwargs):
@@ -99,14 +99,14 @@ def _barh(x, labels=None, x_title=None, y_title=None):
     y_axis = Axis(DISPLAY_Y, title=y_title)
     x_axis = Axis(DISPLAY_X, title=x_title)
 
-    x_axis.limits = (0, int(1.03 * max(x)))
+    x_axis.limits = (0, int(1.01 * max(x)))
     x_scaled = x_axis.fit_transform(x)
 
     y_axis = y_axis.fit(list(range(len(x) + 1)))
     y_axis.ticks = np.array(list(range(len(x)))) + 0.5
 
     if labels is None:
-        y_axis.labels = list(range(len(x)))
+        y_axis.labels = np.array(list(range(len(x))))
     else:
         y_axis.labels = labels
 
