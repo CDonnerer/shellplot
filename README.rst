@@ -39,8 +39,7 @@ Run::
 Quickstart
 ===========
 
-As shellplot replicates the `matplotlib`_ API, it's as easy as::
-
+Shellplot loosely replicates the `matplotlib`_ API, it's as easy as::
 
         >>> import shellplot as plt
         >>> df = plt.load_dataset("penguins")
@@ -77,6 +76,15 @@ As shellplot replicates the `matplotlib`_ API, it's as easy as::
                                           bill_length_mm
 
 
+Shellplot also provides a convenient integration with `pandas`_. Simply set the
+pandas plotting backend to shellplot::
+
+
+        >>> import pandas as pd
+        >>> pd.set_option("plotting.backend", "shellplot")
+
+
+Please refer to the documentation for further details.
 
 Note
 ====
@@ -88,3 +96,4 @@ information on PyScaffold see https://pyscaffold.org/.
 .. _documentation: https://shellplot.readthedocs.io/en/latest/
 .. _examples:  https://shellplot.readthedocs.io/en/latest/examples.html
 .. _matplotlib: https://matplotlib.org/contents.html#
+.. _pandas: https://pandas.pydata.org/

@@ -41,6 +41,7 @@ class Axis:
     @limits.setter
     def limits(self, limits):
         self._limits = limits
+        self.fit()  # setting axis limits automatically fits the axis
 
     @property
     def ticks(self):
@@ -60,13 +61,15 @@ class Axis:
 
     @labels.setter
     def labels(self, labels):
+        if len(labels) != len(self.ticks):
+            raise ValueError("Len of tick labels must equal len of ticks!")
         self._labels = labels
 
     # -------------------------------------------------------------------------
     # Methods
     # -------------------------------------------------------------------------
 
-    def fit(self, x):
+    def fit(self, x=None):
         """Fit axis to get conversion from data to plot scale"""
         if self.limits is None:
             self.limits = self._auto_limits(x)
@@ -82,14 +85,14 @@ class Axis:
         return self.transform(x)
 
     def tick_labels(self):
-        display_labels = self.labels
-        display_ticks = self.transform(self.ticks)
+        """Generate display tick location and labels"""
+        within_display = np.logical_and(
+            self.ticks >= self.limits[0], self.ticks <= self.limits[1]
+        )
+        display_labels = self.labels[within_display]
+        display_ticks = self.transform(self.ticks[within_display])
 
-        if display_ticks[-1] > self.display_length:
-            display_ticks = display_ticks[:-1]
-            display_labels = display_labels[:-1]
-
-        return list(zip(display_ticks, display_labels))
+        return list(zip(display_ticks, display_labels))  # generator?
 
     def _get_ticks(self, n=5):
         step, precision = tolerance_round(
@@ -123,6 +126,7 @@ class Axis:
             rattle_val, _ = tolerance_round(
                 op(start_val, abs(rattle_factor * start_val)), tol=1e-1
             )
+
             if cond(rattle_val, start_val):
                 return rattle_val
             rattle_factor += rattle_factor

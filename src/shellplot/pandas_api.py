@@ -44,9 +44,13 @@ def _series_line(data, **kwargs):
 def _plot_frame(data, **kwargs):
     x_col = kwargs.get("x")
     y_col = kwargs.get("y")
+    color = kwargs.get("color", None)
 
     if x_col is None and y_col is None:
         raise ValueError("Please provide both x, y column names")
+
+    if color in data.columns:
+        color = data[color]
 
     s_x = data[x_col]
     s_y = data[y_col]
@@ -56,7 +60,7 @@ def _plot_frame(data, **kwargs):
         y=s_y.values,
         x_title=s_x.name,
         y_title=s_y.name,
-        color=kwargs.get("color", None),
+        color=color,
     )
 
 

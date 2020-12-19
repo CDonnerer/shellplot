@@ -62,7 +62,43 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
     np.testing.assert_array_equal(ticks, expected_ticks)
 
 
+@pytest.mark.parametrize(
+    # fmt: off
+    "limits,ticks,expected_tick_labels",
+    [
+        ((0, 1), np.array([0, 0.5, 1.0]), [(0, 0.0), (40, 0.5), (79, 1.0)]),
+        ((0, 1), np.array([0.5, 1.5, 2]), [(40, 0.5)]),
+    ],
+)
+def test_axis_tick_labels(limits, ticks, expected_tick_labels):
+    """Test axis ticks generation"""
+    axis = Axis(display_length=80)
+    axis.limits = limits
+    axis.ticks = ticks
+    tick_labels = axis.tick_labels()
+
+    assert tick_labels == expected_tick_labels
+
+
+@pytest.mark.parametrize(
+    # fmt: off
+    "ticks,labels",
+    [
+        (np.array([0, 0.5, 1.0]), np.array([0, 0.5, 1.0, 2.0])),
+        (np.array([0.5, 1.5]), np.array(["a"])),
+    ],
+)
+def test_axis_labels_len_error(ticks, labels):
+    """Test error raising when tick labels do not match ticks"""
+    axis = Axis(display_length=80)
+    axis.ticks = ticks
+
+    with pytest.raises(ValueError):
+        axis.labels = labels
+
+
 def test_axis_properties():
+    """Faux test for property setting"""
     axis = Axis(display_length=80)
     axis.title = "title"
     axis.limits = (1, 9)
