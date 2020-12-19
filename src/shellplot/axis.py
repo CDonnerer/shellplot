@@ -9,16 +9,14 @@ x_axis = Axis(display)
 x_axis = x_axis.fit(x)
 x_plot = x_axis.transform(x)
 """
-import operator
-
 import numpy as np
 
-from shellplot.utils import tolerance_round
+from shellplot.utils import round_down, round_up, tolerance_round
 
 
 class Axis:
     def __init__(self, display_length, title=None, limits=None):
-        self.display_length = display_length - 1
+        self.display_max = display_length - 1
         self._title = title
         self._limits = limits
 
@@ -74,7 +72,7 @@ class Axis:
         if self.limits is None:
             self.limits = self._auto_limits(x)
 
-        self.scale = float(self.display_length) / (self.limits[1] - self.limits[0])
+        self.scale = float(self.display_max) / (self.limits[1] - self.limits[0])
         return self
 
     def transform(self, x):
@@ -102,32 +100,20 @@ class Axis:
             np.arange(self.limits[0], self.limits[1] + step, step), precision
         )
 
-    def _auto_limits(self, x):
-        """Automatically find `good` axis limits
+    def _auto_limits(self, x, frac=0.05):
+        """Automatically find `good` axis limits"""
 
-        This works by using tolerance_round, which round to the closest
-        decimals within a 10 % threshold. If this rounding does not ends up
-        higher (lower) than the min of the data, we keep adding small factors
-        and try the rounding again until we reach a suitable, round value.
-        """
+        x_max = max(x)
+        x_min = min(x)
 
-        ax_min = self._rattle_min(min(x))
-        ax_max = self._rattle_max(max(x))
+        max_difference = frac * (x_max - x_min)
+        ax_min = self._difference_round(x_min, round_down, max_difference)
+        ax_max = self._difference_round(x_max, round_up, max_difference)
+
         return ax_min, ax_max
 
-    def _rattle_min(self, start_val):
-        return self._rattle_val(start_val, op=operator.sub, cond=operator.le)
-
-    def _rattle_max(self, start_val):
-        return self._rattle_val(start_val, op=operator.add, cond=operator.ge)
-
-    def _rattle_val(self, start_val, op, cond, rattle_factor=0.025, nround=50):
-        for i in range(nround):
-            rattle_val, _ = tolerance_round(
-                op(start_val, abs(rattle_factor * start_val)), tol=1e-1
-            )
-
-            if cond(rattle_val, start_val):
-                return rattle_val
-            rattle_factor += rattle_factor
-        return start_val
+    def _difference_round(self, val, round_func, max_difference):
+        for dec in range(10):
+            rounded = round_func(val, dec)
+            if abs(rounded - val) <= max_difference:
+                return rounded

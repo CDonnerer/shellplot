@@ -13,17 +13,17 @@ np.random.seed(42)
     # fmt: off
     "x,expected_limits",
     [
-        (np.random.uniform(1, 9, 300), (1, 9)),
-        (np.random.uniform(1.02, 8.9, 300), (1, 9)),
-        (np.random.uniform(-0.05, -0.01, 300), (-0.1, -0.01)),
-        (np.random.uniform(-10.05, 2.36, 300), (-10.0, 2.4))
+        (np.random.uniform(1, 9, 100), (1, 9)),
+        (np.random.uniform(1.02, 8.9, 100), (1, 9)),
+        (np.random.uniform(-0.05, -0.01, 100), (-0.05, -0.01)),
+        (np.array([-10.054, 2.36]), (-10.1, 2.4)),
+        (np.array([0.000432424, 1.0]), (0, 1.0))
     ],
 )
 def test_axis_auto_limits(x, expected_limits):
     """Check whether automatically determined limits are sensible"""
     axis = Axis(display_length=80)
     axis = axis.fit(x)
-
     assert axis.limits == expected_limits
 
 
