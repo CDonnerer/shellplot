@@ -33,12 +33,6 @@ def round_down(n, decimals=0):
     return math.floor(n * multiplier) / multiplier
 
 
-#
-# print(min_max_finder(0.00431, 0.998))
-# print(min_max_finder(0.00431, 0.00792))
-# print(min_max_finder(0.00431, 0.00821))
-
-
 def remove_any_nan(x, y):
     """Given two np.ndarray, remove indeces where any is nan"""
     is_any_nan = np.isnan(x) | np.isnan(y)

@@ -1,8 +1,7 @@
 """Testing axis class
 """
-import pytest
-
 import numpy as np
+import pytest
 
 from shellplot.axis import Axis
 
@@ -17,7 +16,8 @@ np.random.seed(42)
         (np.random.uniform(1.02, 8.9, 100), (1, 9)),
         (np.random.uniform(-0.05, -0.01, 100), (-0.05, -0.01)),
         (np.array([-10.054, 2.36]), (-10.1, 2.4)),
-        (np.array([0.000432424, 1.0]), (0, 1.0))
+        (np.array([0.000432424, 0.998]), (0, 1.0)),
+        (np.array([0.00431, 0.00821]), (0.0043, 0.0083)),
     ],
 )
 def test_axis_auto_limits(x, expected_limits):

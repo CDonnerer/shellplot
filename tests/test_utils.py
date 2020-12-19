@@ -1,9 +1,14 @@
-import pytest
-
 import numpy as np
 import pandas as pd
+import pytest
 
-from shellplot.utils import load_dataset, remove_any_nan, tolerance_round
+from shellplot.utils import (
+    load_dataset,
+    remove_any_nan,
+    round_down,
+    round_up,
+    tolerance_round,
+)
 
 
 @pytest.mark.parametrize(
@@ -20,6 +25,34 @@ from shellplot.utils import load_dataset, remove_any_nan, tolerance_round
 def test_tolerance_round(number, expected):
     rounded, _ = tolerance_round(number, tol=1e-1)
 
+    assert rounded == expected
+
+
+@pytest.mark.parametrize(
+    "number,decimals,expected",
+    [
+        (0.321, 2, 0.33),
+        (1.214, 2, 1.22),
+        (1.214, 1, 1.3),
+        (1.214, 0, 2),
+    ],
+)
+def test_round_up(number, decimals, expected):
+    rounded = round_up(number, decimals)
+    assert rounded == expected
+
+
+@pytest.mark.parametrize(
+    "number,decimals,expected",
+    [
+        (0.321, 2, 0.32),
+        (1.814, 2, 1.81),
+        (1.814, 1, 1.8),
+        (1.814, 0, 1),
+    ],
+)
+def test_round_down(number, decimals, expected):
+    rounded = round_down(number, decimals)
     assert rounded == expected
 
 
