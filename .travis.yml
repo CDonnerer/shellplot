@@ -2,17 +2,18 @@ language: python
 notifications:
   email: false
 python:
-  - "3.9"
+- '3.9'
 install:
-  - pip install -e .[testing]
-  - pip install coveralls
+- pip install -e .[testing]
+- pip install coveralls
 script:
-  - py.test
+- py.test
 after_success:
-  - coveralls
+- coveralls
 deploy:
   provider: pypi
-  username: "__token__"
-  password: ${{ secrets.PYPI_TOKEN }}
+  username: __token__
+  password:
+    secure: iDp+YJAKKVLqzyVW/eZz+b277YEs7NzyUvQnoQoOCqaKPJE6yzZF+xbCRtZmnEQroCNoek9hKTlqNGLBfrCn1BRvviQJnZ4Ze5uVn1CZ47rnmWCL8SGsiNrR/A2n9Z/Qt1CYaMetX6Ie7ymntnBpdR41bhbEmsEW3n97SnVHeVJj0QkFxtYzH1Wb2qV7mawBdTXZIu9oR7ysci0V1SGumidQP2vlFC8RrxyvjaSxE7Eb1Vo44CrEBm4iIr6SR1MGpl6YrzKDn9Bx4zYwcOPHb/Gs8HxWiWGkpYT8LUTGcaEtoDtwUnDo9obU4tvuQ9mN0n5vnhRIo65xDQSLntYzwtL1BMLX881MusHMV5MpLzSxRWDQWms3ARi7h7qscl6N44pMJDuye1Tu3MAfC0nUVoyofa1CYnrm5SVx/GvrmEZHczh6IdhhB9hgZjzM5UXpJp9W4LT0Z3OYe32/2nnXH40d7nWWFTOYI23Y78oydatb112g/SYjojGgyjFFPHmTrRUw7SxuEedqAhh7wpAusmB/8PS/VrfLL7tCRwlB/nvN/788wL6v6eA5ZtoJC0ARQj99Hbu4uI82kOQGlDgKMqN2cJ0uamUJDRibIeyh9OgCf9sbML3I7CIXaAFDGL6SUHJzkzcFvz6lCkIY1wQ6m1YaExcEcaPe5GEOUkXP39I=
   on:
     tags: true
