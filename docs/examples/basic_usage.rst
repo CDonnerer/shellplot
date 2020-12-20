@@ -130,7 +130,7 @@ Bar plots can be created via the ``bar`` function::
 Pandas integration
 -------------------
 
-Shellplot can directly be used via pandas, by setting the ``plotting.backend``
+Shellplot can directly be used via `pandas`_, by setting the ``plotting.backend``
 parameter::
 
 
@@ -169,3 +169,7 @@ parameter::
               ├------------┬-----------┬------------┬-----------┬------------┬------
               -3.1         -1.9        -0.7         0.5         1.7          2.9
                                        my_fun_distribution
+
+
+
+.. _pandas: https://pandas.pydata.org/
