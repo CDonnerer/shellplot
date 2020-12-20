@@ -1,5 +1,7 @@
 """Testing the pandas backend of shellplot
 """
+import pytest
+
 import numpy as np
 import pandas as pd
 import pytest
