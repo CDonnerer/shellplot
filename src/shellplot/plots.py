@@ -7,7 +7,7 @@ from shellplot.axis import Axis
 from shellplot.drawing import draw
 from shellplot.utils import remove_any_nan
 
-DISPLAY_X = 80
+DISPLAY_X = 70
 DISPLAY_Y = 25
 
 
