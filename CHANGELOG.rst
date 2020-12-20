@@ -3,6 +3,14 @@ Changelog
 =========
 
 
+Version 0.1.2
+-------------
+- Refactor of axis functionality into separate module, with lots of bug fixes
+  and proper testing
+- Added ``barh`` plotting function
+- Automatic build and deploy in travis ci
+
+
 Version 0.1.1
 -------------
 - Added basic docs
