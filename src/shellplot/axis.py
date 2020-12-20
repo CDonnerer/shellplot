@@ -1,13 +1,16 @@
 """Module that contains Axis class (usable for both x and y axis)
 
-The main function of an axis is to transform from the data-coordinates to the
-coordinates of the plot, hence we loosely follow an sklearn transfomer api.
+The main function of an axis is to transform from the data coordinates to the
+display coordinates, hence we loosely follow an sklearn transfomer api.
 
 It can be used like so:
 
-x_axis = Axis(display)
+x_axis = Axis(display_length)
 x_axis = x_axis.fit(x)
-x_plot = x_axis.transform(x)
+x_display = x_axis.transform(x)
+
+where x_display is the data in display coordinates
+
 """
 import numpy as np
 
@@ -84,15 +87,19 @@ class Axis:
 
     def tick_labels(self):
         """Generate display tick location and labels"""
+        display_ticks = self.transform(self.ticks)
         within_display = np.logical_and(
-            self.ticks >= self.limits[0], self.ticks <= self.limits[1]
+            display_ticks >= 0, display_ticks <= self.display_max
         )
         display_labels = self.labels[within_display]
-        display_ticks = self.transform(self.ticks[within_display])
+        display_ticks = display_ticks[within_display]
 
         return list(zip(display_ticks, display_labels))  # generator?
 
-    def _get_ticks(self, n=5):
+    def _get_ticks(self, n=None):
+        """"""
+        if n is None:
+            n = int(self.display_max ** 0.3) + 2
         step, precision = tolerance_round(
             (self.limits[1] - self.limits[0]) / n, tol=1e-1
         )

@@ -45,34 +45,35 @@ Shellplot loosely replicates the `matplotlib`_ API, it's as easy as::
         >>> df = plt.load_dataset("penguins")
         >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
-          flipper_length_mm
-              |
-           237┤
-              |
-              |                                        o  o   oo    o o         o
-              |                                         ooo o  o        o
-              |                                          ooooo
-           223┤                                o oooo ooo  oo   o
-              |                            o o ooo oo  oo oo o    o
-              |                           oo  oo ooooo  oo o
-              |                      o   o o  ooooo o  oo o
-           209┤                        oo oo + oooo o oo*   *  *
-              |                      +   o oo  o       o       *        *
-              |                       +                o *  **   **
-              |          +          + +++  *             * *** *    *
-              |        +     ++++    + +++++   * +  * *   ** * **
-           195┤          +++  + +++ +++++++  +  ** * *  * * * *
-              |       + ++  +++ +++++++++  +   ** **   * *  **
-              |  +  +  ++++++ ++++++ ++ +       ****      *
-              |      + ++++++ ++ ++ +*   * *     * *          *
-              |       +    + ++    + ++
-           181┤            + +++++  +   +*                                   *
-              |    +         +    + +            *
-              |               +                                                      + Adelie
-              |               +                                                      * Chinstrap
-           167┤                                                                      o Gentoo
-              ├------------┬-------------┬-------------┬-------------┬-------------┬
-              31           37            43            49            55            61
+
+        flipper_length_mm
+         232.0┤                                         o  o   o o    o o          o
+              |                                          ooo o   o        o
+              |                                           o ooo
+              |                                 o         oooo
+              |                            o   oo o oo ooo oooo   o
+              |                            o  o  o o o  o  oo  o    o
+         217.0┤                             o o   oo oo  oo  o
+              |                      o   ooo  oooooooooo   o
+              |                                oo o  o   o
+              |                      + ooooooo ooooo o oo*   *  *
+              |                                o                *         *
+              |                      +                 o  *  **   * *
+         202.0┤         +             +    *                ** **     *
+              |      +      ++++   ++  ++       *    * *  **** *
+              |                  +++    ++++ +  *+         ** *****
+              |     +  +++++ ++ +++++++ + +      * * *   *** * **
+              |       + +   +  ++ +  ++++  +    *+***   *
+              |+   + ++ ++++ +++++++++  +       ****        *
+         187.0┤      + + + + ++ +++ +*   * *      *            *
+              |     ++  + +++++ + +  +              *
+              |           +  ++ +   ++   *                                     *
+              |              +  +   +   +
+              |   +         +    + +              *                                  + Adelie
+              |              +                                                       * Chinstrap
+         172.0┤               +                                                      o Gentoo
+              ├--------------┬--------------┬-------------┬--------------┬----------
+              32.0           38.0           44.0          50.0           56.0
                                           bill_length_mm
 
 
@@ -84,7 +85,7 @@ pandas plotting backend to shellplot::
         >>> pd.set_option("plotting.backend", "shellplot")
 
 
-Please refer to the documentation for further details.
+Please refer to the `documentation`_ for further details.
 
 Note
 ====

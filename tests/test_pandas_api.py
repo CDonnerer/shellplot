@@ -1,9 +1,8 @@
 """Testing the pandas backend of shellplot
 """
-import pytest
-
 import numpy as np
 import pandas as pd
+import pytest
 
 
 def set_shellplot_plotting_backend():
@@ -31,6 +30,12 @@ def test_plot_series(random_series):
 def test_hist_series(random_series):
     set_shellplot_plotting_backend()
     random_series.hist()
+
+
+def test_barh_series():
+    set_shellplot_plotting_backend()
+    my_series = pd.Series(index=["bar_1", "bar_1", "bar_3"], data=[1, 10, 23])
+    my_series.plot.barh()
 
 
 @pytest.mark.skip
