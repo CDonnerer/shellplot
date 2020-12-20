@@ -20,6 +20,13 @@ def test_scatter():
     assert isinstance(plt_str, str)
 
 
+def test_scatter():
+    x = np.arange(0, 100, 1)
+    y = np.random.randn(100)
+    color = np.array(["one"] * 70 + ["two"] * 30)
+    _plot(x, y, color=color)
+
+
 def test_hist():
     x = np.random.randn(1000)
     plt_str = _hist(x, bins=20)
