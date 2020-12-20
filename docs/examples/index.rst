@@ -7,4 +7,4 @@ Examples
    :maxdepth: 2
 
    Basic usage <basic_usage>
-   Penguins EDA <penguins_eda>
+   EDA: Penguins <penguins_eda>
