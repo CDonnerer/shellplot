@@ -6,7 +6,7 @@ x = np.arange(-4, 4, 0.01)
 y = np.cos(x)
 plt.plot(x, y)
 
-x = np.random.randn(5000)
+x = np.random.randn(10000)
 plt.hist(x, bins=10)
 
 x = np.logspace(0, 1, 3)

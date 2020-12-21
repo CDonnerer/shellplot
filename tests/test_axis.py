@@ -18,12 +18,14 @@ np.random.seed(42)
         (np.array([-10.054, 2.36]), (-10.1, 2.4)),
         (np.array([0.000432424, 0.998]), (0, 1.0)),
         (np.array([0.00431, 0.00821]), (0.0043, 0.0083)),
+        (np.array([172.1, 231.9]), (172, 232)),
     ],
 )
 def test_axis_auto_limits(x, expected_limits):
     """Check whether automatically determined limits are sensible"""
     axis = Axis(display_length=80)
     axis = axis.fit(x)
+
     assert axis.limits == expected_limits
 
 
@@ -57,7 +59,8 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
     """Test axis ticks generation"""
     axis = Axis(display_length=80)
     axis.limits = limits
-    ticks = axis._get_ticks(n_ticks)
+    axis.n_ticks = n_ticks
+    ticks = axis._get_ticks()
 
     np.testing.assert_array_equal(ticks, expected_ticks)
 
@@ -68,6 +71,7 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
     [
         ((0, 1), np.array([0, 0.5, 1.0]), [(0, 0.0), (40, 0.5), (79, 1.0)]),
         ((0, 1), np.array([0.5, 1.5, 2]), [(40, 0.5)]),
+        ((10, 12), np.array([10, 11, 12]), [(0, 10), (40, 11), (79, 12)]),
     ],
 )
 def test_axis_tick_labels(limits, ticks, expected_tick_labels):

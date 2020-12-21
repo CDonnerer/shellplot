@@ -24,13 +24,19 @@ def tolerance_round(x, tol=1e-3):
 
 
 def round_up(n, decimals=0):
-    multiplier = 10 ** decimals
-    return math.ceil(n * multiplier) / multiplier
+    if decimals == 0:  # avoid float div for int rounded value
+        return math.ceil(n)
+    else:
+        multiplier = 10 ** decimals
+        return math.ceil(n * multiplier) / multiplier
 
 
 def round_down(n, decimals=0):
-    multiplier = 10 ** decimals
-    return math.floor(n * multiplier) / multiplier
+    if decimals == 0:  # avoid float div for int rounded value
+        return math.floor(n)
+    else:
+        multiplier = 10 ** decimals
+        return math.floor(n * multiplier) / multiplier
 
 
 def remove_any_nan(x, y):

@@ -45,6 +45,16 @@ class Axis:
         self.fit()  # setting axis limits automatically fits the axis
 
     @property
+    def n_ticks(self):
+        if not hasattr(self, "_n_ticks"):
+            self.n_ticks = int(self.display_max ** 0.3) + 2
+        return self._n_ticks
+
+    @n_ticks.setter
+    def n_ticks(self, n_ticks):
+        self._n_ticks = n_ticks
+
+    @property
     def ticks(self):
         if not hasattr(self, "_ticks"):
             self.ticks = self._get_ticks()
@@ -96,12 +106,10 @@ class Axis:
 
         return list(zip(display_ticks, display_labels))  # generator?
 
-    def _get_ticks(self, n=None):
+    def _get_ticks(self):
         """"""
-        if n is None:
-            n = int(self.display_max ** 0.3) + 2
         step, precision = tolerance_round(
-            (self.limits[1] - self.limits[0]) / n, tol=1e-1
+            (self.limits[1] - self.limits[0]) / self.n_ticks, tol=1e-1
         )
         return np.around(
             np.arange(self.limits[0], self.limits[1] + step, step), precision
