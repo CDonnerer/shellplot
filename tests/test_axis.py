@@ -59,7 +59,8 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
     """Test axis ticks generation"""
     axis = Axis(display_length=80)
     axis.limits = limits
-    ticks = axis._get_ticks(n_ticks)
+    axis.n_ticks = n_ticks
+    ticks = axis._get_ticks()
 
     np.testing.assert_array_equal(ticks, expected_ticks)
 
