@@ -11,16 +11,34 @@ DISPLAY_X = 70
 DISPLAY_Y = 25
 
 
-def plot(x, y, **kwargs):
-    plt_str = _plot(x=x, y=y, **kwargs)
+# -----------------------------------------------------------------------------
+# Exposed functions that directly print the plot
+# -----------------------------------------------------------------------------
+
+
+def plot(*args, **kwargs):
+    plt_str = _plot(*args, **kwargs)
     print(plt_str)
 
 
-def get_name(x):
-    if isinstance(x, pd.Series):
-        return x.name
-    else:
-        return None
+def hist(*args, **kwargs):
+    plt_str = _hist(*args, **kwargs)
+    print(plt_str)
+
+
+def barh(*args, **kwargs):
+    plt_str = _barh(*args, **kwargs)
+    print(plt_str)
+
+
+def boxplot(*args, **kwargs):
+    plt_str = _boxplot(*args, **kwargs)
+    print(plt_str)
+
+
+# -----------------------------------------------------------------------------
+# Private functions for generating plot strings
+# -----------------------------------------------------------------------------
 
 
 def _plot(x, y, x_title=None, y_title=None, color=None):
@@ -51,13 +69,7 @@ def _plot(x, y, x_title=None, y_title=None, color=None):
         canvas[x_scaled, y_scaled] = 1
         legend = None
 
-    plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
-    return plt_str
-
-
-def hist(x, bins=10, x_title=None, **kwargs):
-    plt_str = _hist(x=x, bins=bins, x_title=x_title, **kwargs)
-    print(plt_str)
+    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
 
 def _hist(x, bins=10, x_title=None, **kwargs):
@@ -86,13 +98,7 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     display_max = (bin_width + 1) * len(counts)
     x_axis.scale = display_max / (x_axis.limits[1] - x_axis.limits[0])
 
-    plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
-    return plt_str
-
-
-def barh(x, **kwargs):
-    plt_str = _barh(x, **kwargs)
-    print(plt_str)
+    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
 
 
 def _barh(x, labels=None, x_title=None, y_title=None):
@@ -125,5 +131,15 @@ def _barh(x, labels=None, x_title=None, y_title=None):
     display_max = (bin_width + 1) * len(x)
     y_axis.scale = (display_max) / (y_axis.limits[1] - y_axis.limits[0])
 
-    plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
-    return plt_str
+    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
+
+
+def _boxplot(*args, **kwargs):
+    return ""
+
+
+def get_name(x):
+    if isinstance(x, pd.Series):
+        return x.name
+    else:
+        return None
