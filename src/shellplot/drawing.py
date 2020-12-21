@@ -119,7 +119,6 @@ def _draw_x_axis(canvas, x_axis, l_pad):
             lower_ax += label + " " * 20
 
             upper_ax += marker
-            marker = "┬"
             x_ticks.pop(0)
         else:
             upper_ax += "-"
