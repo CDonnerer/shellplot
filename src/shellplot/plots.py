@@ -64,11 +64,13 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     x = x[~np.isnan(x)]
 
     counts, bin_edges = np.histogram(x, bins)
+    print(counts)
 
     y_axis = Axis(DISPLAY_Y, title="counts")
     x_axis = Axis(DISPLAY_X, title=x_title)
 
-    counts_scaled = y_axis.fit_transform(counts)
+    y_axis.limits = (0, max(counts))
+    counts_scaled = y_axis.transform(counts)
     x_axis = x_axis.fit(bin_edges)
 
     canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
@@ -78,13 +80,12 @@ def _hist(x, bins=10, x_title=None, **kwargs):
 
     for count in counts_scaled:
         canvas[bin, :count] = 20
-        canvas[bin + 1 : bin + 1 + bin_width, count] = 21
+        canvas[bin + 1 : bin + 1 + bin_width, count] = 22
         canvas[bin + 1 + bin_width, :count] = 20
         bin += bin_width + 1
 
-    # this bit doesn't seem entirely right
     display_max = (bin_width + 1) * len(counts)
-    x_axis.scale = (display_max + bin_width) / (x_axis.limits[1] - x_axis.limits[0])
+    x_axis.scale = display_max / (x_axis.limits[1] - x_axis.limits[0])
 
     plt_str = draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
     return plt_str

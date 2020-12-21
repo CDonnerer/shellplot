@@ -108,9 +108,9 @@ def _draw_y_axis(canvas, y_axis, l_pad):
 def _draw_x_axis(canvas, x_axis, l_pad):
     x_ticks = x_axis.tick_labels()
 
-    upper_ax = " " * l_pad
-    lower_ax = " " * l_pad
-    marker = "├"
+    upper_ax = " " * l_pad + "└"
+    lower_ax = " " * l_pad + " "
+    marker = "┬"
 
     for j in range(canvas.shape[0]):
         if len(x_ticks) > 0 and j == x_ticks[0][0]:
