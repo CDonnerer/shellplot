@@ -95,6 +95,6 @@ information on PyScaffold see https://pyscaffold.org/.
 
 
 .. _documentation: https://shellplot.readthedocs.io/en/latest/
-.. _examples:  https://shellplot.readthedocs.io/en/latest/examples.html
+.. _examples: https://shellplot.readthedocs.io/en/latest/examples/index.html
 .. _matplotlib: https://matplotlib.org/contents.html#
 .. _pandas: https://pandas.pydata.org/
