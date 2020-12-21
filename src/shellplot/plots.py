@@ -64,7 +64,6 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     x = x[~np.isnan(x)]
 
     counts, bin_edges = np.histogram(x, bins)
-    print(counts)
 
     y_axis = Axis(DISPLAY_Y, title="counts")
     x_axis = Axis(DISPLAY_X, title=x_title)
