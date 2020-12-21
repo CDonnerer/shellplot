@@ -40,6 +40,8 @@ def boxplot(*args, **kwargs):
 # Private functions for generating plot strings
 # -----------------------------------------------------------------------------
 
+plot_kwargs = {"x_title": None, "y_title": None}
+
 
 def _plot(x, y, x_title=None, y_title=None, color=None):
     x, y = remove_any_nan(x, y)
@@ -134,8 +136,27 @@ def _barh(x, labels=None, x_title=None, y_title=None):
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
 
 
-def _boxplot(*args, **kwargs):
-    return ""
+def _boxplot(x, **kwargs):
+    quantiles = np.quantile(x, q=[0, 0.25, 0.5, 0.75, 1.0])
+
+    x_axis = Axis(DISPLAY_X)
+    y_axis = Axis(DISPLAY_Y)
+    quantiles_scaled = x_axis.fit_transform(quantiles)
+    y_axis = y_axis.fit([0, 1])
+    y_lims = y_axis.transform(np.array([0.25, 0.50, 0.75]))
+
+    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
+    for ii in [0, 1, 3, 4]:
+        canvas[quantiles_scaled[ii], y_lims[0] : y_lims[2]] = 20
+    canvas[quantiles_scaled[2], y_lims[0] : y_lims[2]] = 24
+
+    canvas[quantiles_scaled[0] + 1 : quantiles_scaled[1], y_lims[1]] = 22
+    canvas[quantiles_scaled[3] + 1 : quantiles_scaled[4], y_lims[1]] = 22
+
+    canvas[quantiles_scaled[1] + 1 : quantiles_scaled[3], y_lims[2]] = 22
+    canvas[quantiles_scaled[1] + 1 : quantiles_scaled[3], y_lims[0]] = 22
+
+    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
 
 
 def get_name(x):
