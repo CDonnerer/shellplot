@@ -19,7 +19,7 @@ As shellplot replicates the `matplotlib`_ API, it's as easy as::
             |                                 o         oooo
             |                            o   oo o oo ooo oooo   o
             |                            o  o  o o o  o  oo  o    o
-         217┤                             o o   oo oo  oo  o
+         217┤                             o     oo  o  oo  o
             |                      o   ooo  oooooooooo   o
             |                                oo o  o   o
             |                      + ooooooo ooooo o oo*   *  *
@@ -28,18 +28,18 @@ As shellplot replicates the `matplotlib`_ API, it's as easy as::
          202┤         +             +    *                ** **     *
             |      +      ++++   ++  ++       *    * *  **** *
             |                  +++    ++++ +  *+         ** *****
-            |     +  +++++ ++ +++++++ + +      * * *   *** * **
+            |        +++++ ++ +++++++ + +      * * *   *** * **
             |       + +   +  ++ +  ++++  +    *+***   *
-            |+   + ++ ++++ +++++++++  +       ****        *
-         187┤      + + + + ++ +++ +*   * *      *            *
+            |+   + ++ ++++ +++++++++          ****        *
+         187┤      + + + +  + +++ +*   * *      *            *
             |     ++  + +++++ + +  +              *
             |           +  ++ +   ++   *                                     *
             |              +  +   +   +
             |   +         +    + +              *                                  + Adelie
             |              +                                                       * Chinstrap
          172┤               +                                                      o Gentoo
-            ├--------------┬--------------┬-------------┬--------------┬----------
-            32             38             44            50             56
+            └┬--------------┬--------------┬-------------┬--------------┬----------
+             32             38             44            50             56
                                         bill_length_mm
 
 
