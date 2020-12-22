@@ -93,9 +93,7 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     bin_width = int((DISPLAY_X - 1) / len(counts)) - 1
 
     for count in counts_scaled:
-        canvas[bin, :count] = 20
-        canvas[bin + 1 : bin + 1 + bin_width, count] = 22
-        canvas[bin + 1 + bin_width, :count] = 20
+        canvas = _add_vbar(canvas, bin, bin_width, count)
         bin += bin_width + 1
 
     display_max = (bin_width + 1) * len(counts)
@@ -123,10 +121,7 @@ def _barh(x, labels=None, x_title=None, y_title=None):
     bin_width = int((DISPLAY_Y - 1) / len(x)) - 1
 
     for val in x_scaled:
-        canvas[:val, bin - 1] = 22
-        canvas[val, bin : bin + bin_width] = 20
-        canvas[val, bin + bin_width : bin + bin_width + 1] = 23
-        canvas[:val, bin + bin_width] = 22
+        canvas = _add_hbar(canvas, bin, bin_width, val)
         bin += bin_width + 1
 
     display_max = (bin_width + 1) * len(x)
@@ -166,7 +161,29 @@ def _boxplot(x, labels=None, x_title=None, y_title=None, **kwargs):
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
 
 
+# -----------------------------------------------------------------------------
+# Canvas elements
+# -----------------------------------------------------------------------------
+
+
+def _add_vbar(canvas, start, width, height):
+    """Add a vertical bar to the canvas"""
+    canvas[start, :height] = 20
+    canvas[start + 1 : start + 1 + width, height] = 22
+    canvas[start + 1 + width, :height] = 20
+    return canvas
+
+
+def _add_hbar(canvas, start, width, height):
+    """Add a horizontal bar to the canvas"""
+    canvas[:height, start - 1] = 22
+    canvas[height, start : start + width] = 20
+    canvas[:height, start + width] = 22
+    return canvas
+
+
 def _add_box_and_whiskers(canvas, quantiles, limits):
+    """Add a box and whiskers to the canvas"""
     for jj in [0, 1, 2, 3, 4]:
         canvas[quantiles[jj], limits[0] + 1 : limits[2]] = 20
 

@@ -8,7 +8,7 @@ pd.set_option("plotting.backend", "shellplot")
 df = plt.load_dataset("penguins")
 
 
-df["species"].value_counts().plot.barh()
+df["body_mass_g"].hist()
 
 df[["species", "island"]].value_counts().plot.barh()
 
