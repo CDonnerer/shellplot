@@ -102,7 +102,9 @@ def _draw_y_axis(canvas, y_axis, l_pad):
         y_lines.append(ax_line)
 
     if y_axis.title is not None:
-        y_lines.insert(0, y_axis.title)
+        title_pad = l_pad - len(y_axis.title) // 2
+        title_str = " " * title_pad + y_axis.title
+        y_lines.insert(0, title_str)
     return y_lines
 
 

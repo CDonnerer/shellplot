@@ -34,18 +34,22 @@ def barh(*args, **kwargs):
 def boxplot(*args, **kwargs):
     plt_str = _boxplot(*args, **kwargs)
     print(plt_str)
-    return plt_str
 
 
 # -----------------------------------------------------------------------------
 # Private functions for generating plot strings
 # -----------------------------------------------------------------------------
 
-plot_kwargs = {"x_title": None, "y_title": None}
 
-
-def _plot(x, y, x_title=None, y_title=None, color=None):
+def _plot(x, y, color=None, x_title=None, y_title=None):
+    """Scatterplot"""
     x, y = remove_any_nan(x, y)
+
+    def get_name(x):
+        if isinstance(x, pd.Series):
+            return x.name
+        else:
+            return None
 
     if x_title is None:
         x_title = get_name(x)
@@ -76,6 +80,7 @@ def _plot(x, y, x_title=None, y_title=None, color=None):
 
 
 def _hist(x, bins=10, x_title=None, **kwargs):
+    """Histogram"""
     x = x[~np.isnan(x)]
 
     counts, bin_edges = np.histogram(x, bins)
@@ -103,6 +108,7 @@ def _hist(x, bins=10, x_title=None, **kwargs):
 
 
 def _barh(x, labels=None, x_title=None, y_title=None):
+    """Horizontal bar plot"""
     y_axis = Axis(DISPLAY_Y, title=y_title)
     x_axis = Axis(DISPLAY_X, title=x_title)
 
@@ -131,6 +137,7 @@ def _barh(x, labels=None, x_title=None, y_title=None):
 
 
 def _boxplot(x, labels=None, x_title=None, y_title=None, **kwargs):
+    """Box plot"""
     x = numpy_2d(x)
     x = np.ma.masked_where(np.isnan(x), x)
 
@@ -193,10 +200,3 @@ def _add_box_and_whiskers(canvas, quantiles, limits):
     canvas[quantiles[1] + 1 : quantiles[3], limits[2]] = 22
     canvas[quantiles[1] + 1 : quantiles[3], limits[0]] = 22
     return canvas
-
-
-def get_name(x):
-    if isinstance(x, pd.Series):
-        return x.name
-    else:
-        return None
