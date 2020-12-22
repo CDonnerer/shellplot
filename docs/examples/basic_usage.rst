@@ -4,7 +4,7 @@
 Basic usage
 ===========
 
-Scatter plots
+Scatter plot
 -------------------
 
 Scatter plots can be created via the ``plot`` function::
@@ -45,7 +45,7 @@ Scatter plots can be created via the ``plot`` function::
               -4               -2               0                 2                4
 
 
-Histogram plots
+Histogram
 -------------------
 
 Histogram plots can be created via the ``hist`` function::
@@ -87,7 +87,7 @@ Histogram plots can be created via the ``hist`` function::
 
 
 
-Bar plots
+Bar plot
 -------------------
 
 Bar plots can be created via the ``bar`` function::
@@ -125,6 +125,45 @@ Bar plots can be created via the ``bar`` function::
               |-------
               └┬-------------┬-------------┬------------┬-------------┬-------------┬
                0             2             4            6             8             10
+
+Box plot
+-------------------
+
+Box plots can be created via the ``boxplot`` function::
+
+
+        >>> import numpy as np
+        >>> import shellplot as plt
+        >>> x = [np.random.randn(100) for i in range(3)]
+        >>> plt.boxplot(x, labels=np.array(["dist_1", "dist_2", "dist_3"]))
+
+               |
+               |
+               |                  ----------------
+               |  |              |      |         |                   |
+         dist_3┤  |--------------|      |         |-------------------|
+               |  |              |      |         |                   |
+               |                  ----------------
+               |
+               |
+               |
+               |                    ---------------
+               ||                  |      |        |                     |
+         dist_2┤|------------------|      |        |---------------------|
+               ||                  |      |        |                     |
+               |                    ---------------
+               |
+               |
+               |
+               |                     ------------
+               |   |                |     |      |                                  |
+         dist_1┤   |----------------|     |      |----------------------------------|
+               |   |                |     |      |                                  |
+               |                     ------------
+               |
+               |
+               └┬-------------┬-------------┬-------------┬-------------┬-------------
+                -2.2          -1.0          0.2           1.4           2.6
 
 
 Pandas integration

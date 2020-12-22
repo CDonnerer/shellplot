@@ -118,8 +118,8 @@ class Axis:
     def _auto_limits(self, x, frac=0.05):
         """Automatically find `good` axis limits"""
 
-        x_max = max(x)
-        x_min = min(x)
+        x_max = x.max()
+        x_min = x.min()
 
         max_difference = frac * (x_max - x_min)
         ax_min = self._difference_round(x_min, round_down, max_difference)

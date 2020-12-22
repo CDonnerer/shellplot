@@ -1,8 +1,9 @@
 """Testing the pandas backend of shellplot
 """
+import pytest
+
 import numpy as np
 import pandas as pd
-import pytest
 
 
 def set_shellplot_plotting_backend():
@@ -54,14 +55,23 @@ def random_frame():
     return pd.DataFrame({"x": x, "y": y})
 
 
-def test_plot_frame(random_frame):
+def test_plot_frame(df_penguins):
     set_shellplot_plotting_backend()
-    random_frame.plot(x="x", y="y")
+    df_penguins.dropna().plot("bill_length_mm", "flipper_length_mm", color="species")
 
 
-def test_boxplot_frame(random_frame):
-    with pytest.raises(NotImplementedError):
-        random_frame.boxplot()
+def test_plot_frame_missing_arg(df_penguins):
+    set_shellplot_plotting_backend()
+    with pytest.raises(ValueError):
+        df_penguins.plot(x="flipper_length_mm")
+
+
+def test_boxplot_frame(df_penguins):
+    df_penguins.boxplot(column=["bill_length_mm", "bill_depth_mm"])
+
+
+def test_boxplot_frame_by(df_penguins):
+    df_penguins.boxplot(column=["bill_length_mm"], by="species")
 
 
 def test_hist_frame(random_frame):

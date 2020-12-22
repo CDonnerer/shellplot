@@ -4,6 +4,7 @@ import pytest
 
 from shellplot.utils import (
     load_dataset,
+    numpy_2d,
     remove_any_nan,
     round_down,
     round_up,
@@ -78,3 +79,18 @@ def test_remove_any_nan(x, y, expected_x, expected_y):
 def test_load_dataset(name):
     df = load_dataset(name)
     assert isinstance(df, pd.DataFrame)
+
+
+@pytest.mark.parametrize(
+    "x, expected_np_2d",
+    [
+        (np.array([0, 1]), np.array([[0, 1]])),
+        (np.array([[0, 1]]), np.array([[0, 1]])),
+        ([np.array([0, 1])], [np.array([0, 1])]),
+        (pd.DataFrame(np.array([[0], [1]])), np.array([[0, 1]])),
+    ],
+)
+def test_numpy_2d(x, expected_np_2d):
+    np_2d = numpy_2d(x)
+
+    np.testing.assert_equal(np_2d, expected_np_2d)
