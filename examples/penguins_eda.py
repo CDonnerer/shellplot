@@ -12,9 +12,9 @@ df["species"].value_counts().plot.barh()
 
 df[["species", "island"]].value_counts().plot.barh()
 
-df["body_mass_g"].hist(bins=10)
+df.boxplot(column=["bill_length_mm", "bill_depth_mm"])
 
-plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
+df.boxplot(column=["flipper_length_mm"], by="species")
 
 df.dropna().plot("bill_depth_mm", "body_mass_g", color="species")
 

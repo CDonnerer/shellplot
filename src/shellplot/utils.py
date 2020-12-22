@@ -50,3 +50,18 @@ def load_dataset(name):
     dataset_path = os.path.join(module_path, "datasets", f"{name}.csv")
 
     return pd.read_csv(dataset_path)
+
+
+def numpy_2d(x):
+    """Reshape and transform various array-like inputs to 2d np arrays"""
+    if isinstance(x, np.ndarray):
+        if len(x.shape) == 1:
+            return x[np.newaxis]
+        else:
+            return x
+    elif isinstance(x, pd.DataFrame):
+        return x.to_numpy().transpose()
+    elif isinstance(x, list):
+        return x
+    else:
+        return None

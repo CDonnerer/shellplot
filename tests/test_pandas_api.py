@@ -60,8 +60,11 @@ def test_plot_frame(random_frame):
 
 
 def test_boxplot_frame(random_frame):
-    with pytest.raises(NotImplementedError):
-        random_frame.boxplot()
+    # import pdb
+    #
+    # pdb.set_trace()
+
+    random_frame.boxplot(column=["x", "y"])
 
 
 def test_hist_frame(random_frame):

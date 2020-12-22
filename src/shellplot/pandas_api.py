@@ -1,6 +1,6 @@
 """API for pandas plotting backend
 """
-
+import numpy as np
 import pandas as pd
 
 import shellplot.plots as plt
@@ -15,15 +15,20 @@ def plot(data, kind, **kwargs):
         return _plot_frame(data, **kwargs)
 
 
-def _plot_series(data, kind, **kwargs):
+def _plot_series(data, kind, *args, **kwargs):
 
-    series_func = {"barh": _series_barh, "line": _series_line, "scatter": _series_line}
+    series_func = {
+        "barh": _series_barh,
+        "line": _series_line,
+        "scatter": _series_line,
+        "box": _series_boxplot,
+    }
 
     plot_func = series_func.get(kind)
     if plot_func is None:
         raise NotImplementedError
 
-    return plot_func(data, **kwargs)
+    return plot_func(data, *args, **kwargs)
 
 
 def _series_barh(data, **kwargs):
@@ -39,6 +44,10 @@ def _series_line(data, **kwargs):
         x_title=data.index.name,
         y_title=data.name,
     )
+
+
+def _series_boxplot(data, *args, **kwargs):
+    return plt.boxplot(data, labels=np.array([data.name]))
 
 
 def _plot_frame(data, **kwargs):
@@ -68,12 +77,22 @@ def hist_series(data, **kwargs):
     return plt.hist(x=data.values, x_title=data.name, **kwargs)
 
 
-def boxplot_series(*args, **kwargs):
-    raise NotImplementedError
+def boxplot_frame(data, *args, **kwargs):
+    column = kwargs.get("column", data.columns)
+    by = kwargs.get("by")
 
+    if by is not None:
+        df = data.pivot(columns=by, values=column)
 
-def boxplot_frame(*args, **kwargs):
-    raise NotImplementedError
+        x_title = df.columns.get_level_values(0)[0]
+        y_title = by
+        labels = df.columns.get_level_values(1)
+        kwargs.update({"x_title": x_title, "y_title": y_title, "labels": labels})
+    else:
+        df = data[column]
+        kwargs.update({"labels": df.columns})
+
+    return plt.boxplot(df, **kwargs)
 
 
 def boxplot_frame_groupby(grouped, **kwargs):
