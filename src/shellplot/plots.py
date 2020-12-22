@@ -62,7 +62,7 @@ def _plot(x, y, color=None, x_title=None, y_title=None):
     x_scaled = x_axis.fit_transform(x)
     y_scaled = y_axis.fit_transform(y)
 
-    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
+    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y), dtype=int)
 
     if color is not None:
         values = np.unique(color)
@@ -92,7 +92,7 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     counts_scaled = y_axis.transform(counts)
     x_axis = x_axis.fit(bin_edges)
 
-    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
+    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y), dtype=int)
 
     bin = 0
     bin_width = int((DISPLAY_X - 1) / len(counts)) - 1
@@ -112,7 +112,7 @@ def _barh(x, labels=None, x_title=None, y_title=None):
     y_axis = Axis(DISPLAY_Y, title=y_title)
     x_axis = Axis(DISPLAY_X, title=x_title)
 
-    x_axis.limits = (0, int(1.01 * max(x)))
+    x_axis.limits = (0, max(x))
     x_scaled = x_axis.fit_transform(x)
 
     y_axis = y_axis.fit(np.arange(0, len(x) + 1, 1))
@@ -121,9 +121,9 @@ def _barh(x, labels=None, x_title=None, y_title=None):
     if labels is not None:
         y_axis.labels = labels
 
-    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
+    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y), dtype=int)
 
-    bin = 1
+    bin = 0
     bin_width = int((DISPLAY_Y - 1) / len(x)) - 1
 
     for val in x_scaled:
@@ -158,7 +158,7 @@ def _boxplot(x, labels=None, x_title=None, y_title=None, **kwargs):
     if labels is not None:
         y_axis.labels = labels
 
-    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
+    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y), dtype=int)
 
     for ii in range(len(x)):
         quants = quantiles_scaled[ii, :]
@@ -183,9 +183,9 @@ def _add_vbar(canvas, start, width, height):
 
 def _add_hbar(canvas, start, width, height):
     """Add a horizontal bar to the canvas"""
-    canvas[:height, start - 1] = 22
-    canvas[height, start : start + width] = 20
-    canvas[:height, start + width] = 22
+    canvas[:height, start] = 22
+    canvas[height, start + 1 : start + 1 + width] = 20
+    canvas[:height, start + 1 + width] = 22
     return canvas
 
 
