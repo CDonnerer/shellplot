@@ -26,7 +26,7 @@ PALETTE = {
 
 
 def draw(canvas, x_axis, y_axis, legend=None):
-    plt_lines = _draw_plot(canvas)
+    plt_lines = _draw_canvas(canvas)
 
     label_len = max([len(str(val)) for (t, val) in y_axis.tick_labels()])
     l_pad = label_len + 1
@@ -74,7 +74,7 @@ def _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines):
     return plt_str
 
 
-def _draw_plot(canvas):
+def _draw_canvas(canvas):
 
     plt_lines = list()
 

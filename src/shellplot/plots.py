@@ -7,6 +7,8 @@ from shellplot.axis import Axis
 from shellplot.drawing import draw
 from shellplot.utils import numpy_2d, remove_any_nan
 
+__all__ = ["plot", "hist", "barh", "boxplot"]
+
 DISPLAY_X = 70
 DISPLAY_Y = 25
 
