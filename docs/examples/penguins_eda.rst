@@ -70,6 +70,40 @@ plot the distribution of penguin body masses::
                                         body_mass_g
 
 
+Boxplots provide a nice way to visualize multiple distributions at once::
+
+
+        >>> df.boxplot(column=["bill_length_mm", "bill_depth_mm"])
+
+                       |
+                       |
+                       |     ---
+                       ||   | | |   |
+                       ||   | | |   |
+                       ||   | | |   |
+          bill_depth_mm┤|---| | |---|
+                       ||   | | |   |
+                       ||   | | |   |
+                       ||   | | |   |
+                       |     ---
+                       |
+                       |
+                       |
+                       |                                        ------------
+                       |                            |          |      |     |               |
+                       |                            |          |      |     |               |
+                       |                            |          |      |     |               |
+         bill_length_mm┤                            |----------|      |     |---------------|
+                       |                            |          |      |     |               |
+                       |                            |          |      |     |               |
+                       |                            |          |      |     |               |
+                       |                                        ------------
+                       |
+                       |
+                       └┬------------┬------------┬-------------┬------------┬------------┬---
+                        13           22           31            40           49           58
+
+
 For categorical features, bar plots can be useful. We can check which penguin
 species are found on which islands in the data::
 
@@ -105,8 +139,48 @@ species are found on which islands in the data::
 Multivariate plots
 ------------------------------
 
+Next, we'll have a look at how features vary across certain categories in the
+data.
 
-Let's start by looking at bill and flipper lengths vary across species::
+For example, we can analyse how the distribution of bill lengths varies across
+the three penguin species::
+
+
+        >>> df.boxplot(column=["bill_length_mm"], by="species")
+
+               species
+                  |
+                  |
+                  |                                  ---------
+                  |                      |          |    |    |                        |
+            Gentoo┤                      |----------|    |    |------------------------|
+                  |                      |          |    |    |                        |
+                  |                                  ---------
+                  |
+                  |
+                  |
+                  |                                    -----------
+                  |                      |            |       |   |                |
+         Chinstrap┤                      |------------|       |   |----------------|
+                  |                      |            |       |   |                |
+                  |                                    -----------
+                  |
+                  |
+                  |
+                  |             ---------
+                  ||           |    |    |           |
+            Adelie┤|-----------|    |    |-----------|
+                  ||           |    |    |           |
+                  |             ---------
+                  |
+                  |
+                  └┬--------------┬--------------┬-------------┬--------------┬----------
+                   32             38             44            50             56
+                                              bill_length_mm
+
+
+We can also explore combinations of features. Let's start by looking at both the
+bill and flipper lengths vary across species::
 
 
         >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])

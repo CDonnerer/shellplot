@@ -14,10 +14,11 @@ df[["species", "island"]].value_counts().plot.barh()
 
 df.boxplot(column=["bill_length_mm", "bill_depth_mm"])
 
-df.boxplot(column=["flipper_length_mm"], by="species")
+df.boxplot(column=["bill_length_mm"], by="species")
 
-df.dropna().plot("bill_depth_mm", "body_mass_g", color="species")
+df.dropna().plot("bill_length_mm", "flipper_length_mm", color="species")
 
-df.loc[df["species"] == "Adelie"].dropna().plot(
-    "bill_depth_mm", "body_mass_g", color="island"
-)
+
+# df.loc[df["species"] == "Adelie"].dropna().plot(
+#     "bill_depth_mm", "body_mass_g", color="island"
+# )
