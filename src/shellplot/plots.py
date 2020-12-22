@@ -34,6 +34,7 @@ def barh(*args, **kwargs):
 def boxplot(*args, **kwargs):
     plt_str = _boxplot(*args, **kwargs)
     print(plt_str)
+    return plt_str
 
 
 # -----------------------------------------------------------------------------
@@ -137,24 +138,37 @@ def _barh(x, labels=None, x_title=None, y_title=None):
 
 
 def _boxplot(x, **kwargs):
-    quantiles = np.quantile(x, q=[0, 0.25, 0.5, 0.75, 1.0])
+
+    quantiles = np.array([np.quantile(dist, q=[0, 0.25, 0.5, 0.75, 1.0]) for dist in x])
 
     x_axis = Axis(DISPLAY_X)
     y_axis = Axis(DISPLAY_Y)
+
+    x_axis = x_axis.fit(np.array([quantiles.min(), quantiles.max()]))
+
     quantiles_scaled = x_axis.fit_transform(quantiles)
-    y_axis = y_axis.fit([0, 1])
-    y_lims = y_axis.transform(np.array([0.25, 0.50, 0.75]))
+
+    y_axis = y_axis.fit([0, len(x)])
+    y_lims = y_axis.transform(
+        np.array([0.2, 0.50, 0.8]) + np.arange(0, len(x), 1)[np.newaxis].T
+    )
 
     canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y))
-    for ii in [0, 1, 3, 4]:
-        canvas[quantiles_scaled[ii], y_lims[0] : y_lims[2]] = 20
-    canvas[quantiles_scaled[2], y_lims[0] : y_lims[2]] = 24
 
-    canvas[quantiles_scaled[0] + 1 : quantiles_scaled[1], y_lims[1]] = 22
-    canvas[quantiles_scaled[3] + 1 : quantiles_scaled[4], y_lims[1]] = 22
+    for ii in range(len(x)):
+        quants = quantiles_scaled[ii, :]
+        lims = y_lims[ii, :]
 
-    canvas[quantiles_scaled[1] + 1 : quantiles_scaled[3], y_lims[2]] = 22
-    canvas[quantiles_scaled[1] + 1 : quantiles_scaled[3], y_lims[0]] = 22
+        for jj in [0, 1, 3, 4]:
+            canvas[quants[jj], lims[0] + 1 : lims[2]] = 20
+
+        canvas[quants[2], lims[0] + 1 : lims[2]] = 20
+
+        canvas[quants[0] + 1 : quants[1], lims[1]] = 22
+        canvas[quants[3] + 1 : quants[4], lims[1]] = 22
+
+        canvas[quants[1] + 1 : quants[3], lims[2]] = 22
+        canvas[quants[1] + 1 : quants[3], lims[0]] = 22
 
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
 
