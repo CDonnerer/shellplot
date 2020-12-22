@@ -25,7 +25,7 @@ PALETTE = {
 
 
 def draw(canvas, x_axis, y_axis, legend=None):
-    plt_lines = _draw_plot(canvas)
+    plt_lines = _draw_canvas(canvas)
 
     label_len = max([len(str(val)) for (t, val) in y_axis.tick_labels()])
     l_pad = label_len + 1
@@ -73,7 +73,7 @@ def _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines):
     return plt_str
 
 
-def _draw_plot(canvas):
+def _draw_canvas(canvas):
 
     plt_lines = list()
 
@@ -101,16 +101,18 @@ def _draw_y_axis(canvas, y_axis, l_pad):
         y_lines.append(ax_line)
 
     if y_axis.title is not None:
-        y_lines.insert(0, y_axis.title)
+        title_pad = l_pad - len(y_axis.title) // 2
+        title_str = " " * title_pad + y_axis.title
+        y_lines.insert(0, title_str)
     return y_lines
 
 
 def _draw_x_axis(canvas, x_axis, l_pad):
     x_ticks = x_axis.tick_labels()
 
-    upper_ax = " " * l_pad
-    lower_ax = " " * l_pad
-    marker = "├"
+    upper_ax = " " * l_pad + "└"
+    lower_ax = " " * l_pad + " "
+    marker = "┬"
 
     for j in range(canvas.shape[0]):
         if len(x_ticks) > 0 and j == x_ticks[0][0]:
@@ -119,7 +121,6 @@ def _draw_x_axis(canvas, x_axis, l_pad):
             lower_ax += label + " " * 20
 
             upper_ax += marker
-            marker = "┬"
             x_ticks.pop(0)
         else:
             upper_ax += "-"

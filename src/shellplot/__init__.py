@@ -16,5 +16,5 @@ finally:
 # -----------------------------------------------------------------------------
 
 from shellplot import pandas_api  # noqa: F401
-from shellplot.plots import barh, hist, plot  # noqa: F401
+from shellplot.plots import barh, boxplot, hist, plot  # noqa: F401
 from shellplot.utils import load_dataset  # noqa: F401

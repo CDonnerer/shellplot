@@ -7,4 +7,11 @@
     https://pytest.org/latest/plugins.html
 """
 
-# import pytest
+import pytest
+
+from shellplot.utils import load_dataset
+
+
+@pytest.fixture
+def df_penguins():
+    return load_dataset("penguins")

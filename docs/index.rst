@@ -12,35 +12,35 @@ As shellplot replicates the `matplotlib`_ API, it's as easy as::
         >>> df = plt.load_dataset("penguins")
         >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
-          flipper_length_mm
-              |
-           237┤
-              |
-              |                                        o  o   oo    o o         o
-              |                                         ooo o  o        o
-              |                                          ooooo
-           223┤                                o oooo ooo  oo   o
-              |                            o o ooo oo  oo oo o    o
-              |                           oo  oo ooooo  oo o
-              |                      o   o o  ooooo o  oo o
-           209┤                        oo oo + oooo o oo*   *  *
-              |                      +   o oo  o       o       *        *
-              |                       +                o *  **   **
-              |          +          + +++  *             * *** *    *
-              |        +     ++++    + +++++   * +  * *   ** * **
-           195┤          +++  + +++ +++++++  +  ** * *  * * * *
-              |       + ++  +++ +++++++++  +   ** **   * *  **
-              |  +  +  ++++++ ++++++ ++ +       ****      *
-              |      + ++++++ ++ ++ +*   * *     * *          *
-              |       +    + ++    + ++
-           181┤            + +++++  +   +*                                   *
-              |    +         +    + +            *
-              |               +                                                      + Adelie
-              |               +                                                      * Chinstrap
-           167┤                                                                      o Gentoo
-              ├------------┬-------------┬-------------┬-------------┬-------------┬
-              31           37            43            49            55            61
-                                          bill_length_mm
+        flipper_length_mm
+         232┤                                         o  o   o o    o o          o
+            |                                          ooo o   o        o
+            |                                           o ooo
+            |                                 o         oooo
+            |                            o   oo o oo ooo oooo   o
+            |                            o  o  o o o  o  oo  o    o
+         217┤                             o     oo  o  oo  o
+            |                      o   ooo  oooooooooo   o
+            |                                oo o  o   o
+            |                      + ooooooo ooooo o oo*   *  *
+            |                                o                *         *
+            |                      +                 o  *  **   * *
+         202┤         +             +    *                ** **     *
+            |      +      ++++   ++  ++       *    * *  **** *
+            |                  +++    ++++ +  *+         ** *****
+            |        +++++ ++ +++++++ + +      * * *   *** * **
+            |       + +   +  ++ +  ++++  +    *+***   *
+            |+   + ++ ++++ +++++++++          ****        *
+         187┤      + + + +  + +++ +*   * *      *            *
+            |     ++  + +++++ + +  +              *
+            |           +  ++ +   ++   *                                     *
+            |              +  +   +   +
+            |   +         +    + +              *                                  + Adelie
+            |              +                                                       * Chinstrap
+         172┤               +                                                      o Gentoo
+            └┬--------------┬--------------┬-------------┬--------------┬----------
+             32             38             44            50             56
+                                        bill_length_mm
 
 
 

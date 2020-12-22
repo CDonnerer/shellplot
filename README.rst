@@ -45,36 +45,35 @@ Shellplot loosely replicates the `matplotlib`_ API, it's as easy as::
         >>> df = plt.load_dataset("penguins")
         >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
-
         flipper_length_mm
-         232.0┤                                         o  o   o o    o o          o
-              |                                          ooo o   o        o
-              |                                           o ooo
-              |                                 o         oooo
-              |                            o   oo o oo ooo oooo   o
-              |                            o  o  o o o  o  oo  o    o
-         217.0┤                             o o   oo oo  oo  o
-              |                      o   ooo  oooooooooo   o
-              |                                oo o  o   o
-              |                      + ooooooo ooooo o oo*   *  *
-              |                                o                *         *
-              |                      +                 o  *  **   * *
-         202.0┤         +             +    *                ** **     *
-              |      +      ++++   ++  ++       *    * *  **** *
-              |                  +++    ++++ +  *+         ** *****
-              |     +  +++++ ++ +++++++ + +      * * *   *** * **
-              |       + +   +  ++ +  ++++  +    *+***   *
-              |+   + ++ ++++ +++++++++  +       ****        *
-         187.0┤      + + + + ++ +++ +*   * *      *            *
-              |     ++  + +++++ + +  +              *
-              |           +  ++ +   ++   *                                     *
-              |              +  +   +   +
-              |   +         +    + +              *                                  + Adelie
-              |              +                                                       * Chinstrap
-         172.0┤               +                                                      o Gentoo
-              ├--------------┬--------------┬-------------┬--------------┬----------
-              32.0           38.0           44.0          50.0           56.0
-                                          bill_length_mm
+         232┤                                         o  o   o o    o o          o
+            |                                          ooo o   o        o
+            |                                           o ooo
+            |                                 o         oooo
+            |                            o   oo o oo ooo oooo   o
+            |                            o  o  o o o  o  oo  o    o
+         217┤                             o o   oo oo  oo  o
+            |                      o   ooo  oooooooooo   o
+            |                                oo o  o   o
+            |                      + ooooooo ooooo o oo*   *  *
+            |                                o                *         *
+            |                      +                 o  *  **   * *
+         202┤         +             +    *                ** **     *
+            |      +      ++++   ++  ++       *    * *  **** *
+            |                  +++    ++++ +  *+         ** *****
+            |     +  +++++ ++ +++++++ + +      * * *   *** * **
+            |       + +   +  ++ +  ++++  +    *+***   *
+            |+   + ++ ++++ +++++++++  +       ****        *
+         187┤      + + + + ++ +++ +*   * *      *            *
+            |     ++  + +++++ + +  +              *
+            |           +  ++ +   ++   *                                     *
+            |              +  +   +   +
+            |   +         +    + +              *                                  + Adelie
+            |              +                                                       * Chinstrap
+         172┤               +                                                      o Gentoo
+            └┬--------------┬--------------┬-------------┬--------------┬----------
+             32             38             44            50             56
+                                        bill_length_mm
 
 
 Shellplot also provides a convenient integration with `pandas`_. Simply set the
@@ -95,6 +94,6 @@ information on PyScaffold see https://pyscaffold.org/.
 
 
 .. _documentation: https://shellplot.readthedocs.io/en/latest/
-.. _examples:  https://shellplot.readthedocs.io/en/latest/examples.html
+.. _examples: https://shellplot.readthedocs.io/en/latest/examples/index.html
 .. _matplotlib: https://matplotlib.org/contents.html#
 .. _pandas: https://pandas.pydata.org/
