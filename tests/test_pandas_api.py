@@ -1,8 +1,9 @@
 """Testing the pandas backend of shellplot
 """
+import pytest
+
 import numpy as np
 import pandas as pd
-import pytest
 
 
 def set_shellplot_plotting_backend():
@@ -60,10 +61,6 @@ def test_plot_frame(random_frame):
 
 
 def test_boxplot_frame(random_frame):
-    # import pdb
-    #
-    # pdb.set_trace()
-
     random_frame.boxplot(column=["x", "y"])
 
 

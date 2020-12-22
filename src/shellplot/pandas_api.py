@@ -96,14 +96,6 @@ def boxplot_frame(data, *args, **kwargs):
 
 
 def boxplot_frame_groupby(grouped, **kwargs):
-    # labels = list()
-    # data = list()
-    #
-    # for group, df in grouped:
-    #     labels.append(group)
-    #     column = kwargs.get("column", df.columns)
-    #     data.append(df[column])
-    # return plt.boxplot(data, labels=labels, **kwargs)
     raise NotImplementedError
 
 
