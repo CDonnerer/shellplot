@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
 import pytest
+
+import numpy as np
 
 from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, _hist, _plot
 

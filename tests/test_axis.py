@@ -1,7 +1,8 @@
 """Testing axis class
 """
-import numpy as np
 import pytest
+
+import numpy as np
 
 from shellplot.axis import Axis
 
