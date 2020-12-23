@@ -27,11 +27,9 @@ PALETTE = {
 def draw(canvas, x_axis, y_axis, legend=None):
     plt_lines = _draw_canvas(canvas)
 
-    label_len = max([len(str(val)) for (t, val) in y_axis.tick_labels()])
-    l_pad = label_len + 1
-
-    y_lines = _draw_y_axis(canvas, y_axis, l_pad)
-    x_lines = _draw_x_axis(canvas, x_axis, l_pad)
+    left_pad = max([len(str(val)) for (t, val) in y_axis.tick_labels()]) + 1
+    y_lines = _draw_y_axis(y_axis, left_pad)
+    x_lines = _draw_x_axis(x_axis, left_pad)
 
     if legend is not None:
         legend_lines = _draw_legend(legend)
@@ -85,40 +83,38 @@ def _draw_canvas(canvas):
     return plt_lines
 
 
-def _draw_y_axis(canvas, y_axis, l_pad):
+def _draw_y_axis(y_axis, left_pad):
     y_lines = list()
 
     y_ticks = y_axis.tick_labels()
 
-    for i in reversed(range(canvas.shape[1])):
+    for i in reversed(range(y_axis.display_max + 1)):
         ax_line = ""
         if len(y_ticks) > 0 and i == y_ticks[-1][0]:
-            ax_line += f"{str(y_ticks[-1][1]).rjust(l_pad)}┤"
+            ax_line += f"{str(y_ticks[-1][1]).rjust(left_pad)}┤"
             y_ticks.pop(-1)
         else:
-            ax_line += " " * l_pad + "|"
+            ax_line += " " * left_pad + "|"
         y_lines.append(ax_line)
 
     if y_axis.label is not None:
-        label_pad = l_pad - len(y_axis.label) // 2
+        label_pad = left_pad - len(y_axis.label) // 2
         label_str = " " * label_pad + y_axis.label
         y_lines.insert(0, label_str)
     return y_lines
 
 
-def _draw_x_axis(canvas, x_axis, l_pad):
+def _draw_x_axis(x_axis, left_pad):
     x_ticks = x_axis.tick_labels()
 
-    upper_ax = " " * l_pad + "└"
-    lower_ax = " " * l_pad + " "
+    upper_ax = " " * left_pad + "└"
+    lower_ax = " " * left_pad + " "
     marker = "┬"
 
-    for j in range(canvas.shape[0]):
+    for j in range(x_axis.display_max + 1):
         if len(x_ticks) > 0 and j == x_ticks[0][0]:
             lower_ax = lower_ax[: len(upper_ax)]
-            label = str(round(x_ticks[0][1], 2))  # why is there a round?
-            lower_ax += label + " " * 50
-
+            lower_ax += str(x_ticks[0][1]) + " " * 50
             upper_ax += marker
             x_ticks.pop(0)
         else:
@@ -127,8 +123,8 @@ def _draw_x_axis(canvas, x_axis, l_pad):
     ax_lines = [upper_ax + "\n", lower_ax[: len(upper_ax)] + "\n"]
 
     if x_axis.label is not None:
-        label_pad = canvas.shape[0] // 2 - len(x_axis.label) // 2
-        label_str = " " * (l_pad + label_pad) + x_axis.label
+        label_pad = (x_axis.display_max + 1) // 2 - len(x_axis.label) // 2
+        label_str = " " * (left_pad + label_pad) + x_axis.label
         ax_lines.append(label_str)
 
     return ax_lines
