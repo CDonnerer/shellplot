@@ -90,6 +90,7 @@ def _series_line(data, **kwargs):
     x_col = kwargs.pop("x")
     y_col = kwargs.pop("y")
 
+    # why do we get both x and y here?
     if x_col is not None:
         data = data[x_col]
     if y_col is not None:
