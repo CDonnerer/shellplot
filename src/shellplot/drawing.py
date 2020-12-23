@@ -118,7 +118,7 @@ def _draw_x_axis(canvas, x_axis, l_pad):
         if len(x_ticks) > 0 and j == x_ticks[0][0]:
             lower_ax = lower_ax[: len(upper_ax)]
             label = str(round(x_ticks[0][1], 2))
-            lower_ax += label + " " * 20
+            lower_ax += label + " " * 50
 
             upper_ax += marker
             x_ticks.pop(0)
@@ -128,7 +128,7 @@ def _draw_x_axis(canvas, x_axis, l_pad):
     ax_lines = [upper_ax + "\n", lower_ax + "\n"]
 
     if x_axis.label is not None:
-        label_pad = int(canvas.shape[0] / 2 - len(x_axis.label) / 2)
+        label_pad = canvas.shape[0] // 2 - len(x_axis.label) // 2
         label_str = " " * (l_pad + label_pad) + x_axis.label
         ax_lines.append(label_str)
 

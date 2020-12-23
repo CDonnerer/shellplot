@@ -32,8 +32,8 @@ def hist_series(data, **kwargs):
 
 
 def boxplot_frame(data, *args, **kwargs):
-    column = kwargs.get("column", data.columns)
-    by = kwargs.get("by")
+    column = kwargs.pop("column", data.columns)
+    by = kwargs.pop("by")
 
     if by is not None:
         df = data.pivot(columns=by, values=column)
@@ -98,9 +98,9 @@ def _series_boxplot(data, *args, **kwargs):
 
 
 def _plot_frame(data, **kwargs):
-    x_col = kwargs.get("x")
-    y_col = kwargs.get("y")
-    color = kwargs.get("color", None)
+    x_col = kwargs.pop("x")
+    y_col = kwargs.pop("y")
+    color = kwargs.pop("color", None)
 
     if x_col is None or y_col is None:
         raise ValueError("Please provide both x, y column names")
@@ -111,10 +111,4 @@ def _plot_frame(data, **kwargs):
     s_x = data[x_col]
     s_y = data[y_col]
 
-    return plt.plot(
-        x=s_x.values,
-        y=s_y.values,
-        x_title=s_x.name,
-        y_title=s_y.name,
-        color=color,
-    )
+    return plt.plot(x=s_x, y=s_y, color=color, **kwargs)

@@ -9,9 +9,6 @@ from shellplot.utils import numpy_2d, remove_any_nan
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
-DISPLAY_X = 70
-DISPLAY_Y = 25
-
 
 # -----------------------------------------------------------------------------
 # Exposed functions that directly print the plot
@@ -44,19 +41,24 @@ def boxplot(*args, **kwargs):
 
 
 def _init_figure(
-    figsize=(70, 25),
+    figsize=None,
     xlim=None,
     ylim=None,
     xticks=None,
     yticks=None,
     xlabel=None,
     ylabel=None,
+    **kwargs
 ):
     """Initialise a new figure.
 
     TODO:
         - This could be a class to hold a figure state?
+        - add ticks
+        - add tick labels
     """
+    if figsize is None:
+        figsize = (70, 25)
 
     x_axis = Axis(figsize[0], label=xlabel, limits=xlim)
     y_axis = Axis(figsize[1], label=ylabel, limits=ylim)
@@ -75,11 +77,9 @@ def _plot(x, y, color=None, **kwargs):
             return None
 
     if kwargs.get("xlabel") is None:
-        xlabel = get_name(x)
-        kwargs.update({"xlabel": xlabel})
+        kwargs.update({"xlabel": get_name(x)})
     if kwargs.get("ylabel") is None:
-        ylabel = get_name(y)
-        kwargs.update({"ylabel": ylabel})
+        kwargs.update({"ylabel": get_name(y)})
 
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
@@ -91,10 +91,11 @@ def _plot(x, y, color=None, **kwargs):
     x_scaled, y_scaled = x_scaled[within_display], y_scaled[within_display]
 
     if color is not None:
-        values = np.unique(color)
+        color_scaled = color.to_numpy()[within_display]
+        values = np.unique(color_scaled)
 
         for ii, val in enumerate(values):
-            mask = val == color
+            mask = val == color_scaled
             canvas[x_scaled[mask], y_scaled[mask]] = ii + 1
 
         legend = {ii + 1: val for ii, val in enumerate(values)}
@@ -147,7 +148,7 @@ def _barh(x, labels=None, **kwargs):
         y_axis.labels = labels
 
     bin = 0
-    bin_width = int((DISPLAY_Y - 1) / len(x)) - 1
+    bin_width = y_axis.display_max // len(x) - 1
 
     for val in x_scaled:
         canvas = _add_hbar(canvas, bin, bin_width, val)
