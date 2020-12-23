@@ -28,7 +28,7 @@ def plot(data, kind, **kwargs):
 
 
 def hist_series(data, **kwargs):
-    return plt.hist(x=data.values, x_title=data.name, **kwargs)
+    return plt.hist(x=data, **kwargs)
 
 
 def boxplot_frame(data, *args, **kwargs):
@@ -38,10 +38,9 @@ def boxplot_frame(data, *args, **kwargs):
     if by is not None:
         df = data.pivot(columns=by, values=column)
 
-        x_title = df.columns.get_level_values(0)[0]
-        y_title = by
+        xlabel = df.columns.get_level_values(0)[0]
         labels = df.columns.get_level_values(1)
-        kwargs.update({"x_title": x_title, "y_title": y_title, "labels": labels})
+        kwargs.update({"xlabel": xlabel, "ylabel": by, "labels": labels})
     else:
         df = data[column]
         kwargs.update({"labels": df.columns})
@@ -96,7 +95,7 @@ def _series_line(data, **kwargs):
 
 
 def _series_boxplot(data, *args, **kwargs):
-    return plt.boxplot(data, labels=np.array([data.name]))
+    return plt.boxplot(data, labels=np.array([data.name]), **kwargs)
 
 
 def _plot_frame(data, **kwargs):

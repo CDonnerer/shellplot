@@ -60,7 +60,6 @@ def _pad_lines(lines, ref_lines):
 
 def _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines):
     plt_str = "\n"
-
     plt_lines = _pad_lines(plt_lines, y_lines)
     legend_lines = _pad_lines(legend_lines, y_lines)
 
@@ -117,7 +116,7 @@ def _draw_x_axis(canvas, x_axis, l_pad):
     for j in range(canvas.shape[0]):
         if len(x_ticks) > 0 and j == x_ticks[0][0]:
             lower_ax = lower_ax[: len(upper_ax)]
-            label = str(round(x_ticks[0][1], 2))
+            label = str(round(x_ticks[0][1], 2))  # why is there a round?
             lower_ax += label + " " * 50
 
             upper_ax += marker
@@ -125,7 +124,7 @@ def _draw_x_axis(canvas, x_axis, l_pad):
         else:
             upper_ax += "-"
 
-    ax_lines = [upper_ax + "\n", lower_ax + "\n"]
+    ax_lines = [upper_ax + "\n", lower_ax[: len(upper_ax)] + "\n"]
 
     if x_axis.label is not None:
         label_pad = canvas.shape[0] // 2 - len(x_axis.label) // 2

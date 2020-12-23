@@ -80,3 +80,13 @@ def numpy_2d(x):
         return x
     else:
         return None
+
+
+def get_label(x):
+    """Try to get names out of array-like inputs"""
+    if isinstance(x, pd.Series):
+        return x.name
+    elif isinstance(x, pd.DataFrame):
+        return x.columns
+    else:
+        return None

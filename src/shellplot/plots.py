@@ -1,11 +1,10 @@
 """Shellplot plots
 """
 import numpy as np
-import pandas as pd
 
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import numpy_2d, remove_any_nan
+from shellplot.utils import get_label, numpy_2d, remove_any_nan
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -113,7 +112,7 @@ def _init_figure(
         - add tick labels
     """
     if figsize is None:
-        figsize = (70, 25)
+        figsize = (70, 25)  # this should go somewhere else
 
     x_axis = Axis(figsize[0], label=xlabel, limits=xlim)
     y_axis = Axis(figsize[1], label=ylabel, limits=ylim)
@@ -125,16 +124,10 @@ def _init_figure(
 def _plot(x, y, color=None, **kwargs):
     """Scatterplot"""
 
-    def get_name(x):
-        if isinstance(x, pd.Series):
-            return x.name
-        else:
-            return None
-
     if kwargs.get("xlabel") is None:
-        kwargs.update({"xlabel": get_name(x)})
+        kwargs.update({"xlabel": get_label(x)})
     if kwargs.get("ylabel") is None:
-        kwargs.update({"ylabel": get_name(y)})
+        kwargs.update({"ylabel": get_label(y)})
 
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
@@ -167,7 +160,10 @@ def _hist(x, bins=10, **kwargs):
 
     counts, bin_edges = np.histogram(x, bins)
 
-    kwargs.update({"ylabel": "counts"})
+    if kwargs.get("xlabel") is None:
+        kwargs.update({"xlabel": get_label(x)})
+    if kwargs.get("ylabel") is None:
+        kwargs.update({"ylabel": "counts"})
 
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
@@ -191,6 +187,7 @@ def _hist(x, bins=10, **kwargs):
 def _barh(x, labels=None, **kwargs):
     """Horizontal bar plot"""
 
+    kwargs.update({"xlabel": get_label(x)})
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
     x_axis.limits = (0, max(x))
@@ -226,7 +223,6 @@ def _boxplot(x, labels=None, **kwargs):
     quantiles = np.array(
         [np.quantile(dist[dist.mask == 0], q=[0, 0.25, 0.5, 0.75, 1.0]) for dist in x]
     )
-
     quantiles_scaled = x_axis.fit_transform(quantiles)
 
     y_axis = y_axis.fit(np.array([0, len(x)]))
@@ -268,7 +264,7 @@ def _add_hbar(canvas, start, width, height):
 
 def _add_box_and_whiskers(canvas, quantiles, limits):
     """Add a box and whiskers to the canvas"""
-    for jj in [0, 1, 2, 3, 4]:
+    for jj in range(5):
         canvas[quantiles[jj], limits[0] + 1 : limits[2]] = 20
 
     canvas[quantiles[0] + 1 : quantiles[1], limits[1]] = 22
