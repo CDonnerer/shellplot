@@ -78,8 +78,8 @@ def _plot_series(data, kind, *args, **kwargs):
 
 
 def _series_barh(data, **kwargs):
-
     x_col = kwargs.pop("x")
+
     if x_col is not None:
         data = data[x_col]
 
@@ -88,8 +88,12 @@ def _series_barh(data, **kwargs):
 
 def _series_line(data, **kwargs):
     x_col = kwargs.pop("x")
+    y_col = kwargs.pop("y")
+
     if x_col is not None:
         data = data[x_col]
+    if y_col is not None:
+        data = data[y_col]
 
     return plt.plot(x=data.index, y=data, **kwargs)
 

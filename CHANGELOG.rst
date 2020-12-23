@@ -3,6 +3,11 @@ Changelog
 =========
 
 
+Version 0.1.4
+-------------
+- Fixed bug in x-axis drawing, spurious rounding
+
+
 Version 0.1.3
 -------------
 - Fixed bug in x-axis drawing, now tick marks are aligned with plot
