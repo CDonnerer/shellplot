@@ -16,11 +16,66 @@ __all__ = ["plot", "hist", "barh", "boxplot"]
 
 
 def plot(*args, **kwargs):
+    """Plot y versus x as scatter.
+
+    Parameters
+    ----------
+    x : array
+    y : array
+    figsize : a tuple (width, height) in inches
+        Size of a figure object.
+    xticks : sequence
+        Values to use for the xticks.
+    yticks : sequence
+        Values to use for the yticks.
+    xlim : 2-tuple/list
+        Set the x limits.
+    ylim : 2-tuple/list
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+
+    Returns
+    -------
+    type
+        Description of returned object.
+
+    """
     plt_str = _plot(*args, **kwargs)
     print(plt_str)
 
 
 def hist(*args, **kwargs):
+    """Plot a histogram of x
+
+    Parameters
+    ----------
+    x : array
+    bins : int
+        Number of bins in histogram
+    figsize : a tuple (width, height) in inches
+        Size of a figure object.
+    xticks : sequence
+        Values to use for the xticks.
+    yticks : sequence
+        Values to use for the yticks.
+    xlim : 2-tuple/list
+        Set the x limits.
+    ylim : 2-tuple/list
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+
+    Returns
+    -------
+    type
+        Description of returned object.
+
+    """
     plt_str = _hist(*args, **kwargs)
     print(plt_str)
 

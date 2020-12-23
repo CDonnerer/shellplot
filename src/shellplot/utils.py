@@ -6,6 +6,28 @@ import os
 import numpy as np
 import pandas as pd
 
+__all__ = ["load_dataset"]
+
+
+def load_dataset(name: str) -> pd.DataFrame:
+    """Load standard dataset from shellplot library
+
+    Parameters
+    ----------
+    name : str
+        Name of the dataset. Available options are `penguins`
+
+    Returns
+    -------
+    pd.DataFrame
+        Pandas dataframe of dataset
+
+    """
+    module_path = os.path.dirname(__file__)
+    dataset_path = os.path.join(module_path, "datasets", f"{name}.csv")
+
+    return pd.read_csv(dataset_path)
+
 
 def tolerance_round(x, tol=1e-3):
     error = 1.0
@@ -43,13 +65,6 @@ def remove_any_nan(x, y):
     """Given two np.ndarray, remove indeces where any is nan"""
     is_any_nan = np.isnan(x) | np.isnan(y)
     return x[~is_any_nan], y[~is_any_nan]
-
-
-def load_dataset(name):
-    module_path = os.path.dirname(__file__)
-    dataset_path = os.path.join(module_path, "datasets", f"{name}.csv")
-
-    return pd.read_csv(dataset_path)
 
 
 def numpy_2d(x):
