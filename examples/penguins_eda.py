@@ -8,9 +8,9 @@ pd.set_option("plotting.backend", "shellplot")
 df = plt.load_dataset("penguins")
 
 
-df["body_mass_g"].hist()
+df["body_mass_g"].hist(figsize=(60, 20))
 
-df[["species", "island"]].value_counts().plot.barh()
+df[["island", "species"]].value_counts().plot.barh(figsize=(30, 30))
 
 df.boxplot(column=["bill_length_mm", "bill_depth_mm"])
 

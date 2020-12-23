@@ -22,7 +22,7 @@ def plot(data, kind, **kwargs):
     # TODO: check kind
 
     if isinstance(data, pd.Series):
-        return _plot_series(data, kind)
+        return _plot_series(data, kind, **kwargs)
     else:
         return _plot_frame(data, **kwargs)
 
@@ -79,18 +79,20 @@ def _plot_series(data, kind, *args, **kwargs):
 
 
 def _series_barh(data, **kwargs):
-    return plt.barh(
-        x=data.values, labels=data.index, x_title=data.name, y_title=data.index.name
-    )
+
+    x_col = kwargs.pop("x")
+    if x_col is not None:
+        data = data[x_col]
+
+    return plt.barh(x=data, labels=data.index, **kwargs)
 
 
 def _series_line(data, **kwargs):
-    return plt.plot(
-        x=data.index.values,
-        y=data.values,
-        x_title=data.index.name,
-        y_title=data.name,
-    )
+    x_col = kwargs.pop("x")
+    if x_col is not None:
+        data = data[x_col]
+
+    return plt.plot(x=data.index, y=data, **kwargs)
 
 
 def _series_boxplot(data, *args, **kwargs):
