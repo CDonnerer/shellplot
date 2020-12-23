@@ -42,6 +42,18 @@ def test_boxplot():
 # -----------------------------------------------------------------------------
 
 
+def test_plot_figsize():
+    x = np.arange(-3, 3, 0.01)
+    y = np.cos(x) ** 2
+    plt_str = _plot(x, y, figsize=(60, 15))
+    assert isinstance(plt_str, str)
+
+
+# -----------------------------------------------------------------------------
+# Unit tests
+# -----------------------------------------------------------------------------
+
+
 @pytest.fixture
 def expected_canvas_vbar():
     return np.array(

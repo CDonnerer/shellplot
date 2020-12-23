@@ -100,10 +100,10 @@ def _draw_y_axis(canvas, y_axis, l_pad):
             ax_line += " " * l_pad + "|"
         y_lines.append(ax_line)
 
-    if y_axis.title is not None:
-        title_pad = l_pad - len(y_axis.title) // 2
-        title_str = " " * title_pad + y_axis.title
-        y_lines.insert(0, title_str)
+    if y_axis.label is not None:
+        label_pad = l_pad - len(y_axis.label) // 2
+        label_str = " " * label_pad + y_axis.label
+        y_lines.insert(0, label_str)
     return y_lines
 
 
@@ -127,9 +127,9 @@ def _draw_x_axis(canvas, x_axis, l_pad):
 
     ax_lines = [upper_ax + "\n", lower_ax + "\n"]
 
-    if x_axis.title is not None:
-        title_pad = int(canvas.shape[0] / 2 - len(x_axis.title) / 2)
-        title_str = " " * (l_pad + title_pad) + x_axis.title
-        ax_lines.append(title_str)
+    if x_axis.label is not None:
+        label_pad = int(canvas.shape[0] / 2 - len(x_axis.label) / 2)
+        label_str = " " * (l_pad + label_pad) + x_axis.label
+        ax_lines.append(label_str)
 
     return ax_lines
