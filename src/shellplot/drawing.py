@@ -5,6 +5,7 @@ converts them to strings. Please note that drawing is entirely agnostic to the
 type of plot.
 """
 
+from typing import List
 
 PALETTE = {
     # empty space
@@ -24,7 +25,26 @@ PALETTE = {
 }
 
 
-def draw(canvas, x_axis, y_axis, legend=None):
+def draw(canvas, x_axis, y_axis, legend=None) -> str:
+    """Draw figure from plot elements
+
+    Parameters
+    ----------
+    canvas : np.ndarray
+        The data to be drawn
+    x_axis : shellplot.axis.Axis
+        Fitted x-axis
+    y_axis : shellplot.axis.Axis
+        Fitted y-axis
+    legend : dict[str, str], optional
+        Legend of the plot
+
+    Returns
+    -------
+    str
+        The drawn figure
+
+    """
     plt_lines = _draw_canvas(canvas)
 
     left_pad = max([len(str(val)) for (t, val) in y_axis.tick_labels()]) + 1
@@ -39,39 +59,12 @@ def draw(canvas, x_axis, y_axis, legend=None):
     return _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines)
 
 
-def _draw_legend(legend):
-    legend_lines = list()
-
-    for marker, name in legend.items():
-        legend_str = f"{PALETTE[marker]} {name}"
-        legend_lines.append(legend_str)
-    return legend_lines
+# ------------------------------------------------------------------------------
+# Drawing functions for individual plot elements (canvas, x-axis, y-axis, legend)
+# ------------------------------------------------------------------------------
 
 
-def _pad_lines(lines, ref_lines):
-    if lines is None:
-        lines = list()
-
-    empty_pad = len(ref_lines) - len(lines)
-    return [""] * empty_pad + lines
-
-
-def _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines):
-    plt_str = "\n"
-    plt_lines = _pad_lines(plt_lines, y_lines)
-    legend_lines = _pad_lines(legend_lines, y_lines)
-
-    for ax, plt, leg in zip(y_lines, plt_lines, legend_lines):
-        plt_str += ax + plt + leg + "\n"
-
-    for ax in x_lines:
-        plt_str += ax
-
-    return plt_str
-
-
-def _draw_canvas(canvas):
-
+def _draw_canvas(canvas) -> List[str]:
     plt_lines = list()
 
     for i in reversed(range(canvas.shape[1])):
@@ -83,7 +76,7 @@ def _draw_canvas(canvas):
     return plt_lines
 
 
-def _draw_y_axis(y_axis, left_pad):
+def _draw_y_axis(y_axis, left_pad) -> List[str]:
     y_lines = list()
 
     y_ticks = y_axis.tick_labels()
@@ -104,7 +97,7 @@ def _draw_y_axis(y_axis, left_pad):
     return y_lines
 
 
-def _draw_x_axis(x_axis, left_pad):
+def _draw_x_axis(x_axis, left_pad) -> List[str]:
     x_ticks = x_axis.tick_labels()
 
     upper_ax = " " * left_pad + "└"
@@ -128,3 +121,39 @@ def _draw_x_axis(x_axis, left_pad):
         ax_lines.append(label_str)
 
     return ax_lines
+
+
+def _draw_legend(legend) -> List[str]:
+    legend_lines = list()
+
+    for marker, name in legend.items():
+        legend_str = f"{PALETTE[marker]} {name}"
+        legend_lines.append(legend_str)
+    return legend_lines
+
+
+# ------------------------------------------------------------------------------
+# Helper functions
+# ------------------------------------------------------------------------------
+
+
+def _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines):
+    plt_str = "\n"
+    plt_lines = _pad_lines(plt_lines, y_lines)
+    legend_lines = _pad_lines(legend_lines, y_lines)
+
+    for ax, plt, leg in zip(y_lines, plt_lines, legend_lines):
+        plt_str += ax + plt + leg + "\n"
+
+    for ax in x_lines:
+        plt_str += ax
+
+    return plt_str
+
+
+def _pad_lines(lines, ref_lines):
+    if lines is None:
+        lines = list()
+
+    empty_pad = len(ref_lines) - len(lines)
+    return [""] * empty_pad + lines
