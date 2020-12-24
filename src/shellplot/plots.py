@@ -38,8 +38,7 @@ def plot(*args, **kwargs):
 
     Returns
     -------
-    type
-        Description of returned object.
+    None
 
     """
     plt_str = _plot(*args, **kwargs)
@@ -71,8 +70,7 @@ def hist(*args, **kwargs):
 
     Returns
     -------
-    type
-        Description of returned object.
+    None
 
     """
     plt_str = _hist(*args, **kwargs)
@@ -80,11 +78,61 @@ def hist(*args, **kwargs):
 
 
 def barh(*args, **kwargs):
+    """Plot horizontal bars
+
+    Parameters
+    ----------
+    x : array
+    figsize : a tuple (width, height) in inches
+        Size of a figure object.
+    xticks : sequence
+        Values to use for the xticks.
+    yticks : sequence
+        Values to use for the yticks.
+    xlim : 2-tuple/list
+        Set the x limits.
+    ylim : 2-tuple/list
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+
+    Returns
+    -------
+    None
+
+    """
     plt_str = _barh(*args, **kwargs)
     print(plt_str)
 
 
 def boxplot(*args, **kwargs):
+    """Plot a boxplot
+
+    Parameters
+    ----------
+    x : array
+    figsize : a tuple (width, height) in inches
+        Size of a figure object.
+    xticks : sequence
+        Values to use for the xticks.
+    yticks : sequence
+        Values to use for the yticks.
+    xlim : 2-tuple/list
+        Set the x limits.
+    ylim : 2-tuple/list
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+
+    Returns
+    -------
+    None
+
+    """
     plt_str = _boxplot(*args, **kwargs)
     print(plt_str)
 

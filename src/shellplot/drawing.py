@@ -26,7 +26,10 @@ PALETTE = {
 
 
 def draw(canvas, x_axis, y_axis, legend=None) -> str:
-    """Draw figure from plot elements
+    """Draw figure from plot elements (i.e. canvas, x-axis, y-axis, legend)
+
+    Internally, this functions draws all elements as list of strings, and then
+    joins them into a single string.
 
     Parameters
     ----------
@@ -45,7 +48,7 @@ def draw(canvas, x_axis, y_axis, legend=None) -> str:
         The drawn figure
 
     """
-    plt_lines = _draw_canvas(canvas)
+    canvas_lines = _draw_canvas(canvas)
 
     left_pad = max([len(str(val)) for (t, val) in y_axis.tick_labels()]) + 1
     y_lines = _draw_y_axis(y_axis, left_pad)
@@ -56,7 +59,7 @@ def draw(canvas, x_axis, y_axis, legend=None) -> str:
     else:
         legend_lines = None
 
-    return _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines)
+    return _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines)
 
 
 # ------------------------------------------------------------------------------

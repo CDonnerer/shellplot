@@ -51,11 +51,7 @@ help:
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
 clean:
-	rm -rf $(BUILDDIR)/* $(AUTODOCDIR)
-
-$(AUTODOCDIR): $(MODULEDIR)
-	mkdir -p $@
-	$(AUTODOCBUILD) -f -o $@ $^
+	rm -rf $(BUILDDIR)/*
 
 doc-requirements: $(AUTODOCDIR)
 
