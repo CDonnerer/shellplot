@@ -2,8 +2,16 @@
 """
 import pytest
 
+import numpy as np
+
 from shellplot.axis import Axis
-from shellplot.drawing import _draw_legend, _draw_x_axis, _draw_y_axis, _pad_lines
+from shellplot.drawing import (
+    _draw_canvas,
+    _draw_legend,
+    _draw_x_axis,
+    _draw_y_axis,
+    _pad_lines,
+)
 
 
 def test_draw_legend():
@@ -79,3 +87,25 @@ def test_draw_x_axis(axis, expected_axis_lines):
 def test_draw_y_axis(axis, expected_axis_lines):
     y_lines = _draw_y_axis(y_axis=axis, left_pad=10)
     assert y_lines == expected_axis_lines
+
+
+@pytest.mark.parametrize(
+    "canvas,expected_canvas_lines",
+    [
+        (
+            np.array(
+                [
+                    [0, 0, 0, 0, 5],
+                    [0, 0, 0, 4, 0],
+                    [0, 0, 3, 0, 0],
+                    [0, 2, 0, 0, 0],
+                    [1, 0, 0, 0, 0],
+                ]
+            ),
+            ["@    ", " x   ", "  o  ", "   * ", "    +"],
+        ),
+    ],
+)
+def test_draw_canvas(canvas, expected_canvas_lines):
+    canvas_lines = _draw_canvas(canvas)
+    assert canvas_lines == expected_canvas_lines
