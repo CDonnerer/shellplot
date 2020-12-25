@@ -3,6 +3,13 @@ Changelog
 =========
 
 
+Version 0.1.4
+-------------
+- Fixed bug in x-axis drawing, spurious rounding
+- Added options to modify global figure properties, e.g. xlim, figsize, etc
+- Updated docs for manually curated API reference as opposed to sphinx api-doc
+
+
 Version 0.1.3
 -------------
 - Fixed bug in x-axis drawing, now tick marks are aligned with plot

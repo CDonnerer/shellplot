@@ -22,26 +22,25 @@ def plot(data, kind, **kwargs):
     # TODO: check kind
 
     if isinstance(data, pd.Series):
-        return _plot_series(data, kind)
+        return _plot_series(data, kind, **kwargs)
     else:
         return _plot_frame(data, **kwargs)
 
 
 def hist_series(data, **kwargs):
-    return plt.hist(x=data.values, x_title=data.name, **kwargs)
+    return plt.hist(x=data, **kwargs)
 
 
 def boxplot_frame(data, *args, **kwargs):
-    column = kwargs.get("column", data.columns)
-    by = kwargs.get("by")
+    column = kwargs.pop("column", data.columns)
+    by = kwargs.pop("by")
 
     if by is not None:
         df = data.pivot(columns=by, values=column)
 
-        x_title = df.columns.get_level_values(0)[0]
-        y_title = by
+        xlabel = df.columns.get_level_values(0)[0]
         labels = df.columns.get_level_values(1)
-        kwargs.update({"x_title": x_title, "y_title": y_title, "labels": labels})
+        kwargs.update({"xlabel": xlabel, "ylabel": by, "labels": labels})
     else:
         df = data[column]
         kwargs.update({"labels": df.columns})
@@ -79,28 +78,35 @@ def _plot_series(data, kind, *args, **kwargs):
 
 
 def _series_barh(data, **kwargs):
-    return plt.barh(
-        x=data.values, labels=data.index, x_title=data.name, y_title=data.index.name
-    )
+    x_col = kwargs.pop("x")
+
+    if x_col is not None:
+        data = data[x_col]
+
+    return plt.barh(x=data, labels=data.index, **kwargs)
 
 
 def _series_line(data, **kwargs):
-    return plt.plot(
-        x=data.index.values,
-        y=data.values,
-        x_title=data.index.name,
-        y_title=data.name,
-    )
+    x_col = kwargs.pop("x")
+    y_col = kwargs.pop("y")
+
+    # why do we get both x and y here?
+    if x_col is not None:
+        data = data[x_col]
+    if y_col is not None:
+        data = data[y_col]
+
+    return plt.plot(x=data.index, y=data, **kwargs)
 
 
 def _series_boxplot(data, *args, **kwargs):
-    return plt.boxplot(data, labels=np.array([data.name]))
+    return plt.boxplot(data, labels=np.array([data.name]), **kwargs)
 
 
 def _plot_frame(data, **kwargs):
-    x_col = kwargs.get("x")
-    y_col = kwargs.get("y")
-    color = kwargs.get("color", None)
+    x_col = kwargs.pop("x")
+    y_col = kwargs.pop("y")
+    color = kwargs.pop("color", None)
 
     if x_col is None or y_col is None:
         raise ValueError("Please provide both x, y column names")
@@ -111,10 +117,4 @@ def _plot_frame(data, **kwargs):
     s_x = data[x_col]
     s_y = data[y_col]
 
-    return plt.plot(
-        x=s_x.values,
-        y=s_y.values,
-        x_title=s_x.name,
-        y_title=s_y.name,
-        color=color,
-    )
+    return plt.plot(x=s_x, y=s_y, color=color, **kwargs)

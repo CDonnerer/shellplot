@@ -1,16 +1,12 @@
 """Shellplot plots
 """
 import numpy as np
-import pandas as pd
 
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import numpy_2d, remove_any_nan
+from shellplot.utils import get_label, numpy_2d, remove_any_nan
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
-
-DISPLAY_X = 70
-DISPLAY_Y = 25
 
 
 # -----------------------------------------------------------------------------
@@ -19,23 +15,152 @@ DISPLAY_Y = 25
 
 
 def plot(*args, **kwargs):
+    """Plot x versus y as scatter.
+
+    Parameters
+    ----------
+    x : array-like
+        The horizontal coordinates of the data points.
+        Should be 1d np.ndarray or pandas series
+    y : array-like
+        The vertical coordinates of the data points.
+        Should be 1d np.ndarray or pandas series
+    color : array, optional
+        Color of scatter. Needs to be of same dimension as x, y
+        Should be 1-d np.ndarray or pandas series
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
+        Set the x limits.
+    ylim : 2-tuple/list, optional
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
+
+    Returns
+    -------
+    result
+        See Notes.
+
+    """
     plt_str = _plot(*args, **kwargs)
-    print(plt_str)
+    return return_plt(plt_str, **kwargs)
 
 
 def hist(*args, **kwargs):
+    """Plot a histogram of x
+
+    Parameters
+    ----------
+    x : array-like
+        The array of points to plot a histogram of. Should be 1d np.ndarray or
+        pandas series.
+    bins : int, optional
+        Number of bins in histogram. Default is 10 bins.
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
+        Set the x limits.
+    ylim : 2-tuple/list, optional
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
+
+    Returns
+    -------
+    result
+        See Notes.
+
+    """
     plt_str = _hist(*args, **kwargs)
-    print(plt_str)
+    return return_plt(plt_str, **kwargs)
 
 
 def barh(*args, **kwargs):
+    """Plot horizontal bars
+
+    Parameters
+    ----------
+    x : array-like
+        The witdth of the horizontal bars. Should be 1d np.ndarray or pandas
+        series.
+    labels : array-like
+        Array that is used to label the bars. Needs to have the same dim as x.
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
+        Set the x limits.
+    ylim : 2-tuple/list, optional
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
+
+    Returns
+    -------
+    result
+        See Notes.
+
+    """
     plt_str = _barh(*args, **kwargs)
-    print(plt_str)
+    return return_plt(plt_str, **kwargs)
 
 
 def boxplot(*args, **kwargs):
+    """Plot a boxplot of x
+
+    Note that currently this makes a boxplot using the quantiles:
+    [0, 0.25, 0.5, 0.75, 1.0] - i.e. it the whiskers will not exclude outliers
+
+    Parameters
+    ----------
+    x : array-like
+        The horizontal coordinates of the data points.
+        Can be 1d or 2d np.ndarray/ pandas series/ dataframe. If 2d, each 1d
+        slice will be plotted as a separate boxplot.
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
+        Set the x limits.
+    ylim : 2-tuple/list, optional
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
+
+    Returns
+    -------
+    result
+        See Notes.
+
+    """
     plt_str = _boxplot(*args, **kwargs)
-    print(plt_str)
+    return return_plt(plt_str, **kwargs)
+
+
+def return_plt(plt_str, **kwargs):
+    if kwargs.get("return_type") == "str":
+        return plt_str
+    else:
+        print(plt_str)
 
 
 # -----------------------------------------------------------------------------
@@ -43,34 +168,49 @@ def boxplot(*args, **kwargs):
 # -----------------------------------------------------------------------------
 
 
-def _plot(x, y, color=None, x_title=None, y_title=None):
+def _init_figure(
+    figsize=None, xlim=None, ylim=None, xlabel=None, ylabel=None, **kwargs
+):
+    """Initialise a new figure.
+
+    TODO:
+        - This could be a class to hold a figure state?
+        - add ticks
+        - add tick labels
+    """
+    if figsize is None:
+        figsize = (70, 25)  # this should go somewhere else
+
+    x_axis = Axis(figsize[0], label=xlabel, limits=xlim)
+    y_axis = Axis(figsize[1], label=ylabel, limits=ylim)
+    canvas = np.zeros(shape=(figsize[0], figsize[1]), dtype=int)
+
+    return x_axis, y_axis, canvas
+
+
+def _plot(x, y, color=None, **kwargs):
     """Scatterplot"""
+
+    if kwargs.get("xlabel") is None:
+        kwargs.update({"xlabel": get_label(x)})
+    if kwargs.get("ylabel") is None:
+        kwargs.update({"ylabel": get_label(y)})
+
+    x_axis, y_axis, canvas = _init_figure(**kwargs)
+
     x, y = remove_any_nan(x, y)
-
-    def get_name(x):
-        if isinstance(x, pd.Series):
-            return x.name
-        else:
-            return None
-
-    if x_title is None:
-        x_title = get_name(x)
-    if y_title is None:
-        y_title = get_name(y)
-
-    x_axis = Axis(DISPLAY_X, title=x_title)
-    y_axis = Axis(DISPLAY_Y, title=y_title)
-
     x_scaled = x_axis.fit_transform(x)
     y_scaled = y_axis.fit_transform(y)
 
-    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y), dtype=int)
+    within_display = np.logical_and(x_scaled.mask == 0, y_scaled.mask == 0)
+    x_scaled, y_scaled = x_scaled[within_display], y_scaled[within_display]
 
     if color is not None:
-        values = np.unique(color)
+        color_scaled = color.to_numpy()[within_display]
+        values = np.unique(color_scaled)
 
         for ii, val in enumerate(values):
-            mask = val == color
+            mask = val == color_scaled
             canvas[x_scaled[mask], y_scaled[mask]] = ii + 1
 
         legend = {ii + 1: val for ii, val in enumerate(values)}
@@ -81,23 +221,25 @@ def _plot(x, y, color=None, x_title=None, y_title=None):
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
 
-def _hist(x, bins=10, x_title=None, **kwargs):
+def _hist(x, bins=10, **kwargs):
     """Histogram"""
     x = x[~np.isnan(x)]
 
     counts, bin_edges = np.histogram(x, bins)
 
-    y_axis = Axis(DISPLAY_Y, title="counts")
-    x_axis = Axis(DISPLAY_X, title=x_title)
+    if kwargs.get("xlabel") is None:
+        kwargs.update({"xlabel": get_label(x)})
+    if kwargs.get("ylabel") is None:
+        kwargs.update({"ylabel": "counts"})
+
+    x_axis, y_axis, canvas = _init_figure(**kwargs)
 
     y_axis.limits = (0, max(counts))
     counts_scaled = y_axis.transform(counts)
     x_axis = x_axis.fit(bin_edges)
 
-    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y), dtype=int)
-
     bin = 0
-    bin_width = int((DISPLAY_X - 1) / len(counts)) - 1
+    bin_width = x_axis.display_max // len(counts) - 1
 
     for count in counts_scaled:
         canvas = _add_vbar(canvas, bin, bin_width, count)
@@ -109,10 +251,11 @@ def _hist(x, bins=10, x_title=None, **kwargs):
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
 
 
-def _barh(x, labels=None, x_title=None, y_title=None):
+def _barh(x, labels=None, **kwargs):
     """Horizontal bar plot"""
-    y_axis = Axis(DISPLAY_Y, title=y_title)
-    x_axis = Axis(DISPLAY_X, title=x_title)
+
+    kwargs.update({"xlabel": get_label(x)})
+    x_axis, y_axis, canvas = _init_figure(**kwargs)
 
     x_axis.limits = (0, max(x))
     x_scaled = x_axis.fit_transform(x)
@@ -123,10 +266,8 @@ def _barh(x, labels=None, x_title=None, y_title=None):
     if labels is not None:
         y_axis.labels = labels
 
-    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y), dtype=int)
-
     bin = 0
-    bin_width = int((DISPLAY_Y - 1) / len(x)) - 1
+    bin_width = y_axis.display_max // len(x) - 1
 
     for val in x_scaled:
         canvas = _add_hbar(canvas, bin, bin_width, val)
@@ -138,18 +279,17 @@ def _barh(x, labels=None, x_title=None, y_title=None):
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
 
 
-def _boxplot(x, labels=None, x_title=None, y_title=None, **kwargs):
+def _boxplot(x, labels=None, **kwargs):
     """Box plot"""
+
+    x_axis, y_axis, canvas = _init_figure(**kwargs)
+
     x = numpy_2d(x)
     x = np.ma.masked_where(np.isnan(x), x)
 
     quantiles = np.array(
         [np.quantile(dist[dist.mask == 0], q=[0, 0.25, 0.5, 0.75, 1.0]) for dist in x]
     )
-
-    x_axis = Axis(DISPLAY_X, x_title)
-    y_axis = Axis(DISPLAY_Y, y_title)
-
     quantiles_scaled = x_axis.fit_transform(quantiles)
 
     y_axis = y_axis.fit(np.array([0, len(x)]))
@@ -159,8 +299,6 @@ def _boxplot(x, labels=None, x_title=None, y_title=None, **kwargs):
     y_axis.ticks = np.arange(0.5, len(x), 1)
     if labels is not None:
         y_axis.labels = labels
-
-    canvas = np.zeros(shape=(DISPLAY_X, DISPLAY_Y), dtype=int)
 
     for ii in range(len(x)):
         quants = quantiles_scaled[ii, :]
@@ -193,7 +331,7 @@ def _add_hbar(canvas, start, width, height):
 
 def _add_box_and_whiskers(canvas, quantiles, limits):
     """Add a box and whiskers to the canvas"""
-    for jj in [0, 1, 2, 3, 4]:
+    for jj in range(5):
         canvas[quantiles[jj], limits[0] + 1 : limits[2]] = 20
 
     canvas[quantiles[0] + 1 : quantiles[1], limits[1]] = 22

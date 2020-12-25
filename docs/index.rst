@@ -53,10 +53,11 @@ Contents
 
    Installation <installation>
    Examples <examples/index>
+   API Reference <api>
    License <license>
    Authors <authors>
    Changelog <changelog>
-   Module Reference <api/modules>
+
 
 
 Indices and tables

@@ -18,22 +18,26 @@ from shellplot.utils import round_down, round_up, tolerance_round
 
 
 class Axis:
-    def __init__(self, display_length, title=None, limits=None):
+    def __init__(self, display_length, label=None, limits=None):
         self.display_max = display_length - 1
-        self._title = title
-        self._limits = limits
+        self.label = label
+        self.limits = limits
+
+        # reverted setting ticks and labels - need to think about the logic here
+        # self.ticks = ticks
+        # self.labels = labels
 
     # -------------------------------------------------------------------------
     # Public properties that can be set by the user
     # -------------------------------------------------------------------------
 
     @property
-    def title(self):
-        return self._title
+    def label(self):
+        return self._label
 
-    @title.setter
-    def title(self, title):
-        self._title = title
+    @label.setter
+    def label(self, label):
+        self._label = label
 
     @property
     def limits(self):
@@ -42,7 +46,8 @@ class Axis:
     @limits.setter
     def limits(self, limits):
         self._limits = limits
-        self.fit()  # setting axis limits automatically fits the axis
+        if limits is not None:
+            self.fit()  # setting axis limits automatically fits the axis
 
     @property
     def n_ticks(self):
@@ -89,7 +94,9 @@ class Axis:
         return self
 
     def transform(self, x):
-        return np.around(self.scale * (x - self.limits[0])).astype(int)
+        x_scaled = np.around(self.scale * (x - self.limits[0])).astype(int)
+        within_display = np.logical_and(x_scaled >= 0, x_scaled <= self.display_max)
+        return np.ma.masked_where(~within_display, x_scaled)
 
     def fit_transform(self, x):
         self = self.fit(x)
