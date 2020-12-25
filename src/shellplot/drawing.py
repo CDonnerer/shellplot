@@ -11,8 +11,8 @@ PALETTE = {
     # empty space
     0: " ",
     # scatter points
-    1: "*",
-    2: "+",
+    1: "+",
+    2: "*",
     3: "x",
     4: "x",
     5: "@",

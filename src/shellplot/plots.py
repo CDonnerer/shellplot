@@ -49,7 +49,7 @@ def plot(*args, **kwargs):
 
     """
     plt_str = _plot(*args, **kwargs)
-    return_plt(plt_str, **kwargs)
+    return return_plt(plt_str, **kwargs)
 
 
 def hist(*args, **kwargs):
@@ -83,7 +83,7 @@ def hist(*args, **kwargs):
 
     """
     plt_str = _hist(*args, **kwargs)
-    return_plt(plt_str, **kwargs)
+    return return_plt(plt_str, **kwargs)
 
 
 def barh(*args, **kwargs):
@@ -94,6 +94,8 @@ def barh(*args, **kwargs):
     x : array-like
         The witdth of the horizontal bars. Should be 1d np.ndarray or pandas
         series.
+    labels : array-like
+        Array that is used to label the bars. Needs to have the same dim as x.
     figsize : a tuple (width, height) in ascii characters, optional
         Size of the figure.
     xlim : 2-tuple/list, optional
@@ -115,15 +117,14 @@ def barh(*args, **kwargs):
 
     """
     plt_str = _barh(*args, **kwargs)
-    return_plt(plt_str, **kwargs)
+    return return_plt(plt_str, **kwargs)
 
 
 def boxplot(*args, **kwargs):
     """Plot a boxplot of x
 
     Note that currently this makes a boxplot using the quantiles:
-        `0, 0.25, 0.5, 0.75, 1.0`
-    i.e. it the whiskers will not exclude outliers
+    [0, 0.25, 0.5, 0.75, 1.0] - i.e. it the whiskers will not exclude outliers
 
     Parameters
     ----------
@@ -152,7 +153,7 @@ def boxplot(*args, **kwargs):
 
     """
     plt_str = _boxplot(*args, **kwargs)
-    return_plt(plt_str, **kwargs)
+    return return_plt(plt_str, **kwargs)
 
 
 def return_plt(plt_str, **kwargs):
@@ -160,7 +161,6 @@ def return_plt(plt_str, **kwargs):
         return plt_str
     else:
         print(plt_str)
-        return None
 
 
 # -----------------------------------------------------------------------------
