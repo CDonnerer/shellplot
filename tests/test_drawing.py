@@ -39,16 +39,16 @@ def test_pad_lines(lines, ref_lines, expecte_padded_lines):
             Axis(display_length=50, label="my_fun_label", limits=(0, 1)),
             [
                 "└┬---------┬---------┬--------┬---------┬---------┬\n",
-                " 0.0       0.2       0.4      0.6       0.8       1\n",
-                "                   my_fun_label",
+                " 0.0       0.2       0.4      0.6       0.8       1.0\n",
+                "                    my_fun_label",
             ],
         ),
         (
             Axis(display_length=50, label="my_fun_label", limits=(0, 0.01)),
             [
                 "└┬---------┬---------┬--------┬---------┬---------┬\n",
-                " 0.0       0.002     0.004    0.006     0.008     0\n",
-                "                   my_fun_label",
+                " 0.0       0.002     0.004    0.006     0.008     0.01\n",
+                "                    my_fun_label",
             ],
         ),
     ],
