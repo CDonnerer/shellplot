@@ -90,6 +90,8 @@ def numpy_1d(x):
         return x.to_numpy().squeeze()
     elif isinstance(x, pd.Series):
         return x.to_numpy()
+    elif isinstance(x, pd.Index):
+        return x.to_numpy()
     elif isinstance(x, list):
         return np.array(x)
     else:

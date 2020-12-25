@@ -223,9 +223,6 @@ def _plot(x, y, color=None, **kwargs):
 
 def _hist(x, bins=10, **kwargs):
     """Histogram"""
-    x = x[~np.isnan(x)]
-
-    counts, bin_edges = np.histogram(x, bins)
 
     if kwargs.get("xlabel") is None:
         kwargs.update({"xlabel": get_label(x)})
@@ -233,6 +230,10 @@ def _hist(x, bins=10, **kwargs):
         kwargs.update({"ylabel": "counts"})
 
     x_axis, y_axis, canvas = _init_figure(**kwargs)
+
+    x = numpy_1d(x)
+    x = x[~np.isnan(x)]
+    counts, bin_edges = np.histogram(x, bins)
 
     y_axis.limits = (0, max(counts))
     counts_scaled = y_axis.transform(counts)

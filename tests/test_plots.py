@@ -5,17 +5,11 @@ import pytest
 import numpy as np
 import pandas as pd
 
-from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, _hist, plot
+from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, hist, plot
 
 # -----------------------------------------------------------------------------
 # 'Integration' style 'tests' that only check everything runs end to end
 # -----------------------------------------------------------------------------
-
-
-def test_hist():
-    x = np.random.randn(1000)
-    plt_str = _hist(x, bins=20)
-    assert isinstance(plt_str, str)
 
 
 def test_barh():
@@ -141,7 +135,74 @@ def test_plot_linear_color(x, color, expected_linear_plot_color):
 
 
 # -----------------------------------------------------------------------------
-# Unit tests
+# Test `hist` function
+# -----------------------------------------------------------------------------
+
+
+@pytest.fixture
+def expected_hist():
+    return "\n".join(
+        [
+            "",
+            "counts",
+            " 9┤                   --------   ",
+            "  |                  |        |  ",
+            "  |                  |        |  ",
+            " 6┤                  |        |  ",
+            "  |                  |        |  ",
+            "  |                  |        |  ",
+            " 3┤          --------|        |  ",
+            "  |         |        |        |  ",
+            "  | --------|        |        |  ",
+            " 0┤|        |        |        |  ",
+            "  └┬--------┬--------┬--------┬--",
+            "   0        1        2        3",
+            "",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x",
+    [
+        (
+            np.array(
+                # fmt: off
+                [
+                    0,
+                    1, 1, 1,
+                    2, 2, 2,
+                    3, 3, 3, 3, 3, 3,
+                ]
+            )
+        ),
+        (
+            pd.Series(
+                np.array(
+                    # fmt: off
+                    [
+                        0,
+                        1, 1, 1,
+                        2, 2, 2,
+                        3, 3, 3, 3, 3, 3,
+                    ]
+                )
+            )
+        ),
+    ],
+)
+def test_hist(x, expected_hist):
+    plt_str = hist(
+        x=x,
+        bins=3,
+        figsize=(30, 10),
+        return_type="str",
+    )
+    assert plt_str == expected_hist
+
+
+# -----------------------------------------------------------------------------
+# Test canvas elements
 # -----------------------------------------------------------------------------
 
 
