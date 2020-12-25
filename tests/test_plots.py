@@ -3,8 +3,9 @@
 import pytest
 
 import numpy as np
+import pandas as pd
 
-from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, _hist, _plot
+from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, _hist, _plot, plot
 
 # -----------------------------------------------------------------------------
 # 'Integration' style 'tests' that only check everything runs end to end
@@ -42,11 +43,48 @@ def test_boxplot():
 # -----------------------------------------------------------------------------
 
 
-def test_plot_figsize():
-    x = np.arange(-3, 3, 0.01)
-    y = np.cos(x) ** 2
-    plt_str = _plot(x, y, figsize=(60, 15))
-    assert isinstance(plt_str, str)
+@pytest.fixture
+def expected_linear_plot():
+    return "\n".join(
+        [
+            "",
+            "  y",
+            " 9┤                  +",
+            "  |                +  ",
+            "  |              +    ",
+            " 6┤            +      ",
+            "  |          +        ",
+            "  |        +          ",
+            " 3┤      +            ",
+            "  |    +              ",
+            "  |  +                ",
+            " 0┤+                  ",
+            "  └┬---┬----┬---┬----┬",
+            "   0.0 2.2  4.4 6.6  8.8",
+            "            x",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x",
+    [
+        (np.arange(0, 10, 1)),
+        (pd.Series(np.arange(0, 10, 1))),
+    ],
+)
+def test_plot_linear(x, expected_linear_plot):
+    plt_str = plot(
+        x,
+        x,
+        figsize=(19, 10),
+        xlim=(0, 9),
+        ylim=(0, 9),
+        xlabel="x",
+        ylabel="y",
+        return_type="str",
+    )
+    assert plt_str == expected_linear_plot
 
 
 # -----------------------------------------------------------------------------
