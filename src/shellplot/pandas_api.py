@@ -19,12 +19,13 @@ __all__ = [
 
 
 def plot(data, kind, **kwargs):
-    # TODO: check kind
-
     if isinstance(data, pd.Series):
         return _plot_series(data, kind, **kwargs)
+    elif isinstance(data, pd.DataFrame):
+        return _plot_frame(data, kind, **kwargs)
     else:
-        return _plot_frame(data, **kwargs)
+        # we should never get here
+        return ValueError
 
 
 def hist_series(data, **kwargs):
@@ -32,6 +33,9 @@ def hist_series(data, **kwargs):
 
 
 def boxplot_frame(data, *args, **kwargs):
+    """TODO
+    - can this logic go into `plt.boxplot`?
+    """
     column = kwargs.pop("column", data.columns)
     by = kwargs.pop("by")
 
@@ -62,7 +66,7 @@ def hist_frame(*args, **kwargs):
 
 
 def _plot_series(data, kind, *args, **kwargs):
-
+    """Dispatch on kind to the relevant series plot function"""
     series_func = {
         "barh": _series_barh,
         "line": _series_line,
@@ -71,6 +75,20 @@ def _plot_series(data, kind, *args, **kwargs):
     }
 
     plot_func = series_func.get(kind)
+    if plot_func is None:
+        raise NotImplementedError
+
+    return plot_func(data, *args, **kwargs)
+
+
+def _plot_frame(data, kind, *args, **kwargs):
+    """Dispatch on kind to the relevant frame plot function"""
+    frame_func = {
+        "line": _frame_line,
+        "scatter": _frame_line,
+    }
+
+    plot_func = frame_func.get(kind)
     if plot_func is None:
         raise NotImplementedError
 
@@ -103,7 +121,7 @@ def _series_boxplot(data, *args, **kwargs):
     return plt.boxplot(data, labels=np.array([data.name]), **kwargs)
 
 
-def _plot_frame(data, **kwargs):
+def _frame_line(data, **kwargs):
     x_col = kwargs.pop("x")
     y_col = kwargs.pop("y")
     color = kwargs.pop("color", None)

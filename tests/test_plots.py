@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 import pandas as pd
 
-from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, hist, plot
+from shellplot.plots import _add_hbar, _add_vbar, barh, boxplot, hist, plot
 
 # -----------------------------------------------------------------------------
 # 'Integration' style 'tests' that only check everything runs end to end
@@ -15,13 +15,13 @@ from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, hist, plot
 def test_barh():
     x = np.array([10, 56, 121, 67])
     labels = np.array(["one", "two", "three", "four"])
-    plt_str = _barh(x, labels=labels)
+    plt_str = barh(x, labels=labels, return_type="str")
     assert isinstance(plt_str, str)
 
 
 def test_boxplot():
     x = np.random.randn(1000)
-    plt_str = _boxplot(x)
+    plt_str = boxplot(x, return_type="str")
     assert isinstance(plt_str, str)
 
 
