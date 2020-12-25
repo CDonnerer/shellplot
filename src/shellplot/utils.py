@@ -71,15 +71,16 @@ def remove_any_nan(x, y):
 @singledispatch
 def numpy_2d(x):
     """Reshape and transform various array-like inputs to 2d np arrays"""
-    pass
 
 
 @numpy_2d.register
 def _(x: np.ndarray):
     if len(x.shape) == 1:
         return x[np.newaxis]
-    else:
+    elif len(x.shape) == 2:
         return x
+    else:
+        raise ValueError("Array dimensions need to be <= 2!")
 
 
 @numpy_2d.register
@@ -95,7 +96,6 @@ def _(x: list):
 @singledispatch
 def numpy_1d(x):
     """Reshape and transform various array-like inputs to 1d np arrays"""
-    pass
 
 
 @numpy_1d.register

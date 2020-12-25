@@ -25,7 +25,7 @@ def plot(data, kind, **kwargs):
         return _plot_frame(data, kind, **kwargs)
     else:
         # we should never get here
-        return ValueError
+        raise ValueError
 
 
 def hist_series(data, **kwargs):
