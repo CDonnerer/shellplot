@@ -103,13 +103,9 @@ def _(x: np.ndarray):
     return x
 
 
-@numpy_1d.register
-def _(x: pd.Series):
-    return x.to_numpy()
-
-
-@numpy_1d.register
-def _(x: pd.Index):
+@numpy_1d.register(pd.Series)
+@numpy_1d.register(pd.Index)
+def _(x):
     return x.to_numpy()
 
 

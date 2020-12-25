@@ -102,6 +102,7 @@ def test_numpy_2d(x, expected_np_2d):
     [
         (np.array([0, 1]), np.array([0, 1])),
         (pd.Series(np.array([0, 1])), np.array([0, 1])),
+        (pd.Index([0, 1]), np.array([0, 1])),
         (pd.DataFrame(np.array([0, 1])), np.array([0, 1])),
         ([0, 1], np.array([0, 1])),
     ],
