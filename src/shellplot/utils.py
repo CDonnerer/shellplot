@@ -82,6 +82,20 @@ def numpy_2d(x):
         return None
 
 
+def numpy_1d(x):
+    """Reshape and transform various array-like inputs to 2d np arrays"""
+    if isinstance(x, np.ndarray):
+        return x
+    elif isinstance(x, pd.DataFrame):
+        return x.to_numpy().squeeze()
+    elif isinstance(x, pd.Series):
+        return x.to_numpy()
+    elif isinstance(x, list):
+        return np.array(x)
+    else:
+        return None
+
+
 def get_label(x):
     """Try to get names out of array-like inputs"""
     if isinstance(x, pd.Series):

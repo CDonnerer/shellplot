@@ -4,7 +4,7 @@ import numpy as np
 
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import get_label, numpy_2d, remove_any_nan
+from shellplot.utils import get_label, numpy_1d, numpy_2d, remove_any_nan
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -198,7 +198,7 @@ def _plot(x, y, color=None, **kwargs):
 
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
-    x, y = remove_any_nan(x, y)
+    x, y = remove_any_nan(numpy_1d(x), numpy_1d(y))
     x_scaled = x_axis.fit_transform(x)
     y_scaled = y_axis.fit_transform(y)
 
@@ -206,7 +206,7 @@ def _plot(x, y, color=None, **kwargs):
     x_scaled, y_scaled = x_scaled[within_display], y_scaled[within_display]
 
     if color is not None:
-        color_scaled = color.to_numpy()[within_display]
+        color_scaled = numpy_1d(color)[within_display]
         values = np.unique(color_scaled)
 
         for ii, val in enumerate(values):

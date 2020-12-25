@@ -5,18 +5,11 @@ import pytest
 import numpy as np
 import pandas as pd
 
-from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, _hist, _plot, plot
+from shellplot.plots import _add_hbar, _add_vbar, _barh, _boxplot, _hist, plot
 
 # -----------------------------------------------------------------------------
 # 'Integration' style 'tests' that only check everything runs end to end
 # -----------------------------------------------------------------------------
-
-
-def test_plot():
-    x = np.arange(-3, 3, 0.01)
-    y = np.cos(x) ** 2
-    plt_str = _plot(x, y)
-    assert isinstance(plt_str, str)
 
 
 def test_hist():
@@ -39,7 +32,7 @@ def test_boxplot():
 
 
 # -----------------------------------------------------------------------------
-# Unit tests
+# Test `plot` function
 # -----------------------------------------------------------------------------
 
 
@@ -75,8 +68,8 @@ def expected_linear_plot():
 )
 def test_plot_linear(x, expected_linear_plot):
     plt_str = plot(
-        x,
-        x,
+        x=x,
+        y=x,
         figsize=(19, 10),
         xlim=(0, 9),
         ylim=(0, 9),
@@ -85,6 +78,66 @@ def test_plot_linear(x, expected_linear_plot):
         return_type="str",
     )
     assert plt_str == expected_linear_plot
+
+
+def test_plot_linear_pd_labels(expected_linear_plot):
+    x = pd.Series(np.arange(0, 10, 1), name="x")
+    y = pd.Series(np.arange(0, 10, 1), name="y")
+
+    plt_str = plot(
+        x=x,
+        y=y,
+        figsize=(19, 10),
+        xlim=(0, 9),
+        ylim=(0, 9),
+        xlabel="x",
+        ylabel="y",
+        return_type="str",
+    )
+    assert plt_str == expected_linear_plot
+
+
+@pytest.fixture
+def expected_linear_plot_color():
+    return "\n".join(
+        [
+            "",
+            " 9┤                  @",
+            "  |                @  ",
+            "  |              x    ",
+            " 6┤            x      ",
+            "  |          o        ",
+            "  |        o          + 0",
+            " 3┤      *            * 1",
+            "  |    *              o 2",
+            "  |  +                x 3",
+            " 0┤+                  @ 4",
+            "  └┬---┬----┬---┬----┬",
+            "   0.0 2.2  4.4 6.6  8.8",
+            "",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x, color",
+    [
+        (np.arange(0, 10, 1), np.array([0, 0, 1, 1, 2, 2, 3, 3, 4, 4])),
+        (
+            pd.Series(np.arange(0, 10, 1)),
+            pd.Series(np.array([0, 0, 1, 1, 2, 2, 3, 3, 4, 4])),
+        ),
+    ],
+)
+def test_plot_linear_color(x, color, expected_linear_plot_color):
+    plt_str = plot(
+        x=x,
+        y=x,
+        color=color,
+        figsize=(19, 10),
+        return_type="str",
+    )
+    assert plt_str == expected_linear_plot_color
 
 
 # -----------------------------------------------------------------------------

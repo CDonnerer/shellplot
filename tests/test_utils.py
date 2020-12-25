@@ -5,6 +5,7 @@ import pandas as pd
 
 from shellplot.utils import (
     load_dataset,
+    numpy_1d,
     numpy_2d,
     remove_any_nan,
     round_down,
@@ -93,5 +94,18 @@ def test_load_dataset(name):
 )
 def test_numpy_2d(x, expected_np_2d):
     np_2d = numpy_2d(x)
-
     np.testing.assert_equal(np_2d, expected_np_2d)
+
+
+@pytest.mark.parametrize(
+    "x, expected_np_1d",
+    [
+        (np.array([0, 1]), np.array([0, 1])),
+        (pd.Series(np.array([0, 1])), np.array([0, 1])),
+        (pd.DataFrame(np.array([0, 1])), np.array([0, 1])),
+        ([0, 1], np.array([0, 1])),
+    ],
+)
+def test_numpy_1d(x, expected_np_1d):
+    np_1d = numpy_1d(x)
+    np.testing.assert_equal(np_1d, expected_np_1d)
