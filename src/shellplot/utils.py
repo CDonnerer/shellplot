@@ -2,6 +2,7 @@
 """
 import math
 import os
+from functools import singledispatch
 
 import numpy as np
 import pandas as pd
@@ -67,42 +68,72 @@ def remove_any_nan(x, y):
     return x[~is_any_nan], y[~is_any_nan]
 
 
+@singledispatch
 def numpy_2d(x):
     """Reshape and transform various array-like inputs to 2d np arrays"""
-    if isinstance(x, np.ndarray):
-        if len(x.shape) == 1:
-            return x[np.newaxis]
-        else:
-            return x
-    elif isinstance(x, pd.DataFrame):
-        return x.to_numpy().transpose()
-    elif isinstance(x, list):
-        return x
+    pass
+
+
+@numpy_2d.register
+def _(x: np.ndarray):
+    if len(x.shape) == 1:
+        return x[np.newaxis]
     else:
-        return None
+        return x
 
 
+@numpy_2d.register
+def _(x: pd.DataFrame):
+    return x.to_numpy().transpose()
+
+
+@numpy_2d.register
+def _(x: list):
+    return [numpy_1d(x) for x in x]
+
+
+@singledispatch
 def numpy_1d(x):
-    """Reshape and transform various array-like inputs to 2d np arrays"""
-    if isinstance(x, np.ndarray):
-        return x
-    elif isinstance(x, pd.DataFrame):
-        return x.to_numpy().squeeze()
-    elif isinstance(x, pd.Series):
-        return x.to_numpy()
-    elif isinstance(x, pd.Index):
-        return x.to_numpy()
-    elif isinstance(x, list):
-        return np.array(x)
-    else:
-        return None
+    """Reshape and transform various array-like inputs to 1d np arrays"""
+    pass
 
 
+@numpy_1d.register
+def _(x: np.ndarray):
+    return x
+
+
+@numpy_1d.register
+def _(x: pd.Series):
+    return x.to_numpy()
+
+
+@numpy_1d.register
+def _(x: pd.Index):
+    return x.to_numpy()
+
+
+@numpy_1d.register
+def _(x: pd.DataFrame):
+    return x.to_numpy().squeeze()
+
+
+@numpy_1d.register
+def _(x: list):
+    return np.array(x)
+
+
+@singledispatch
 def get_label(x):
     """Try to get names out of array-like inputs"""
-    if isinstance(x, pd.Series):
-        return x.name
-    elif isinstance(x, pd.DataFrame):
-        return x.columns
-    else:
-        return None
+    pass
+
+
+@get_label.register
+def _(x: pd.DataFrame):
+    return x.columns
+
+
+@get_label.register
+def _(x: pd.Series):
+    return x.name
