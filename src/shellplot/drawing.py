@@ -11,9 +11,9 @@ PALETTE = {
     # empty space
     0: " ",
     # scatter points
-    1: "+",
-    2: "*",
-    3: "o",
+    1: "*",
+    2: "+",
+    3: "x",
     4: "x",
     5: "@",
     6: ".",
@@ -106,21 +106,22 @@ def _draw_x_axis(x_axis, left_pad) -> List[str]:
     upper_ax = " " * left_pad + "└"
     lower_ax = " " * left_pad + " "
     marker = "┬"
+    overpad = 50
 
     for j in range(x_axis.display_max + 1):
         if len(x_ticks) > 0 and j == x_ticks[0][0]:
             lower_ax = lower_ax[: len(upper_ax)]
-            lower_ax += str(x_ticks[0][1]) + " " * 50
+            lower_ax += str(x_ticks[0][1]) + " " * overpad
             upper_ax += marker
             x_ticks.pop(0)
         else:
             upper_ax += "-"
 
-    ax_lines = [upper_ax + "\n", lower_ax[: len(upper_ax)] + "\n"]
+    ax_lines = [upper_ax + "\n", lower_ax[: len(lower_ax) - overpad] + "\n"]
 
     if x_axis.label is not None:
         label_pad = (x_axis.display_max + 1) // 2 - len(x_axis.label) // 2
-        label_str = " " * (left_pad + label_pad) + x_axis.label
+        label_str = " " * (left_pad + 1 + label_pad) + x_axis.label
         ax_lines.append(label_str)
 
     return ax_lines

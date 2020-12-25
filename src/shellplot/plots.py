@@ -15,34 +15,41 @@ __all__ = ["plot", "hist", "barh", "boxplot"]
 
 
 def plot(*args, **kwargs):
-    """Plot y versus x as scatter.
+    """Plot x versus y as scatter.
 
     Parameters
     ----------
-    x : array
-    y : array
-    figsize : a tuple (width, height) in inches
-        Size of a figure object.
-    xticks : sequence
-        Values to use for the xticks.
-    yticks : sequence
-        Values to use for the yticks.
-    xlim : 2-tuple/list
+    x : array-like
+        The horizontal coordinates of the data points.
+        Should be 1d np.ndarray or pandas series
+    y : array-like
+        The vertical coordinates of the data points.
+        Should be 1d np.ndarray or pandas series
+    color : array, optional
+        Color of scatter. Needs to be of same dimension as x, y
+        Should be 1-d np.ndarray or pandas series
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
         Set the x limits.
-    ylim : 2-tuple/list
+    ylim : 2-tuple/list, optional
         Set the y limits.
     xlabel : str, optional
         Name to use for the xlabel on x-axis.
     ylabel : str, optional
         Name to use for the ylabel on y-axis.
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
 
     Returns
     -------
-    None
+    result
+        See Notes.
 
     """
     plt_str = _plot(*args, **kwargs)
-    print(plt_str)
+    return_plt(plt_str, **kwargs)
 
 
 def hist(*args, **kwargs):
@@ -50,31 +57,33 @@ def hist(*args, **kwargs):
 
     Parameters
     ----------
-    x : array
-    bins : int
-        Number of bins in histogram
-    figsize : a tuple (width, height) in inches
-        Size of a figure object.
-    xticks : sequence
-        Values to use for the xticks.
-    yticks : sequence
-        Values to use for the yticks.
-    xlim : 2-tuple/list
+    x : array-like
+        The array of points to plot a histogram of. Should be 1d np.ndarray or
+        pandas series.
+    bins : int, optional
+        Number of bins in histogram. Default is 10 bins.
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
         Set the x limits.
-    ylim : 2-tuple/list
+    ylim : 2-tuple/list, optional
         Set the y limits.
     xlabel : str, optional
         Name to use for the xlabel on x-axis.
     ylabel : str, optional
         Name to use for the ylabel on y-axis.
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
 
     Returns
     -------
-    None
+    result
+        See Notes.
 
     """
     plt_str = _hist(*args, **kwargs)
-    print(plt_str)
+    return_plt(plt_str, **kwargs)
 
 
 def barh(*args, **kwargs):
@@ -82,59 +91,76 @@ def barh(*args, **kwargs):
 
     Parameters
     ----------
-    x : array
-    figsize : a tuple (width, height) in inches
-        Size of a figure object.
-    xticks : sequence
-        Values to use for the xticks.
-    yticks : sequence
-        Values to use for the yticks.
-    xlim : 2-tuple/list
+    x : array-like
+        The witdth of the horizontal bars. Should be 1d np.ndarray or pandas
+        series.
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
         Set the x limits.
-    ylim : 2-tuple/list
+    ylim : 2-tuple/list, optional
         Set the y limits.
     xlabel : str, optional
         Name to use for the xlabel on x-axis.
     ylabel : str, optional
         Name to use for the ylabel on y-axis.
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
 
     Returns
     -------
-    None
+    result
+        See Notes.
 
     """
     plt_str = _barh(*args, **kwargs)
-    print(plt_str)
+    return_plt(plt_str, **kwargs)
 
 
 def boxplot(*args, **kwargs):
-    """Plot a boxplot
+    """Plot a boxplot of x
+
+    Note that currently this makes a boxplot using the quantiles:
+        `0, 0.25, 0.5, 0.75, 1.0`
+    i.e. it the whiskers will not exclude outliers
 
     Parameters
     ----------
-    x : array
-    figsize : a tuple (width, height) in inches
-        Size of a figure object.
-    xticks : sequence
-        Values to use for the xticks.
-    yticks : sequence
-        Values to use for the yticks.
-    xlim : 2-tuple/list
+    x : array-like
+        The horizontal coordinates of the data points.
+        Can be 1d or 2d np.ndarray/ pandas series/ dataframe. If 2d, each 1d
+        slice will be plotted as a separate boxplot.
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
         Set the x limits.
-    ylim : 2-tuple/list
+    ylim : 2-tuple/list, optional
         Set the y limits.
     xlabel : str, optional
         Name to use for the xlabel on x-axis.
     ylabel : str, optional
         Name to use for the ylabel on y-axis.
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
 
     Returns
     -------
-    None
+    result
+        See Notes.
 
     """
     plt_str = _boxplot(*args, **kwargs)
-    print(plt_str)
+    return_plt(plt_str, **kwargs)
+
+
+def return_plt(plt_str, **kwargs):
+    if kwargs.get("return_type") == "str":
+        return plt_str
+    else:
+        print(plt_str)
+        return None
 
 
 # -----------------------------------------------------------------------------
@@ -143,14 +169,7 @@ def boxplot(*args, **kwargs):
 
 
 def _init_figure(
-    figsize=None,
-    xlim=None,
-    ylim=None,
-    xticks=None,
-    yticks=None,
-    xlabel=None,
-    ylabel=None,
-    **kwargs
+    figsize=None, xlim=None, ylim=None, xlabel=None, ylabel=None, **kwargs
 ):
     """Initialise a new figure.
 

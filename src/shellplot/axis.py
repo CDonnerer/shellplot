@@ -23,6 +23,10 @@ class Axis:
         self.label = label
         self.limits = limits
 
+        # reverted setting ticks and labels - need to think about the logic here
+        # self.ticks = ticks
+        # self.labels = labels
+
     # -------------------------------------------------------------------------
     # Public properties that can be set by the user
     # -------------------------------------------------------------------------
