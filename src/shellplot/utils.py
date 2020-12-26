@@ -133,3 +133,14 @@ def _(x: pd.DataFrame):
 @get_label.register
 def _(x: pd.Series):
     return x.name
+
+
+@singledispatch
+def get_index(x):
+    """Try to get index out of array-like inputs"""
+
+
+@get_index.register(pd.Series)
+@get_index.register(pd.DataFrame)
+def _(x):
+    return np.array(x.index)

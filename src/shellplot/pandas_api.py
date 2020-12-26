@@ -101,7 +101,7 @@ def _series_barh(data, **kwargs):
     if x_col is not None:
         data = data[x_col]
 
-    return plt.barh(x=data, labels=data.index, **kwargs)
+    return plt.barh(x=data, **kwargs)
 
 
 def _series_line(data, **kwargs):

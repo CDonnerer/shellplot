@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from shellplot.utils import (
+    get_index,
     get_label,
     load_dataset,
     numpy_1d,
@@ -123,3 +124,16 @@ def test_numpy_1d(x, expected_np_1d):
 def test_get_label(x, expected_label):
     label = get_label(x)
     assert label == expected_label
+
+
+@pytest.mark.parametrize(
+    "x, expected_index",
+    [
+        (pd.Series(data=[0, 1], index=[1, 0]), np.array([1, 0])),
+        (pd.DataFrame({"feat_1": [0, 1]}, index=[1, 0]), np.array([1, 0])),
+        (np.array([1, 0]), None),
+    ],
+)
+def test_get_index(x, expected_index):
+    index = get_index(x)
+    np.testing.assert_equal(index, expected_index)

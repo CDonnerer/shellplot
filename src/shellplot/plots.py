@@ -4,7 +4,7 @@ import numpy as np
 
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import get_label, numpy_1d, numpy_2d, remove_any_nan
+from shellplot.utils import get_index, get_label, numpy_1d, numpy_2d, remove_any_nan
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -256,6 +256,9 @@ def _barh(x, labels=None, **kwargs):
     """Horizontal bar plot"""
 
     kwargs.update({"xlabel": get_label(x)})
+    if labels is None:
+        labels = get_index(x)
+
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
     x_axis.limits = (0, max(x))

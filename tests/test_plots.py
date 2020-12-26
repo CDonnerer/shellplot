@@ -12,13 +12,6 @@ from shellplot.plots import _add_hbar, _add_vbar, barh, boxplot, hist, plot
 # -----------------------------------------------------------------------------
 
 
-def test_barh():
-    x = np.array([10, 56, 121, 67])
-    labels = np.array(["one", "two", "three", "four"])
-    plt_str = barh(x, labels=labels, return_type="str")
-    assert isinstance(plt_str, str)
-
-
 def test_boxplot():
     x = np.random.randn(1000)
     plt_str = boxplot(x, return_type="str")
@@ -199,6 +192,50 @@ def test_hist(x, expected_hist):
         return_type="str",
     )
     assert plt_str == expected_hist
+
+
+# -----------------------------------------------------------------------------
+# Test `barh` function
+# -----------------------------------------------------------------------------
+
+
+@pytest.fixture
+def expected_barh():
+    return "\n".join(
+        [
+            "",
+            "      |----------------              ",
+            "  four┤                |             ",
+            "      |----------------------------- ",
+            " three┤                             |",
+            "      |----------------------------- ",
+            "   two┤             |                ",
+            "      |-------------                 ",
+            "   one┤  |                           ",
+            "      |--                            ",
+            "      └┬------┬------┬-------┬------┬",
+            "       0      30     60      90     120",
+            "",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x, labels",
+    [
+        (np.array([10, 56, 121, 67]), np.array(["one", "two", "three", "four"])),
+        (
+            pd.Series(
+                data=np.array([10, 56, 121, 67]),
+                index=np.array(["one", "two", "three", "four"]),
+            ),
+            None,
+        ),
+    ],
+)
+def test_barh(x, labels, expected_barh):
+    plt_str = barh(x, labels=labels, figsize=(30, 9), return_type="str")
+    assert plt_str == expected_barh
 
 
 # -----------------------------------------------------------------------------
