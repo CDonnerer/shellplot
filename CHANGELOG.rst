@@ -9,6 +9,7 @@ Version 0.1.4
 - Added options to modify global figure properties, e.g. xlim, figsize, etc
 - Updated docs for manually curated API reference as opposed to sphinx api-doc
 - Additional tests for plots along with flexibility for pandas/ numpy/ list inputs
+- Additional tests for drawing module
 
 
 Version 0.1.3
