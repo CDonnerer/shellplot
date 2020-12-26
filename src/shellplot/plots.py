@@ -92,7 +92,7 @@ def barh(*args, **kwargs):
     Parameters
     ----------
     x : array-like
-        The witdth of the horizontal bars. Should be 1d np.ndarray or pandas
+        The width of the horizontal bars. Should be 1d np.ndarray or pandas
         series.
     labels : array-like
         Array that is used to label the bars. Needs to have the same dim as x.
@@ -286,6 +286,8 @@ def _barh(x, labels=None, **kwargs):
 def _boxplot(x, labels=None, **kwargs):
     """Box plot"""
 
+    if labels is None:
+        labels = get_label(x)
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
     x = numpy_2d(x)
@@ -301,8 +303,9 @@ def _boxplot(x, labels=None, **kwargs):
         np.array([0.2, 0.50, 0.8]) + np.arange(0, len(x), 1)[np.newaxis].T
     )
     y_axis.ticks = np.arange(0.5, len(x), 1)
+
     if labels is not None:
-        y_axis.labels = labels
+        y_axis.labels = numpy_1d(labels)
 
     for ii in range(len(x)):
         quants = quantiles_scaled[ii, :]

@@ -8,17 +8,6 @@ import pandas as pd
 from shellplot.plots import _add_hbar, _add_vbar, barh, boxplot, hist, plot
 
 # -----------------------------------------------------------------------------
-# 'Integration' style 'tests' that only check everything runs end to end
-# -----------------------------------------------------------------------------
-
-
-def test_boxplot():
-    x = np.random.randn(1000)
-    plt_str = boxplot(x, return_type="str")
-    assert isinstance(plt_str, str)
-
-
-# -----------------------------------------------------------------------------
 # Test `plot` function
 # -----------------------------------------------------------------------------
 
@@ -236,6 +225,48 @@ def expected_barh():
 def test_barh(x, labels, expected_barh):
     plt_str = barh(x, labels=labels, figsize=(30, 9), return_type="str")
     assert plt_str == expected_barh
+
+
+# -----------------------------------------------------------------------------
+# Test `boxplot` function
+# -----------------------------------------------------------------------------
+
+
+@pytest.fixture
+def expected_boxplot():
+    return "\n".join(
+        [
+            "",
+            "    |                                        ",
+            "    |                                        ",
+            "    |         --------------                 ",
+            "    ||       |       |      |               |",
+            " box┤|-------|       |      |---------------|",
+            "    ||       |       |      |               |",
+            "    |         --------------                 ",
+            "    |                                        ",
+            "    |                                        ",
+            "    └┬-------┬-------┬------┬-------┬-------┬",
+            "     0       1       2      3       4       5",
+            "",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x, labels",
+    [
+        (np.array([0, 1, 1, 1, 2, 2, 3, 3, 3, 5]), ["box"]),
+        (
+            pd.Series(data=np.array([0, 1, 1, 1, 2, 2, 3, 3, 3, 5]), name="box"),
+            None,
+        ),
+    ],
+)
+def test_boxplot(x, labels, expected_boxplot):
+    plt_str = boxplot(x, labels=labels, figsize=(40, 9), return_type="str")
+
+    assert plt_str == expected_boxplot
 
 
 # -----------------------------------------------------------------------------

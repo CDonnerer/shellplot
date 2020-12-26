@@ -89,6 +89,11 @@ def _(x: pd.DataFrame):
 
 
 @numpy_2d.register
+def _(x: pd.Series):
+    return x.to_numpy()[np.newaxis]
+
+
+@numpy_2d.register
 def _(x: list):
     return [numpy_1d(x) for x in x]
 
@@ -117,6 +122,11 @@ def _(x: pd.DataFrame):
 @numpy_1d.register
 def _(x: list):
     return np.array(x)
+
+
+@numpy_1d.register
+def _(x: str):  # TODO: this should be any non-iterable
+    return np.array([x])
 
 
 @singledispatch

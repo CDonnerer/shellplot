@@ -92,6 +92,7 @@ def test_load_dataset(name):
         (np.array([[0, 1]]), np.array([[0, 1]])),
         ([np.array([0, 1])], [np.array([0, 1])]),
         (pd.DataFrame(np.array([[0], [1]])), np.array([[0, 1]])),
+        (pd.Series([0, 1]), np.array([[0, 1]])),
     ],
 )
 def test_numpy_2d(x, expected_np_2d):
@@ -107,6 +108,7 @@ def test_numpy_2d(x, expected_np_2d):
         (pd.Index([0, 1]), np.array([0, 1])),
         (pd.DataFrame(np.array([0, 1])), np.array([0, 1])),
         ([0, 1], np.array([0, 1])),
+        ("box", np.array(["box"])),
     ],
 )
 def test_numpy_1d(x, expected_np_1d):
