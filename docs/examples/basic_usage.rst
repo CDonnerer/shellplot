@@ -45,6 +45,54 @@ Scatter plots can be created via the ``plot`` function::
               -4               -2               0                 2                4
 
 
+It is possible to modify the appearance of the plot by passing keyword args,
+using a similar syntax to `matplotlib`_. E.g. we could modify the above call to
+``plot`` like so::
+
+
+        >>> import numpy as np
+        >>> import shellplot as plt
+        >>> x = np.arange(-4, 4, 0.01)
+        >>> y = np.cos(x)
+        >>> plt_str = plt.plot(
+                x, y,
+                figsize=(40, 21),
+                xlim=(0, 3),
+                ylim=(-1, 1),
+                xlabel="x",
+                ylabel="cos(x)",
+                return_type="str",
+            )
+        >>> print(plt_str)
+
+          cos(x)
+          1.0┤+++++
+             |    ++++
+             |       +++
+             |         +++
+             |           +++
+          0.5┤             ++
+             |              +++
+             |                ++
+             |                 ++
+             |                   ++
+          0.0┤                    ++
+             |                     ++
+             |                      +++
+             |                        ++
+             |                         ++
+         -0.5┤                           ++
+             |                            +++
+             |                              ++
+             |                               ++++
+             |                                  ++++
+         -1.0┤                                     +++
+             └┬------------┬------------┬------------┬
+              0            1            2            3
+                                  x
+
+Please refer to :ref:`api_reference` for the full list of possible options.
+
 Histogram
 -------------------
 
@@ -212,3 +260,4 @@ parameter::
 
 
 .. _pandas: https://pandas.pydata.org/
+.. _matplotlib: https://matplotlib.org/contents.html#

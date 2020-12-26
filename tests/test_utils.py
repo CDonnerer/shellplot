@@ -4,7 +4,10 @@ import numpy as np
 import pandas as pd
 
 from shellplot.utils import (
+    get_index,
+    get_label,
     load_dataset,
+    numpy_1d,
     numpy_2d,
     remove_any_nan,
     round_down,
@@ -89,9 +92,50 @@ def test_load_dataset(name):
         (np.array([[0, 1]]), np.array([[0, 1]])),
         ([np.array([0, 1])], [np.array([0, 1])]),
         (pd.DataFrame(np.array([[0], [1]])), np.array([[0, 1]])),
+        (pd.Series([0, 1]), np.array([[0, 1]])),
     ],
 )
 def test_numpy_2d(x, expected_np_2d):
     np_2d = numpy_2d(x)
-
     np.testing.assert_equal(np_2d, expected_np_2d)
+
+
+@pytest.mark.parametrize(
+    "x, expected_np_1d",
+    [
+        (np.array([0, 1]), np.array([0, 1])),
+        (pd.Series(np.array([0, 1])), np.array([0, 1])),
+        (pd.Index([0, 1]), np.array([0, 1])),
+        (pd.DataFrame(np.array([0, 1])), np.array([0, 1])),
+        ([0, 1], np.array([0, 1])),
+        ("box", np.array(["box"])),
+    ],
+)
+def test_numpy_1d(x, expected_np_1d):
+    np_1d = numpy_1d(x)
+    np.testing.assert_equal(np_1d, expected_np_1d)
+
+
+@pytest.mark.parametrize(
+    "x, expected_label",
+    [
+        (pd.Series(data=[0, 1], name="my_series"), "my_series"),
+        # (pd.DataFrame({"feat_1": [0, 1], "feat_2": [0, 1]}), TODO
+    ],
+)
+def test_get_label(x, expected_label):
+    label = get_label(x)
+    assert label == expected_label
+
+
+@pytest.mark.parametrize(
+    "x, expected_index",
+    [
+        (pd.Series(data=[0, 1], index=[1, 0]), np.array([1, 0])),
+        (pd.DataFrame({"feat_1": [0, 1]}, index=[1, 0]), np.array([1, 0])),
+        (np.array([1, 0]), None),
+    ],
+)
+def test_get_index(x, expected_index):
+    index = get_index(x)
+    np.testing.assert_equal(index, expected_index)
