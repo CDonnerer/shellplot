@@ -269,6 +269,60 @@ def test_boxplot(x, labels, expected_boxplot):
     assert plt_str == expected_boxplot
 
 
+@pytest.fixture
+def expected_multi_boxplot():
+    return "\n".join(
+        [
+            "",
+            "      |                                        ",
+            "      |         --------------                 ",
+            "      ||       |       |      |               |",
+            " box_3┤|-------|       |      |---------------|",
+            "      ||       |       |      |               |",
+            "      |         --------------                 ",
+            "      |                                        ",
+            "      |                                        ",
+            "      |         --------------                 ",
+            "      ||       |       |      |               |",
+            " box_2┤|-------|       |      |---------------|",
+            "      ||       |       |      |               |",
+            "      |         --------------                 ",
+            "      |                                        ",
+            "      |                                        ",
+            "      |         --------------                 ",
+            "      ||       |       |      |               |",
+            " box_1┤|-------|       |      |---------------|",
+            "      ||       |       |      |               |",
+            "      |         --------------                 ",
+            "      |                                        ",
+            "      └┬-------┬-------┬------┬-------┬-------┬",
+            "       0       1       2      3       4       5",
+            "",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x, labels",
+    [
+        ([np.array([0, 1, 1, 1, 2, 2, 3, 3, 3, 5])] * 3, ["box_1", "box_2", "box_3"]),
+        (
+            pd.DataFrame(
+                {
+                    "box_1": np.array([0, 1, 1, 1, 2, 2, 3, 3, 3, 5]),
+                    "box_2": np.array([0, 1, 1, 1, 2, 2, 3, 3, 3, 5]),
+                    "box_3": np.array([0, 1, 1, 1, 2, 2, 3, 3, 3, 5]),
+                }
+            ),
+            None,
+        ),
+    ],
+)
+def test_multi_boxplot(x, labels, expected_multi_boxplot):
+    plt_str = boxplot(x, labels=labels, figsize=(40, 21), return_type="str")
+    assert plt_str == expected_multi_boxplot
+
+
 # -----------------------------------------------------------------------------
 # Test canvas elements
 # -----------------------------------------------------------------------------
