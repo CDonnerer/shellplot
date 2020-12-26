@@ -116,7 +116,8 @@ class Axis:
     def _get_ticks(self):
         """"""
         step, precision = tolerance_round(
-            (self.limits[1] - self.limits[0]) / self.n_ticks, tol=1e-1
+            (self.limits[1] - self.limits[0]) / self.n_ticks,
+            tol=0.1,  # would be good to increase the tolerance here
         )
         return np.around(
             np.arange(self.limits[0], self.limits[1] + step, step), precision

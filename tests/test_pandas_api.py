@@ -57,6 +57,11 @@ def random_frame():
 
 def test_plot_frame(df_penguins):
     set_shellplot_plotting_backend()
+    df_penguins.dropna().plot("bill_length_mm", "flipper_length_mm")
+
+
+def test_plot_frame_color(df_penguins):
+    set_shellplot_plotting_backend()
     df_penguins.dropna().plot("bill_length_mm", "flipper_length_mm", color="species")
 
 

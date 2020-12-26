@@ -4,7 +4,7 @@ import numpy as np
 
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import get_label, numpy_2d, remove_any_nan
+from shellplot.utils import get_index, get_label, numpy_1d, numpy_2d, remove_any_nan
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -92,7 +92,7 @@ def barh(*args, **kwargs):
     Parameters
     ----------
     x : array-like
-        The witdth of the horizontal bars. Should be 1d np.ndarray or pandas
+        The width of the horizontal bars. Should be 1d np.ndarray or pandas
         series.
     labels : array-like
         Array that is used to label the bars. Needs to have the same dim as x.
@@ -198,7 +198,7 @@ def _plot(x, y, color=None, **kwargs):
 
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
-    x, y = remove_any_nan(x, y)
+    x, y = remove_any_nan(numpy_1d(x), numpy_1d(y))
     x_scaled = x_axis.fit_transform(x)
     y_scaled = y_axis.fit_transform(y)
 
@@ -206,7 +206,7 @@ def _plot(x, y, color=None, **kwargs):
     x_scaled, y_scaled = x_scaled[within_display], y_scaled[within_display]
 
     if color is not None:
-        color_scaled = color.to_numpy()[within_display]
+        color_scaled = numpy_1d(color)[within_display]
         values = np.unique(color_scaled)
 
         for ii, val in enumerate(values):
@@ -223,9 +223,6 @@ def _plot(x, y, color=None, **kwargs):
 
 def _hist(x, bins=10, **kwargs):
     """Histogram"""
-    x = x[~np.isnan(x)]
-
-    counts, bin_edges = np.histogram(x, bins)
 
     if kwargs.get("xlabel") is None:
         kwargs.update({"xlabel": get_label(x)})
@@ -233,6 +230,10 @@ def _hist(x, bins=10, **kwargs):
         kwargs.update({"ylabel": "counts"})
 
     x_axis, y_axis, canvas = _init_figure(**kwargs)
+
+    x = numpy_1d(x)
+    x = x[~np.isnan(x)]
+    counts, bin_edges = np.histogram(x, bins)
 
     y_axis.limits = (0, max(counts))
     counts_scaled = y_axis.transform(counts)
@@ -255,6 +256,9 @@ def _barh(x, labels=None, **kwargs):
     """Horizontal bar plot"""
 
     kwargs.update({"xlabel": get_label(x)})
+    if labels is None:
+        labels = get_index(x)
+
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
     x_axis.limits = (0, max(x))
@@ -282,6 +286,8 @@ def _barh(x, labels=None, **kwargs):
 def _boxplot(x, labels=None, **kwargs):
     """Box plot"""
 
+    if labels is None:
+        labels = get_label(x)
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
     x = numpy_2d(x)
@@ -297,8 +303,9 @@ def _boxplot(x, labels=None, **kwargs):
         np.array([0.2, 0.50, 0.8]) + np.arange(0, len(x), 1)[np.newaxis].T
     )
     y_axis.ticks = np.arange(0.5, len(x), 1)
+
     if labels is not None:
-        y_axis.labels = labels
+        y_axis.labels = numpy_1d(labels)
 
     for ii in range(len(x)):
         quants = quantiles_scaled[ii, :]
