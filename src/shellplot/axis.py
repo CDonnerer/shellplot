@@ -95,8 +95,7 @@ class Axis:
 
     def transform(self, x):
         x_scaled = np.around(self.scale * (x - self.limits[0])).astype(int)
-        within_display = np.logical_and(x_scaled >= 0, x_scaled <= self.display_max)
-        return np.ma.masked_where(~within_display, x_scaled)
+        return np.ma.masked_outside(x_scaled, 0, self.display_max)
 
     def fit_transform(self, x):
         self = self.fit(x)

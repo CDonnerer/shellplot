@@ -191,19 +191,26 @@ def _init_figure(
 def _plot(x, y, color=None, **kwargs):
     """Scatterplot"""
 
-    if kwargs.get("xlabel") is None:
-        kwargs.update({"xlabel": get_label(x)})
-    if kwargs.get("ylabel") is None:
-        kwargs.update({"ylabel": get_label(y)})
+    # if kwargs.get("xlabel") is None:
+    #     kwargs.update({"xlabel": get_label(x)})
+    # if kwargs.get("ylabel") is None:
+    #     kwargs.update({"ylabel": get_label(y)})
 
     x_axis, y_axis, canvas = _init_figure(**kwargs)
 
-    x, y = remove_any_nan(numpy_1d(x), numpy_1d(y))
+    x = numpy_2d(x)
+    y = numpy_2d(y)
+
+    x, y = remove_any_nan(x, y)
+
     x_scaled = x_axis.fit_transform(x)
     y_scaled = y_axis.fit_transform(y)
 
-    within_display = np.logical_and(x_scaled.mask == 0, y_scaled.mask == 0)
-    x_scaled, y_scaled = x_scaled[within_display], y_scaled[within_display]
+    within_display = np.logical_and(x_scaled.mask, y_scaled.mask)
+    x_scaled.mask = within_display
+    y_scaled.mask = within_display
+
+    # x_scaled, y_scaled = x_scaled[within_display], y_scaled[within_display]
 
     if color is not None:
         color_scaled = numpy_1d(color)[within_display]
@@ -215,7 +222,11 @@ def _plot(x, y, color=None, **kwargs):
 
         legend = {ii + 1: val for ii, val in enumerate(values)}
     else:
-        canvas[x_scaled, y_scaled] = 1
+        for ii in range(x_scaled.shape[0]):
+            idx = x_scaled[ii, :]  # .compressed()
+            idy = y_scaled[ii, :]  # .compressed()
+            canvas[idx, idy] = ii + 1
+
         legend = None
 
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
