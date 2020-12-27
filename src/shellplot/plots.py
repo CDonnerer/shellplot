@@ -201,6 +201,10 @@ def _plot(x, y, color=None, **kwargs):
     x = numpy_2d(x)
     y = numpy_2d(y)
 
+    labels = kwargs.get("labels")
+    if labels is None:
+        labels = list(range(x.shape[0]))
+
     # x, y = remove_any_nan(x, y)
 
     x_scaled = x_axis.fit_transform(x)
@@ -224,8 +228,9 @@ def _plot(x, y, color=None, **kwargs):
             idx = x_scaled[ii, :].compressed()
             idy = y_scaled[ii, :].compressed()
             canvas[idx, idy] = ii + 1
+        legend = {ii + 1: val for ii, val in enumerate(labels)}
 
-        legend = None
+    #        legend = None
 
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 

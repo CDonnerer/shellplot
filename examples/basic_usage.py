@@ -7,10 +7,10 @@ y1 = np.cos(x)
 y2 = np.sin(x)
 y3 = y1 + y2
 
-y = np.vstack((y1, y2, y3))
-x = np.vstack((x, x, x))
+y = np.vstack((y1, y2))
+x = np.vstack((x, x))
 
-plt.plot(x, y, figsize=(80, 30), xlim=(-1, 6))  # , ylim=(-1.5, 1.5))
+plt.plot(x, y, labels=("cos", "sin"), figsize=(80, 30))  # , ylim=(-1.5, 1.5))
 
 # plt_str = plt.plot(
 #     x,
