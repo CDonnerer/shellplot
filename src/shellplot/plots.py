@@ -4,7 +4,7 @@ import numpy as np
 
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import get_index, get_label, numpy_1d, numpy_2d, remove_any_nan
+from shellplot.utils import get_index, get_label, numpy_1d, numpy_2d  # , remove_any_nan
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -201,16 +201,14 @@ def _plot(x, y, color=None, **kwargs):
     x = numpy_2d(x)
     y = numpy_2d(y)
 
-    x, y = remove_any_nan(x, y)
+    # x, y = remove_any_nan(x, y)
 
     x_scaled = x_axis.fit_transform(x)
     y_scaled = y_axis.fit_transform(y)
 
-    within_display = np.logical_and(x_scaled.mask, y_scaled.mask)
+    within_display = np.logical_or(x_scaled.mask, y_scaled.mask)
     x_scaled.mask = within_display
     y_scaled.mask = within_display
-
-    # x_scaled, y_scaled = x_scaled[within_display], y_scaled[within_display]
 
     if color is not None:
         color_scaled = numpy_1d(color)[within_display]
@@ -223,8 +221,8 @@ def _plot(x, y, color=None, **kwargs):
         legend = {ii + 1: val for ii, val in enumerate(values)}
     else:
         for ii in range(x_scaled.shape[0]):
-            idx = x_scaled[ii, :]  # .compressed()
-            idy = y_scaled[ii, :]  # .compressed()
+            idx = x_scaled[ii, :].compressed()
+            idy = y_scaled[ii, :].compressed()
             canvas[idx, idy] = ii + 1
 
         legend = None
