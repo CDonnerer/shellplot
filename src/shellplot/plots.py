@@ -4,7 +4,7 @@ import numpy as np
 
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import get_index, get_label, numpy_1d, numpy_2d  # , remove_any_nan
+from shellplot.utils import get_index, get_label, numpy_1d, numpy_2d
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -169,7 +169,7 @@ def return_plt(plt_str, **kwargs):
 
 
 def _init_figure(
-    figsize=None, xlim=None, ylim=None, xlabel=None, ylabel=None, **kwargs
+    figsize=None, xlim=None, ylim=None, xlabel=None, ylabel=None, label=None, **kwargs
 ):
     """Initialise a new figure.
 
@@ -185,52 +185,56 @@ def _init_figure(
     y_axis = Axis(figsize[1], label=ylabel, limits=ylim)
     canvas = np.zeros(shape=(figsize[0], figsize[1]), dtype=int)
 
-    return x_axis, y_axis, canvas
+    if label is not None:
+        legend = {ii + 1: val for ii, val in enumerate(label)}
+    else:
+        legend = None
+
+    return x_axis, y_axis, canvas, legend
 
 
 def _plot(x, y, color=None, **kwargs):
     """Scatterplot"""
 
-    # if kwargs.get("xlabel") is None:
-    #     kwargs.update({"xlabel": get_label(x)})
-    # if kwargs.get("ylabel") is None:
-    #     kwargs.update({"ylabel": get_label(y)})
+    x_label, y_label = get_label(x), get_label(y)
 
-    x_axis, y_axis, canvas = _init_figure(**kwargs)
+    if isinstance(y_label, list):  # multi label goes into legend
+        if kwargs.get("label") is None:
+            kwargs.update({"label": y_label})
+    elif isinstance(y_label, str):  # single label goes into axis labels
+        if kwargs.get("ylabel") is None:
+            kwargs.update({"ylabel": y_label})
+        if kwargs.get("xlabel") is None:
+            kwargs.update({"xlabel": x_label})
+
+    x_axis, y_axis, canvas, legend = _init_figure(**kwargs)
 
     x = numpy_2d(x)
     y = numpy_2d(y)
 
-    labels = kwargs.get("labels")
-    if labels is None:
-        labels = list(range(x.shape[0]))
-
-    # x, y = remove_any_nan(x, y)
-
     x_scaled = x_axis.fit_transform(x)
     y_scaled = y_axis.fit_transform(y)
 
-    within_display = np.logical_or(x_scaled.mask, y_scaled.mask)
-    x_scaled.mask = within_display
-    y_scaled.mask = within_display
+    outside_display = np.logical_or(x_scaled.mask, y_scaled.mask)
+    x_scaled.mask = outside_display
+    y_scaled.mask = outside_display
 
     if color is not None:
-        color_scaled = numpy_1d(color)[within_display]
+        color_scaled = numpy_1d(color)[~outside_display].squeeze()
         values = np.unique(color_scaled)
 
         for ii, val in enumerate(values):
             mask = val == color_scaled
-            canvas[x_scaled[mask], y_scaled[mask]] = ii + 1
+            idx = x_scaled[:, mask].compressed()
+            idy = y_scaled[:, mask].compressed()
+            canvas[idx, idy] = ii + 1
 
         legend = {ii + 1: val for ii, val in enumerate(values)}
     else:
-        for ii in range(x_scaled.shape[0]):
+        for ii in range(y_scaled.shape[0]):
             idx = x_scaled[ii, :].compressed()
             idy = y_scaled[ii, :].compressed()
             canvas[idx, idy] = ii + 1
-        legend = {ii + 1: val for ii, val in enumerate(labels)}
-
-    #        legend = None
 
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
@@ -243,7 +247,7 @@ def _hist(x, bins=10, **kwargs):
     if kwargs.get("ylabel") is None:
         kwargs.update({"ylabel": "counts"})
 
-    x_axis, y_axis, canvas = _init_figure(**kwargs)
+    x_axis, y_axis, canvas, legend = _init_figure(**kwargs)
 
     x = numpy_1d(x)
     x = x[~np.isnan(x)]
@@ -263,7 +267,7 @@ def _hist(x, bins=10, **kwargs):
     display_max = (bin_width + 1) * len(counts)
     x_axis.scale = display_max / (x_axis.limits[1] - x_axis.limits[0])
 
-    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
+    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
 
 def _barh(x, labels=None, **kwargs):
@@ -273,7 +277,7 @@ def _barh(x, labels=None, **kwargs):
     if labels is None:
         labels = get_index(x)
 
-    x_axis, y_axis, canvas = _init_figure(**kwargs)
+    x_axis, y_axis, canvas, legend = _init_figure(**kwargs)
 
     x_axis.limits = (0, max(x))
     x_scaled = x_axis.fit_transform(x)
@@ -294,7 +298,7 @@ def _barh(x, labels=None, **kwargs):
     display_max = (bin_width + 1) * len(x)
     y_axis.scale = (display_max) / (y_axis.limits[1] - y_axis.limits[0])
 
-    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
+    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
 
 def _boxplot(x, labels=None, **kwargs):
@@ -302,7 +306,7 @@ def _boxplot(x, labels=None, **kwargs):
 
     if labels is None:
         labels = get_label(x)
-    x_axis, y_axis, canvas = _init_figure(**kwargs)
+    x_axis, y_axis, canvas, legend = _init_figure(**kwargs)
 
     x = numpy_2d(x)
     x = np.ma.masked_where(np.isnan(x), x)
@@ -326,7 +330,7 @@ def _boxplot(x, labels=None, **kwargs):
         lims = y_lims[ii, :]
         canvas = _add_box_and_whiskers(canvas, quants, lims)
 
-    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis)
+    return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
 
 # -----------------------------------------------------------------------------

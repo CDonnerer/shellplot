@@ -88,8 +88,9 @@ def _(x: pd.DataFrame):
     return x.to_numpy().transpose()
 
 
-@numpy_2d.register
-def _(x: pd.Series):
+@numpy_2d.register(pd.Series)
+@numpy_2d.register(pd.Index)
+def _(x):
     return x.to_numpy()[np.newaxis]
 
 
@@ -103,8 +104,8 @@ def numpy_1d(x):
     """Reshape and transform various array-like inputs to 1d np arrays"""
 
 
-@numpy_1d.register
-def _(x: np.ndarray):
+@numpy_1d.register(np.ndarray)
+def _(x):
     return x
 
 
@@ -114,18 +115,18 @@ def _(x):
     return x.to_numpy()
 
 
-@numpy_1d.register
-def _(x: pd.DataFrame):
+@numpy_1d.register(pd.DataFrame)
+def _(x):
     return x.to_numpy().squeeze()
 
 
-@numpy_1d.register
-def _(x: list):
+@numpy_1d.register(list)
+def _(x):
     return np.array(x)
 
 
-@numpy_1d.register
-def _(x: str):  # TODO: this should be any non-iterable
+@numpy_1d.register(str)
+def _(x):  # TODO: this should be any non-iterable
     return np.array([x])
 
 
@@ -135,13 +136,13 @@ def get_label(x):
     pass
 
 
-@get_label.register
-def _(x: pd.DataFrame):
-    return x.columns
+@get_label.register(pd.DataFrame)
+def _(x):
+    return list(x)
 
 
-@get_label.register
-def _(x: pd.Series):
+@get_label.register(pd.Series)
+def _(x):
     return x.name
 
 

@@ -126,13 +126,16 @@ def _frame_line(data, **kwargs):
     y_col = kwargs.pop("y")
     color = kwargs.pop("color", None)
 
-    if x_col is None or y_col is None:
-        raise ValueError("Please provide both x, y column names")
+    if x_col is None and y_col is None:
+        x = pd.concat([data.index.to_frame()] * data.shape[1], axis=1)
+        y = data
+    else:
+        if x_col is None or y_col is None:
+            raise ValueError("Please provide both x, y column names")
+        x = data[x_col]
+        y = data[y_col]
 
     if color in data.columns:
         color = data[color]
 
-    s_x = data[x_col]
-    s_y = data[y_col]
-
-    return plt.plot(x=s_x, y=s_y, color=color, **kwargs)
+    return plt.plot(x=x, y=y, color=color, **kwargs)
