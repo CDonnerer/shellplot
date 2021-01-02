@@ -287,7 +287,7 @@ def _barh(x, labels=None, **kwargs):
 
     x_axis, y_axis, canvas, legend = _init_figure(**kwargs)
 
-    x_axis.limits = (x.min(), x.max())
+    x_axis.limits = (0, x.max())
     x_scaled = x_axis.fit_transform(x)
 
     y_axis = y_axis.fit(np.arange(0, len(x) + 1, 1))

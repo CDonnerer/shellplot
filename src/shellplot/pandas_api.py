@@ -29,7 +29,7 @@ def plot(data, kind, **kwargs):
 
 
 def hist_series(data, **kwargs):
-    x_col = kwargs.pop("x")
+    x_col = kwargs.pop("x", None)
     if x_col is not None:
         x = data[x_col]
     else:
@@ -44,7 +44,7 @@ def boxplot_frame(data, *args, **kwargs):
 
     column = kwargs.pop("column", data.columns)
     by = kwargs.pop("by")
-    kwargs.pop("x")
+    kwargs.pop("x", None)
 
     if by is not None:
         df = data.pivot(columns=by, values=column)
