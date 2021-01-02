@@ -29,15 +29,22 @@ def plot(data, kind, **kwargs):
 
 
 def hist_series(data, **kwargs):
-    return plt.hist(x=data, **kwargs)
+    x_col = kwargs.pop("x")
+    if x_col is not None:
+        x = data[x_col]
+    else:
+        x = data
+    return plt.hist(x=x, **kwargs)
 
 
 def boxplot_frame(data, *args, **kwargs):
     """TODO
     - can this logic go into `plt.boxplot`?
     """
+
     column = kwargs.pop("column", data.columns)
     by = kwargs.pop("by")
+    kwargs.pop("x")
 
     if by is not None:
         df = data.pivot(columns=by, values=column)
@@ -68,10 +75,12 @@ def hist_frame(*args, **kwargs):
 def _plot_series(data, kind, *args, **kwargs):
     """Dispatch on kind to the relevant series plot function"""
     series_func = {
+        "bar": _series_barh,
         "barh": _series_barh,
         "line": _series_line,
         "scatter": _series_line,
         "box": _series_boxplot,
+        "hist": hist_series,
     }
 
     plot_func = series_func.get(kind)
@@ -83,10 +92,7 @@ def _plot_series(data, kind, *args, **kwargs):
 
 def _plot_frame(data, kind, *args, **kwargs):
     """Dispatch on kind to the relevant frame plot function"""
-    frame_func = {
-        "line": _frame_line,
-        "scatter": _frame_line,
-    }
+    frame_func = {"line": _frame_line, "scatter": _frame_line, "box": boxplot_frame}
 
     plot_func = frame_func.get(kind)
     if plot_func is None:

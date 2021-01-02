@@ -21,10 +21,10 @@ def plot(*args, **kwargs):
     ----------
     x : array-like
         The horizontal coordinates of the data points.
-        Should be 1d np.ndarray or pandas series
+        Should be 1d or 2d np.ndarray or pandas series
     y : array-like
         The vertical coordinates of the data points.
-        Should be 1d np.ndarray or pandas series
+        Should be 1d or 2d np.ndarray or pandas series
     color : array, optional
         Color of scatter. Needs to be of same dimension as x, y
         Should be 1-d np.ndarray or pandas series
@@ -38,6 +38,8 @@ def plot(*args, **kwargs):
         Name to use for the xlabel on x-axis.
     ylabel : str, optional
         Name to use for the ylabel on y-axis.
+    label : str/ list of str, optional
+        Labels that make the figure legend
     return_type : str, optional
         If `'str'`, returns the plot as a string. Otherwise, the plot will be
         directly printed to stdout.
@@ -72,6 +74,8 @@ def hist(*args, **kwargs):
         Name to use for the xlabel on x-axis.
     ylabel : str, optional
         Name to use for the ylabel on y-axis.
+    label : str/ list of str, optional
+        Labels that make the figure legend
     return_type : str, optional
         If `'str'`, returns the plot as a string. Otherwise, the plot will be
         directly printed to stdout.
@@ -106,6 +110,8 @@ def barh(*args, **kwargs):
         Name to use for the xlabel on x-axis.
     ylabel : str, optional
         Name to use for the ylabel on y-axis.
+    label : str/ list of str, optional
+        Labels that make the figure legend
     return_type : str, optional
         If `'str'`, returns the plot as a string. Otherwise, the plot will be
         directly printed to stdout.
@@ -142,6 +148,8 @@ def boxplot(*args, **kwargs):
         Name to use for the xlabel on x-axis.
     ylabel : str, optional
         Name to use for the ylabel on y-axis.
+    label : str/ list of str, optional
+        Labels that make the figure legend
     return_type : str, optional
         If `'str'`, returns the plot as a string. Otherwise, the plot will be
         directly printed to stdout.
@@ -279,7 +287,7 @@ def _barh(x, labels=None, **kwargs):
 
     x_axis, y_axis, canvas, legend = _init_figure(**kwargs)
 
-    x_axis.limits = (0, max(x))
+    x_axis.limits = (x.min(), x.max())
     x_scaled = x_axis.fit_transform(x)
 
     y_axis = y_axis.fit(np.arange(0, len(x) + 1, 1))
@@ -291,7 +299,7 @@ def _barh(x, labels=None, **kwargs):
     bin = 0
     bin_width = y_axis.display_max // len(x) - 1
 
-    for val in x_scaled:
+    for val in x_scaled.data:
         canvas = _add_hbar(canvas, bin, bin_width, val)
         bin += bin_width + 1
 
