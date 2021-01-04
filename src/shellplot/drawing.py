@@ -120,8 +120,8 @@ def _draw_x_axis(x_axis, left_pad) -> List[str]:
     ax_lines = [upper_ax + "\n", lower_ax[: len(lower_ax) - overpad] + "\n"]
 
     if x_axis.label is not None:
-        label_pad = (x_axis.display_max + 1) // 2 - len(x_axis.label) // 2
-        label_str = " " * (left_pad + 1 + label_pad) + x_axis.label
+        label_pad = (x_axis.display_max + 1) // 2 - len(str(x_axis.label)) // 2
+        label_str = " " * (left_pad + 1 + label_pad) + str(x_axis.label)
         ax_lines.append(label_str)
 
     return ax_lines

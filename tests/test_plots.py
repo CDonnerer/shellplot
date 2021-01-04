@@ -116,6 +116,59 @@ def test_plot_linear_color(x, color, expected_linear_plot_color):
     assert plt_str == expected_linear_plot_color
 
 
+@pytest.fixture
+def expected_linear_multi_plot():
+    return "\n".join(
+        [
+            "",
+            " 9┤*                 +",
+            "  |  *             +  ",
+            "  |    *         +    ",
+            " 6┤      *     +      ",
+            "  |        * +        ",
+            "  |        + *        ",
+            " 3┤      +     *      ",
+            "  |    +         *    ",
+            "  |  +             *  + up",
+            " 0┤+                 ** down",
+            "  └┬---┬----┬---┬----┬",
+            "   0.0 2.2  4.4 6.6  8.8",
+            "",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x, y",
+    [
+        (
+            np.vstack((np.arange(0, 10, 1), np.arange(0, 10, 1))),
+            np.vstack((np.arange(0, 10, 1), np.arange(9, -1, -1))),
+        ),
+        (
+            pd.DataFrame({"up": np.arange(0, 10, 1), "down": np.arange(0, 10, 1)}),
+            pd.DataFrame({"up": np.arange(0, 10, 1), "down": np.arange(9, -1, -1)}),
+        ),
+    ],
+)
+def test_plot_multi_linear(x, y, expected_linear_multi_plot):
+    if isinstance(x, np.ndarray):
+        label = ["up", "down"]
+    else:
+        label = None
+
+    plt_str = plot(
+        x=x,
+        y=y,
+        figsize=(19, 10),
+        xlim=(0, 9),
+        ylim=(0, 9),
+        label=label,
+        return_type="str",
+    )
+    assert plt_str == expected_linear_multi_plot
+
+
 # -----------------------------------------------------------------------------
 # Test `hist` function
 # -----------------------------------------------------------------------------
