@@ -14,7 +14,7 @@ where x_display is the data in display coordinates
 """
 import numpy as np
 
-from shellplot.utils import round_down, round_up, tolerance_round
+from shellplot.utils import numeric, round_down, round_up, tolerance_round
 
 
 class Axis:
@@ -22,6 +22,8 @@ class Axis:
         self.display_max = display_length - 1
         self.label = label
         self.limits = limits
+
+        self._datetime_anchor = None  # used if x is of datetime
 
         # reverted setting ticks and labels - need to think about the logic here
         # self.ticks = ticks
@@ -87,6 +89,9 @@ class Axis:
 
     def fit(self, x=None):
         """Fit axis to get conversion from data to plot scale"""
+        if x is not None:
+            x = numeric(x)
+
         if self.limits is None:
             self.limits = self._auto_limits(x)
 
@@ -94,6 +99,7 @@ class Axis:
         return self
 
     def transform(self, x):
+        x = numeric(x)
         x_scaled = np.around(self.scale * (x - self.limits[0])).astype(int)
         return np.ma.masked_outside(x_scaled, 0, self.display_max)
 
@@ -124,7 +130,6 @@ class Axis:
 
     def _auto_limits(self, x, frac=0.05):
         """Automatically find `good` axis limits"""
-
         x_max = x.max()
         x_min = x.min()
 

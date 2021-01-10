@@ -9,6 +9,8 @@ import pandas as pd
 
 __all__ = ["load_dataset"]
 
+ANCHOR_DATETIME = np.datetime64("1970-01-01")
+
 
 def load_dataset(name: str) -> pd.DataFrame:
     """Load standard dataset from shellplot library
@@ -155,3 +157,11 @@ def get_index(x):
 @get_index.register(pd.DataFrame)
 def _(x):
     return np.array(x.index)
+
+
+def numeric(x):
+    """Convert np array to numeric values"""
+    if x.dtype.kind in np.typecodes["Datetime"]:
+        return (ANCHOR_DATETIME - x).astype(np.float64)
+    else:
+        return x
