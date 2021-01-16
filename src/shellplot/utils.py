@@ -169,16 +169,20 @@ def _(x):
     return np.array(x.index)
 
 
-def numeric(x):
+def to_numeric(x):
     """Convert np array to numeric values"""
     if x.dtype.kind in np.typecodes["Datetime"]:
-        return x - ANCHOR_DATETIME  # .astype(np.float64)
+        return x - ANCHOR_DATETIME
     else:
         return x
 
 
+def to_datetime(x):
+    return x + ANCHOR_DATETIME
+
+
 def is_datetime(x):
     if x.dtype.kind in np.typecodes["Datetime"]:
-        return True
+        return x.dtype
     else:
         return False

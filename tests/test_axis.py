@@ -3,7 +3,6 @@
 import pytest
 
 import numpy as np
-import pandas as pd
 
 from shellplot.axis import Axis
 
@@ -110,9 +109,3 @@ def test_axis_properties():
     axis.limits = (1, 9)
     axis.ticks = np.array([1, 3, 5, 7, 9])
     axis.labels = np.array(["a", "b", "c", "d", "e"])
-
-
-def test_axis_datetime():
-    axis = Axis(display_length=80)
-    np_dt = pd.date_range("1/1/2000", periods=100).values
-    axis.fit(np_dt)

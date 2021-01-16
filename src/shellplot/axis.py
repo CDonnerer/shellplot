@@ -14,7 +14,15 @@ where x_display is the data in display coordinates
 """
 import numpy as np
 
-from shellplot.utils import numeric, round_down, round_up, tolerance_round
+from shellplot.utils import (
+    is_datetime,
+    round_down,
+    round_up,
+    timedelta_round,
+    to_datetime,
+    to_numeric,
+    tolerance_round,
+)
 
 
 class Axis:
@@ -23,7 +31,7 @@ class Axis:
         self.label = label
         self.limits = limits
 
-        self._datetime_anchor = None  # used if x is of datetime
+        self._is_datetime = False  # datetime axis
 
         # reverted setting ticks and labels - need to think about the logic here
         # self.ticks = ticks
@@ -74,7 +82,10 @@ class Axis:
     @property
     def labels(self):
         if not hasattr(self, "_labels"):
-            self.labels = self.ticks
+            if self._is_datetime:
+                self.labels = self._datetime_labels(self.ticks)
+            else:
+                self.labels = self.ticks
         return self._labels
 
     @labels.setter
@@ -90,16 +101,17 @@ class Axis:
     def fit(self, x=None):
         """Fit axis to get conversion from data to plot scale"""
         if x is not None:
-            x = numeric(x)
+            self._is_datetime = is_datetime(x)
+            x = to_numeric(x)
 
         if self.limits is None:
             self.limits = self._auto_limits(x)
 
-        self.scale = float(self.display_max) / (self.limits[1] - self.limits[0])
+        self.scale = self.display_max / float(self.limits[1] - self.limits[0])
         return self
 
     def transform(self, x):
-        x = numeric(x)
+        x = to_numeric(x)
         x_scaled = self.scale * (x - self.limits[0]).astype(float)
         x_display = np.around(x_scaled).astype(int)
         return np.ma.masked_outside(x_display, 0, self.display_max)
@@ -120,7 +132,7 @@ class Axis:
         return list(zip(display_ticks, display_labels))  # generator?
 
     def _get_ticks(self):
-        """"""
+        """Generate sensible axis ticks"""
         step, precision = tolerance_round(
             (self.limits[1] - self.limits[0]) / self.n_ticks,
             tol=0.1,  # would be good to increase the tolerance here
@@ -145,3 +157,10 @@ class Axis:
             rounded = round_func(val, dec)
             if abs(rounded - val) <= max_difference:
                 return rounded
+
+    def _datetime_labels(self, ticks):
+        # TODO: [ns] should not be hardcoded
+        dt_ticks = to_datetime(ticks.astype("timedelta64[ns]"))
+        delta_ticks = dt_ticks[1] - dt_ticks[0]  # TODO: this could fail
+        unit = timedelta_round(delta_ticks)
+        return np.datetime_as_string(dt_ticks, unit=unit)
