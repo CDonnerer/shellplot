@@ -50,6 +50,7 @@ def plot(*args, **kwargs):
         See Notes.
 
     """
+
     plt_str = _plot(*args, **kwargs)
     return return_plt(plt_str, **kwargs)
 

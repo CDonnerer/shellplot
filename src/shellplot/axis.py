@@ -62,7 +62,7 @@ class Axis:
     @property
     def n_ticks(self):
         if not hasattr(self, "_n_ticks"):
-            self.n_ticks = int(self.display_max ** 0.3) + 2
+            self.n_ticks = int(self.display_max ** 0.3) + 1
         return self._n_ticks
 
     @n_ticks.setter
@@ -72,7 +72,10 @@ class Axis:
     @property
     def ticks(self):
         if not hasattr(self, "_ticks"):
-            self.ticks = self._get_ticks()
+            if self._is_datetime:
+                self.ticks = self._get_dt_ticks()
+            else:
+                self.ticks = self._get_ticks()
         return self._ticks
 
     @ticks.setter
@@ -140,6 +143,16 @@ class Axis:
         return np.around(
             np.arange(self.limits[0], self.limits[1] + step, step), precision
         )
+
+    def _get_dt_ticks(self):
+        """Generate sensible axis ticks for datetime"""
+        axis_td = to_datetime(np.array(self.limits, dtype="timedelta64[ns]"))
+        limits_delta = axis_td[1] - axis_td[0]
+        unit = timedelta_round(limits_delta)
+        n_days = limits_delta / np.timedelta64(1, unit)
+        step, precision = tolerance_round(n_days / self.n_ticks)
+        td_step = np.timedelta64(step, unit)
+        return np.arange(axis_td[0], axis_td[1] + td_step, td_step)
 
     def _auto_limits(self, x, frac=0.05):
         """Automatically find `good` axis limits"""
