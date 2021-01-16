@@ -7,5 +7,5 @@ Examples
    :maxdepth: 2
 
    Basic usage <basic_usage>
-   Pandas <pandas>
+   Pandas visualisation <pandas>
    EDA: Penguins <penguins_eda>

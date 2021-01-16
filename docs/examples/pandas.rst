@@ -1,4 +1,4 @@
-Pandas API
+Pandas visualisation
 ================================================================================
 
 In order to use shellplot with pandas, we first need to set the plotting backend::
