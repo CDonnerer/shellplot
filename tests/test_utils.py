@@ -12,6 +12,7 @@ from shellplot.utils import (
     remove_any_nan,
     round_down,
     round_up,
+    timedelta_round,
     tolerance_round,
 )
 
@@ -139,3 +140,15 @@ def test_get_label(x, expected_label):
 def test_get_index(x, expected_index):
     index = get_index(x)
     np.testing.assert_equal(index, expected_index)
+
+
+@pytest.mark.parametrize(
+    "x, expected_unit",
+    [
+        (np.timedelta64(86400000000000, "ns"), "D"),
+        (np.timedelta64(3600000000000, "ns"), "h"),
+        (np.timedelta64(1000000, "ns"), "ms"),
+    ],
+)
+def test_timedelta_round(x, expected_unit):
+    assert timedelta_round(x) == expected_unit

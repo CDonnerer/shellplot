@@ -100,8 +100,9 @@ class Axis:
 
     def transform(self, x):
         x = numeric(x)
-        x_scaled = np.around(self.scale * (x - self.limits[0])).astype(int)
-        return np.ma.masked_outside(x_scaled, 0, self.display_max)
+        x_scaled = self.scale * (x - self.limits[0]).astype(float)
+        x_display = np.around(x_scaled).astype(int)
+        return np.ma.masked_outside(x_display, 0, self.display_max)
 
     def fit_transform(self, x):
         self = self.fit(x)
