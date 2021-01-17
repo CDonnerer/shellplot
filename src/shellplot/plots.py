@@ -50,6 +50,7 @@ def plot(*args, **kwargs):
         See Notes.
 
     """
+
     plt_str = _plot(*args, **kwargs)
     return return_plt(plt_str, **kwargs)
 
@@ -187,7 +188,7 @@ def _init_figure(
         - add tick labels
     """
     if figsize is None:
-        figsize = (70, 25)  # this should go somewhere else
+        figsize = (81, 31)  # this should go somewhere else
 
     x_axis = Axis(figsize[0], label=xlabel, limits=xlim)
     y_axis = Axis(figsize[1], label=ylabel, limits=ylim)

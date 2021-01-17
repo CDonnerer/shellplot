@@ -9,14 +9,17 @@ import pandas as pd
 
 __all__ = ["load_dataset"]
 
+ANCHOR_DATETIME = np.datetime64("1970-01-01")  # I remember the day well
+
 
 def load_dataset(name: str) -> pd.DataFrame:
-    """Load standard dataset from shellplot library
+    """Load dataset from shellplot library
 
     Parameters
     ----------
     name : str
-        Name of the dataset. Available options are `penguins`
+        Name of the dataset. Currently, available options are:
+            - `penguins`
 
     Returns
     -------
@@ -60,6 +63,15 @@ def round_down(n, decimals=0):
     else:
         multiplier = 10 ** decimals
         return math.floor(n * multiplier) / multiplier
+
+
+def timedelta_round(x):
+    """Given a numpy timedelta, find the largest time unit without changing value"""
+    units = ["Y", "M", "D", "h", "m", "s", "ms", "us", "ns"]
+    for unit in units:
+        x_rounded = x.astype(f"timedelta64[{unit}]")
+        if x_rounded == x:
+            return unit
 
 
 def remove_any_nan(x, y):
@@ -155,3 +167,16 @@ def get_index(x):
 @get_index.register(pd.DataFrame)
 def _(x):
     return np.array(x.index)
+
+
+def to_numeric(x):
+    x = numpy_1d(x)
+    """Convert np array to numeric values"""
+    if x.dtype.kind in np.typecodes["Datetime"]:
+        return x.astype("datetime64[ns]") - ANCHOR_DATETIME, x.dtype
+    else:
+        return x, False
+
+
+def to_datetime(x):
+    return x + ANCHOR_DATETIME
