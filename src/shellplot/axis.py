@@ -15,7 +15,6 @@ where x_display is the data in display coordinates
 import numpy as np
 
 from shellplot.utils import (
-    is_datetime,
     round_down,
     round_up,
     timedelta_round,
@@ -57,7 +56,7 @@ class Axis:
     def limits(self, limits):
         self._limits = limits
         if limits is not None:
-            self._limits = to_numeric(np.array(limits))
+            self._limits, _ = to_numeric(np.array(limits))
             self._set_scale()
 
     @property
@@ -104,8 +103,7 @@ class Axis:
 
     def fit(self, x):
         """Fit axis to get conversion from data to plot scale"""
-        self._is_datetime = is_datetime(x)
-        x = to_numeric(x)
+        x, self._is_datetime = to_numeric(x)
 
         if self.limits is None:
             self.limits = self._auto_limits(x)
@@ -115,7 +113,7 @@ class Axis:
         return self
 
     def transform(self, x):
-        x = to_numeric(x)
+        x, _ = to_numeric(x)
         x_scaled = self.scale * (x - self.limits[0]).astype(float)
         x_display = np.around(x_scaled).astype(int)
         return np.ma.masked_outside(x_display, 0, self.display_max)

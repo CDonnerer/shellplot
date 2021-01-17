@@ -142,28 +142,3 @@ def test_axis_properties():
     axis.limits = (1, 9)
     axis.ticks = np.array([1, 3, 5, 7, 9])
     axis.labels = np.array(["a", "b", "c", "d", "e"])
-
-
-#
-#
-# def test_axis_nticks():
-#
-#     display_length = 25
-#     max_ticks = 6
-#
-#     ticks = np.arange(2, max_ticks)
-#     remainders = np.remainder(display_length, ticks)
-
-# import pdb
-#
-# pdb.set_trace()
-
-# def get_divisors(n):
-#     for i in range(1, int(n / 2) + 1):
-#         if n % i == 0:
-#             yield i
-#         yield n
-
-# import pdb
-#
-# pdb.set_trace()
