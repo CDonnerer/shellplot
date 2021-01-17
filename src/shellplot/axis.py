@@ -62,7 +62,7 @@ class Axis:
     @property
     def n_ticks(self):
         if not hasattr(self, "_n_ticks"):
-            self.n_ticks = int(self.display_max ** 0.3) + 1
+            self.n_ticks = self._auto_nticks()
         return self._n_ticks
 
     @n_ticks.setter
@@ -137,8 +137,8 @@ class Axis:
     def _get_ticks(self):
         """Generate sensible axis ticks"""
         step, precision = tolerance_round(
-            (self.limits[1] - self.limits[0]) / self.n_ticks,
-            tol=0.1,  # would be good to increase the tolerance here
+            (self.limits[1] - self.limits[0]) / (self.n_ticks - 1),
+            tol=0.05,
         )
         return np.around(
             np.arange(self.limits[0], self.limits[1] + step, step), precision
@@ -149,12 +149,11 @@ class Axis:
         axis_td = to_datetime(np.array(self.limits, dtype="timedelta64[ns]"))
         limits_delta = axis_td[1] - axis_td[0]
         unit = timedelta_round(limits_delta)
-        n_days = limits_delta / np.timedelta64(1, unit)
-        step, precision = tolerance_round(n_days / self.n_ticks)
-        td_step = np.timedelta64(step, unit)
+        n_units = limits_delta / np.timedelta64(1, unit)
+        td_step = np.timedelta64(int(n_units / self.n_ticks), unit)
         return np.arange(axis_td[0], axis_td[1] + td_step, td_step)
 
-    def _auto_limits(self, x, frac=0.05):
+    def _auto_limits(self, x, frac=0.25):
         """Automatically find `good` axis limits"""
         x_max = x.max()
         x_min = x.min()
@@ -177,3 +176,10 @@ class Axis:
         delta_ticks = dt_ticks[1] - dt_ticks[0]  # TODO: this could fail
         unit = timedelta_round(delta_ticks)
         return np.datetime_as_string(dt_ticks, unit=unit)
+
+    def _auto_nticks(self):
+        """Automatically find a `good` number of axis ticks that fits display"""
+        max_ticks = int(1.5 * self.display_max ** 0.3) + 1
+        ticks = np.arange(max_ticks, max_ticks - 2, -1)
+        remainders = np.remainder(self.display_max, ticks)
+        return ticks[np.argmin(remainders)] + 1

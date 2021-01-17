@@ -16,22 +16,20 @@ np.random.seed(42)
         (np.random.uniform(1, 9, 100), (1, 9)),
         (np.random.uniform(1.02, 8.9, 100), (1, 9)),
         (np.random.uniform(-0.05, -0.01, 100), (-0.05, -0.01)),
-        (np.array([-10.054, 2.36]), (-10.1, 2.4)),
-        (np.array([0.000432424, 0.998]), (0, 1.0)),
-        (np.array([0.00431, 0.00821]), (0.0043, 0.0083)),
+        (np.array([-10.054, 2.36]), (-11, 3)),
+        (np.array([0.000432424, 0.998]), (0, 1)),
+        (np.array([0.00431, 0.00821]), (0.004, 0.009)),
         (np.array([172.1, 231.9]), (172, 232)),
     ],
 )
 def test_axis_auto_limits(x, expected_limits):
     """Check whether automatically determined limits are sensible"""
-    axis = Axis(display_length=80)
+    axis = Axis(display_length=81)
     axis = axis.fit(x)
-
     assert axis.limits == expected_limits
 
 
 @pytest.mark.parametrize(
-    # fmt: off
     "x,expected_display_x",
     [
         (np.array([0, 100]), np.array([0, 79])),
@@ -52,7 +50,7 @@ def test_axis_transform(x, expected_display_x):
     # fmt: off
     "limits,n_ticks,expected_ticks",
     [
-        ((0, 1), 5, np.array([0, 0.2, 0.4, 0.6, 0.8, 1.0])),
+        ((0, 1), 5, np.array([0, 0.25, 0.5, 0.75, 1.0])),
         ((1, 9), 5, np.array([1, 3, 5, 7, 9])),
     ],
 )
@@ -109,3 +107,35 @@ def test_axis_properties():
     axis.limits = (1, 9)
     axis.ticks = np.array([1, 3, 5, 7, 9])
     axis.labels = np.array(["a", "b", "c", "d", "e"])
+
+
+# def test_axis_datetime():
+#     axis = Axis(display_length=80)
+#     import pandas as pd
+#
+#     x = pd.date_range("1/1/2000", periods=1000).values
+#
+#     axis.fit(x)
+#
+#
+# def test_axis_nticks():
+#
+#     display_length = 25
+#     max_ticks = 6
+#
+#     ticks = np.arange(2, max_ticks)
+#     remainders = np.remainder(display_length, ticks)
+
+# import pdb
+#
+# pdb.set_trace()
+
+# def get_divisors(n):
+#     for i in range(1, int(n / 2) + 1):
+#         if n % i == 0:
+#             yield i
+#         yield n
+
+# import pdb
+#
+# pdb.set_trace()
