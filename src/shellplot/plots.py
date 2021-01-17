@@ -189,7 +189,6 @@ def _init_figure(
     """
     if figsize is None:
         figsize = (81, 31)  # this should go somewhere else
-        print(f"Figure size = {figsize}")
 
     x_axis = Axis(figsize[0], label=xlabel, limits=xlim)
     y_axis = Axis(figsize[1], label=ylabel, limits=ylim)
