@@ -57,7 +57,8 @@ class Axis:
     def limits(self, limits):
         self._limits = limits
         if limits is not None:
-            self.fit()  # setting axis limits automatically fits the axis
+            self._limits = to_numeric(np.array(limits))
+            self._set_scale()
 
     @property
     def n_ticks(self):
@@ -101,16 +102,16 @@ class Axis:
     # Methods
     # -------------------------------------------------------------------------
 
-    def fit(self, x=None):
+    def fit(self, x):
         """Fit axis to get conversion from data to plot scale"""
-        if x is not None:
-            self._is_datetime = is_datetime(x)
-            x = to_numeric(x)
+        self._is_datetime = is_datetime(x)
+        x = to_numeric(x)
 
         if self.limits is None:
             self.limits = self._auto_limits(x)
 
-        self.scale = self.display_max / float(self.limits[1] - self.limits[0])
+        self._set_scale()
+
         return self
 
     def transform(self, x):
@@ -134,6 +135,9 @@ class Axis:
 
         return list(zip(display_ticks, display_labels))  # generator?
 
+    def _set_scale(self):
+        self.scale = self.display_max / float(self.limits[1] - self.limits[0])
+
     def _get_ticks(self):
         """Generate sensible axis ticks"""
         step, precision = tolerance_round(
@@ -150,7 +154,7 @@ class Axis:
         limits_delta = axis_td[1] - axis_td[0]
         unit = timedelta_round(limits_delta)
         n_units = limits_delta / np.timedelta64(1, unit)
-        td_step = np.timedelta64(int(n_units / self.n_ticks), unit)
+        td_step = np.timedelta64(int(n_units / (self.n_ticks - 1)), unit)
         return np.arange(axis_td[0], axis_td[1] + td_step, td_step)
 
     def _auto_limits(self, x, frac=0.25):

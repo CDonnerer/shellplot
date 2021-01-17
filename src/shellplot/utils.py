@@ -170,9 +170,10 @@ def _(x):
 
 
 def to_numeric(x):
+    x = numpy_1d(x)
     """Convert np array to numeric values"""
     if x.dtype.kind in np.typecodes["Datetime"]:
-        return x - ANCHOR_DATETIME
+        return x.astype("datetime64[ns]") - ANCHOR_DATETIME
     else:
         return x
 
