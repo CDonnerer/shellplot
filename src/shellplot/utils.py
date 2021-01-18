@@ -9,14 +9,17 @@ import pandas as pd
 
 __all__ = ["load_dataset"]
 
+ANCHOR_DATETIME = np.datetime64("1970-01-01")  # I remember the day well
+
 
 def load_dataset(name: str) -> pd.DataFrame:
-    """Load standard dataset from shellplot library
+    """Load dataset from shellplot library
 
     Parameters
     ----------
     name : str
-        Name of the dataset. Available options are `penguins`
+        Name of the dataset. Currently, available options are:
+            - `penguins`
 
     Returns
     -------
@@ -62,6 +65,15 @@ def round_down(n, decimals=0):
         return math.floor(n * multiplier) / multiplier
 
 
+def timedelta_round(x):
+    """Given a numpy timedelta, find the largest time unit without changing value"""
+    units = ["Y", "M", "D", "h", "m", "s", "ms", "us", "ns"]
+    for unit in units:
+        x_rounded = x.astype(f"timedelta64[{unit}]")
+        if x_rounded == x:
+            return unit
+
+
 def remove_any_nan(x, y):
     """Given two np.ndarray, remove indeces where any is nan"""
     is_any_nan = np.isnan(x) | np.isnan(y)
@@ -88,8 +100,9 @@ def _(x: pd.DataFrame):
     return x.to_numpy().transpose()
 
 
-@numpy_2d.register
-def _(x: pd.Series):
+@numpy_2d.register(pd.Series)
+@numpy_2d.register(pd.Index)
+def _(x):
     return x.to_numpy()[np.newaxis]
 
 
@@ -103,8 +116,8 @@ def numpy_1d(x):
     """Reshape and transform various array-like inputs to 1d np arrays"""
 
 
-@numpy_1d.register
-def _(x: np.ndarray):
+@numpy_1d.register(np.ndarray)
+def _(x):
     return x
 
 
@@ -114,18 +127,18 @@ def _(x):
     return x.to_numpy()
 
 
-@numpy_1d.register
-def _(x: pd.DataFrame):
+@numpy_1d.register(pd.DataFrame)
+def _(x):
     return x.to_numpy().squeeze()
 
 
-@numpy_1d.register
-def _(x: list):
+@numpy_1d.register(list)
+def _(x):
     return np.array(x)
 
 
-@numpy_1d.register
-def _(x: str):  # TODO: this should be any non-iterable
+@numpy_1d.register(str)
+def _(x):  # TODO: this should be any non-iterable
     return np.array([x])
 
 
@@ -135,13 +148,13 @@ def get_label(x):
     pass
 
 
-@get_label.register
-def _(x: pd.DataFrame):
-    return x.columns
+@get_label.register(pd.DataFrame)
+def _(x):
+    return list(x)
 
 
-@get_label.register
-def _(x: pd.Series):
+@get_label.register(pd.Series)
+def _(x):
     return x.name
 
 
@@ -154,3 +167,16 @@ def get_index(x):
 @get_index.register(pd.DataFrame)
 def _(x):
     return np.array(x.index)
+
+
+def to_numeric(x):
+    x = numpy_1d(x)
+    """Convert np array to numeric values"""
+    if x.dtype.kind in np.typecodes["Datetime"]:
+        return x.astype("datetime64[ns]") - ANCHOR_DATETIME, x.dtype
+    else:
+        return x, False
+
+
+def to_datetime(x):
+    return x + ANCHOR_DATETIME

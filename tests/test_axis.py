@@ -13,25 +13,23 @@ np.random.seed(42)
     # fmt: off
     "x,expected_limits",
     [
-        (np.random.uniform(1, 9, 100), (1, 9)),
-        (np.random.uniform(1.02, 8.9, 100), (1, 9)),
-        (np.random.uniform(-0.05, -0.01, 100), (-0.05, -0.01)),
-        (np.array([-10.054, 2.36]), (-10.1, 2.4)),
-        (np.array([0.000432424, 0.998]), (0, 1.0)),
-        (np.array([0.00431, 0.00821]), (0.0043, 0.0083)),
-        (np.array([172.1, 231.9]), (172, 232)),
+        (np.random.uniform(1, 9, 100), np.array([1, 9])),
+        (np.random.uniform(1.02, 8.9, 100), np.array([1, 9])),
+        (np.random.uniform(-0.05, -0.01, 100), np.array([-0.05, -0.01])),
+        (np.array([-10.054, 2.36]), np.array([-11, 3])),
+        (np.array([0.000432424, 0.998]), np.array([0, 1])),
+        (np.array([0.00431, 0.00821]), np.array([0.004, 0.009])),
+        (np.array([172.1, 231.9]), np.array([172, 232])),
     ],
 )
 def test_axis_auto_limits(x, expected_limits):
     """Check whether automatically determined limits are sensible"""
-    axis = Axis(display_length=80)
+    axis = Axis(display_length=81)
     axis = axis.fit(x)
-
-    assert axis.limits == expected_limits
+    np.testing.assert_array_equal(axis.limits, expected_limits)
 
 
 @pytest.mark.parametrize(
-    # fmt: off
     "x,expected_display_x",
     [
         (np.array([0, 100]), np.array([0, 79])),
@@ -49,10 +47,25 @@ def test_axis_transform(x, expected_display_x):
 
 
 @pytest.mark.parametrize(
-    # fmt: off
-    "limits,n_ticks,expected_ticks",
+    "axis, expected_n_ticks",
     [
-        ((0, 1), 5, np.array([0, 0.2, 0.4, 0.6, 0.8, 1.0])),
+        (Axis(display_length=20), 4),
+        (Axis(display_length=30), 5),
+        (Axis(display_length=50), 5),
+        (Axis(display_length=80), 7),
+    ],
+)
+def test_axis_auto_nticks(axis, expected_n_ticks):
+    """Auto n_ticks test"""
+    n_ticks = axis._auto_nticks()
+    assert n_ticks == expected_n_ticks
+
+
+@pytest.mark.parametrize(
+    # fmt: off
+    "limits, n_ticks, expected_ticks",
+    [
+        ((0, 1), 5, np.array([0, 0.25, 0.5, 0.75, 1.0])),
         ((1, 9), 5, np.array([1, 3, 5, 7, 9])),
     ],
 )
@@ -61,9 +74,29 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
     axis = Axis(display_length=80)
     axis.limits = limits
     axis.n_ticks = n_ticks
-    ticks = axis._get_ticks()
+    ticks = axis.ticks
 
     np.testing.assert_array_equal(ticks, expected_ticks)
+
+
+@pytest.mark.parametrize(
+    "limits, n_ticks, expected_labels",
+    [
+        (
+            (np.datetime64("2001-01-01"), np.datetime64("2001-01-03")),
+            3,
+            np.array(["2001-01-01", "2001-01-02", "2001-01-03"]),
+        ),
+    ],
+)
+def test_axis_datetime_ticks(limits, n_ticks, expected_labels):
+    axis = Axis(display_length=80)
+    axis.limits = limits
+    axis.n_ticks = n_ticks
+    axis.fit(np.array(limits))
+    labels = axis.labels
+
+    assert list(labels) == list(expected_labels)
 
 
 @pytest.mark.parametrize(

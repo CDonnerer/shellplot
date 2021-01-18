@@ -14,7 +14,14 @@ where x_display is the data in display coordinates
 """
 import numpy as np
 
-from shellplot.utils import round_down, round_up, tolerance_round
+from shellplot.utils import (
+    round_down,
+    round_up,
+    timedelta_round,
+    to_datetime,
+    to_numeric,
+    tolerance_round,
+)
 
 
 class Axis:
@@ -22,6 +29,8 @@ class Axis:
         self.display_max = display_length - 1
         self.label = label
         self.limits = limits
+
+        self._is_datetime = False  # datetime axis
 
         # reverted setting ticks and labels - need to think about the logic here
         # self.ticks = ticks
@@ -47,12 +56,13 @@ class Axis:
     def limits(self, limits):
         self._limits = limits
         if limits is not None:
-            self.fit()  # setting axis limits automatically fits the axis
+            self._limits, _ = to_numeric(np.array(limits))
+            self._set_scale()
 
     @property
     def n_ticks(self):
         if not hasattr(self, "_n_ticks"):
-            self.n_ticks = int(self.display_max ** 0.3) + 2
+            self.n_ticks = self._auto_nticks()
         return self._n_ticks
 
     @n_ticks.setter
@@ -62,7 +72,10 @@ class Axis:
     @property
     def ticks(self):
         if not hasattr(self, "_ticks"):
-            self.ticks = self._get_ticks()
+            if self._is_datetime:
+                self.ticks = self._get_dt_ticks()
+            else:
+                self.ticks = self._get_ticks()
         return self._ticks
 
     @ticks.setter
@@ -72,7 +85,10 @@ class Axis:
     @property
     def labels(self):
         if not hasattr(self, "_labels"):
-            self.labels = self.ticks
+            if self._is_datetime:
+                self.labels = self._datetime_labels(self.ticks)
+            else:
+                self.labels = self.ticks
         return self._labels
 
     @labels.setter
@@ -85,18 +101,22 @@ class Axis:
     # Methods
     # -------------------------------------------------------------------------
 
-    def fit(self, x=None):
+    def fit(self, x):
         """Fit axis to get conversion from data to plot scale"""
+        x, self._is_datetime = to_numeric(x)
+
         if self.limits is None:
             self.limits = self._auto_limits(x)
 
-        self.scale = float(self.display_max) / (self.limits[1] - self.limits[0])
+        self._set_scale()
+
         return self
 
     def transform(self, x):
-        x_scaled = np.around(self.scale * (x - self.limits[0])).astype(int)
-        within_display = np.logical_and(x_scaled >= 0, x_scaled <= self.display_max)
-        return np.ma.masked_where(~within_display, x_scaled)
+        x, _ = to_numeric(x)
+        x_scaled = self.scale * (x - self.limits[0]).astype(float)
+        x_display = np.around(x_scaled).astype(int)
+        return np.ma.masked_outside(x_display, 0, self.display_max)
 
     def fit_transform(self, x):
         self = self.fit(x)
@@ -113,19 +133,30 @@ class Axis:
 
         return list(zip(display_ticks, display_labels))  # generator?
 
+    def _set_scale(self):
+        self.scale = self.display_max / float(self.limits[1] - self.limits[0])
+
     def _get_ticks(self):
-        """"""
+        """Generate sensible axis ticks"""
         step, precision = tolerance_round(
-            (self.limits[1] - self.limits[0]) / self.n_ticks,
-            tol=0.1,  # would be good to increase the tolerance here
+            (self.limits[1] - self.limits[0]) / (self.n_ticks - 1),
+            tol=0.05,
         )
         return np.around(
             np.arange(self.limits[0], self.limits[1] + step, step), precision
         )
 
-    def _auto_limits(self, x, frac=0.05):
-        """Automatically find `good` axis limits"""
+    def _get_dt_ticks(self):
+        """Generate sensible axis ticks for datetime"""
+        axis_td = to_datetime(np.array(self.limits, dtype="timedelta64[ns]"))
+        limits_delta = axis_td[1] - axis_td[0]
+        unit = timedelta_round(limits_delta)
+        n_units = limits_delta / np.timedelta64(1, unit)
+        td_step = np.timedelta64(int(n_units / (self.n_ticks - 1)), unit)
+        return np.arange(axis_td[0], axis_td[1] + td_step, td_step)
 
+    def _auto_limits(self, x, frac=0.25):
+        """Automatically find `good` axis limits"""
         x_max = x.max()
         x_min = x.min()
 
@@ -140,3 +171,17 @@ class Axis:
             rounded = round_func(val, dec)
             if abs(rounded - val) <= max_difference:
                 return rounded
+
+    def _datetime_labels(self, ticks):
+        # TODO: [ns] should not be hardcoded
+        dt_ticks = to_datetime(ticks.astype("timedelta64[ns]"))
+        delta_ticks = dt_ticks[1] - dt_ticks[0]  # TODO: this could fail
+        unit = timedelta_round(delta_ticks)
+        return np.datetime_as_string(dt_ticks, unit=unit)
+
+    def _auto_nticks(self):
+        """Automatically find a `good` number of axis ticks that fits display"""
+        max_ticks = int(1.5 * self.display_max ** 0.3) + 1
+        ticks = np.arange(max_ticks, max_ticks - 2, -1)
+        remainders = np.remainder(self.display_max, ticks)
+        return ticks[np.argmin(remainders)] + 1

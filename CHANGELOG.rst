@@ -3,6 +3,14 @@ Changelog
 =========
 
 
+Version 0.1.5
+-------------
+- Allow to plot multiple scatters via 2d np arrays
+- Added support for datetime types
+- Added pandas visualisation example docs
+- General support for adding legend to plot via ``label`` keyword
+
+
 Version 0.1.4
 -------------
 - Fixed bug in x-axis drawing, spurious rounding

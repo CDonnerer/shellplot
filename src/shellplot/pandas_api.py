@@ -29,15 +29,22 @@ def plot(data, kind, **kwargs):
 
 
 def hist_series(data, **kwargs):
-    return plt.hist(x=data, **kwargs)
+    x_col = kwargs.pop("x", None)
+    if x_col is not None:
+        x = data[x_col]
+    else:
+        x = data
+    return plt.hist(x=x, **kwargs)
 
 
 def boxplot_frame(data, *args, **kwargs):
     """TODO
     - can this logic go into `plt.boxplot`?
     """
+
     column = kwargs.pop("column", data.columns)
     by = kwargs.pop("by")
+    kwargs.pop("x", None)
 
     if by is not None:
         df = data.pivot(columns=by, values=column)
@@ -68,10 +75,12 @@ def hist_frame(*args, **kwargs):
 def _plot_series(data, kind, *args, **kwargs):
     """Dispatch on kind to the relevant series plot function"""
     series_func = {
+        "bar": _series_barh,
         "barh": _series_barh,
         "line": _series_line,
         "scatter": _series_line,
         "box": _series_boxplot,
+        "hist": hist_series,
     }
 
     plot_func = series_func.get(kind)
@@ -83,10 +92,7 @@ def _plot_series(data, kind, *args, **kwargs):
 
 def _plot_frame(data, kind, *args, **kwargs):
     """Dispatch on kind to the relevant frame plot function"""
-    frame_func = {
-        "line": _frame_line,
-        "scatter": _frame_line,
-    }
+    frame_func = {"line": _frame_line, "scatter": _frame_line, "box": boxplot_frame}
 
     plot_func = frame_func.get(kind)
     if plot_func is None:
@@ -126,13 +132,16 @@ def _frame_line(data, **kwargs):
     y_col = kwargs.pop("y")
     color = kwargs.pop("color", None)
 
-    if x_col is None or y_col is None:
-        raise ValueError("Please provide both x, y column names")
+    if x_col is None and y_col is None:
+        x = pd.concat([data.index.to_frame()] * data.shape[1], axis=1)
+        y = data
+    else:
+        if x_col is None or y_col is None:
+            raise ValueError("Please provide both x, y column names")
+        x = data[x_col]
+        y = data[y_col]
 
     if color in data.columns:
         color = data[color]
 
-    s_x = data[x_col]
-    s_y = data[y_col]
-
-    return plt.plot(x=s_x, y=s_y, color=color, **kwargs)
+    return plt.plot(x=x, y=y, color=color, **kwargs)

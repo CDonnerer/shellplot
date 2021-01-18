@@ -10,11 +10,20 @@ def set_shellplot_plotting_backend():
     pd.set_option("plotting.backend", "shellplot")
 
 
-def test_set_shellplot_backend():
+@pytest.fixture(autouse=True)
+def test_with_shellplot_backend():
+    """All tests in this module will use the shellplot backend"""
     set_shellplot_plotting_backend()
+    yield
 
 
-# Test series backend
+def test_set_shellplot_backend():
+    assert pd.get_option("plotting.backend") == "shellplot"
+
+
+# -----------------------------------------------------------------------------
+# Test pandas series plotting
+# -----------------------------------------------------------------------------
 
 
 @pytest.fixture
@@ -24,17 +33,14 @@ def random_series():
 
 
 def test_plot_series(random_series):
-    set_shellplot_plotting_backend()
     random_series.plot()
 
 
 def test_hist_series(random_series):
-    set_shellplot_plotting_backend()
     random_series.hist()
 
 
 def test_barh_series():
-    set_shellplot_plotting_backend()
     my_series = pd.Series(index=["bar_1", "bar_1", "bar_3"], data=[1, 10, 23])
     my_series.plot.barh()
 
@@ -45,28 +51,35 @@ def test_boxplot_series(random_series):
         random_series.boxplot()
 
 
-# Test frame backend
+# -----------------------------------------------------------------------------
+# Test pandas frame plotting
+# -----------------------------------------------------------------------------
 
 
 @pytest.fixture
 def random_frame():
-    x = np.arange(0, 100, 1)
-    y = np.random.randn(100)
-    return pd.DataFrame({"x": x, "y": y})
+    df = pd.DataFrame(np.random.randn(1000, 3), columns=["A", "B", "C"]).cumsum()
+    df.index = pd.Series(list(range(len(df))))
+    return df
+
+
+def test_plot_frame_xy(random_frame):
+    random_frame.plot(x="A", y="B")
+
+
+def test_plot_frame_index_cols(random_frame):
+    random_frame.plot()
 
 
 def test_plot_frame(df_penguins):
-    set_shellplot_plotting_backend()
     df_penguins.dropna().plot("bill_length_mm", "flipper_length_mm")
 
 
 def test_plot_frame_color(df_penguins):
-    set_shellplot_plotting_backend()
     df_penguins.dropna().plot("bill_length_mm", "flipper_length_mm", color="species")
 
 
 def test_plot_frame_missing_arg(df_penguins):
-    set_shellplot_plotting_backend()
     with pytest.raises(ValueError):
         df_penguins.plot(x="flipper_length_mm")
 
