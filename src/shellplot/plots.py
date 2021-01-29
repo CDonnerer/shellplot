@@ -252,13 +252,21 @@ def _plot(x, y, color=None, line=False, **kwargs):
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
 
-def _line_interp(x, y):
+def _line_interp(x, y, round_tol=0.4):
     """Interpolate for line plotting"""
-    y_interp = np.arange(y.min(), y.max(), 1, dtype=int)
-    x_interp = np.interp(y_interp, y, x)
+    x_interp = np.arange(x.min(), x.max(), 1)
+    y_interp = np.interp(x_interp, x, y)
 
-    x_line = x_interp.astype(int)
-    y_line = y_interp.astype(int)
+    is_discrete = np.isclose(
+        y_interp,
+        np.around(y_interp).astype(int),
+        atol=round_tol,
+    )
+    is_discrete = True
+
+    x_line = x_interp[is_discrete].astype(int)
+    y_line = np.around(y_interp[is_discrete]).astype(int)
+
     return x_line, y_line
 
 
