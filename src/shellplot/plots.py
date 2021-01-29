@@ -202,7 +202,7 @@ def _init_figure(
     return x_axis, y_axis, canvas, legend
 
 
-def _plot(x, y, color=None, **kwargs):
+def _plot(x, y, color=None, line=False, **kwargs):
     """Scatterplot"""
 
     x_label, y_label = get_label(x), get_label(y)
@@ -243,9 +243,23 @@ def _plot(x, y, color=None, **kwargs):
         for ii in range(y_scaled.shape[0]):
             idx = x_scaled[ii, :].compressed()
             idy = y_scaled[ii, :].compressed()
+            if line:
+                x_line, y_line = _line_interp(idx, idy)
+                canvas[x_line, y_line] = 10
+
             canvas[idx, idy] = ii + 1
 
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
+
+
+def _line_interp(x, y):
+    """Interpolate for line plotting"""
+    y_interp = np.arange(y.min(), y.max(), 1, dtype=int)
+    x_interp = np.interp(y_interp, y, x)
+
+    x_line = x_interp.astype(int)
+    y_line = y_interp.astype(int)
+    return x_line, y_line
 
 
 def _hist(x, bins=10, **kwargs):
