@@ -257,11 +257,12 @@ def _line_interp(x, y, round_tol=0.4):
     x_interp = np.arange(x.min(), x.max(), 1)
     y_interp = np.interp(x_interp, x, y)
 
-    is_discrete = np.isclose(
-        y_interp,
-        np.around(y_interp).astype(int),
-        atol=round_tol,
-    )
+    # Point selection is turned off for now
+    # is_discrete = np.isclose(
+    #     y_interp,
+    #     np.around(y_interp).astype(int),
+    #     atol=round_tol,
+    # )
     is_discrete = True
 
     x_line = x_interp[is_discrete].astype(int)
