@@ -65,6 +65,9 @@ def plot(*args, **kwargs):
     color : array, optional
         Color of scatter. Needs to be of same dimension as x, y
         Should be 1-d np.ndarray or pandas series
+    line : bool, optional, default False
+        Whether a line should be plotted using the x, y points. This will use a
+        linear interpolation of the points.
     """
     plt_str = _plot(*args, **kwargs)
     return return_plt(plt_str, **kwargs)
