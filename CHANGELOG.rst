@@ -2,6 +2,10 @@
 Changelog
 =========
 
+Version xxx
+---------------
+- Added option to make line plot
+
 
 Version 0.1.5
 -------------

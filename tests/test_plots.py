@@ -170,6 +170,55 @@ def test_plot_multi_linear(x, y, expected_linear_multi_plot):
 
 
 # -----------------------------------------------------------------------------
+# Test `line` function
+# -----------------------------------------------------------------------------
+
+
+@pytest.fixture
+def expected_linear_line_plot():
+    return "\n".join(
+        [
+            "",
+            "  y",
+            " 9┤         +",
+            "  |        · ",
+            "  |       ·  ",
+            " 6┤      +   ",
+            "  |     ·    ",
+            "  |    ·     ",
+            " 3┤   +      ",
+            "  |  ·       ",
+            "  | ·        ",
+            " 0┤+         ",
+            "  └┬--┬--┬--┬",
+            "   0  3  6  9",
+            "        x",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x",
+    [
+        (pd.Series(np.arange(0, 10, 3))),
+    ],
+)
+def test_plot_linear_line(x, expected_linear_line_plot):
+    plt_str = plot(
+        x=x,
+        y=x,
+        line=True,
+        figsize=(10, 10),
+        xlim=(0, 9),
+        ylim=(0, 9),
+        xlabel="x",
+        ylabel="y",
+        return_type="str",
+    )
+    assert plt_str == expected_linear_line_plot
+
+
+# -----------------------------------------------------------------------------
 # Test `hist` function
 # -----------------------------------------------------------------------------
 

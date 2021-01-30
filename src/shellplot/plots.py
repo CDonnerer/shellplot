@@ -1,5 +1,7 @@
 """Shellplot plots
 """
+from functools import wraps
+
 import numpy as np
 
 from shellplot.axis import Axis
@@ -13,7 +15,42 @@ __all__ = ["plot", "hist", "barh", "boxplot"]
 # Exposed functions that directly print the plot
 # -----------------------------------------------------------------------------
 
+__figure_doc = """figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+    xlim : 2-tuple/list, optional
+        Set the x limits.
+    ylim : 2-tuple/list, optional
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
+    label : str/ list of str, optional
+        Labels that make the figure legend
+    return_type : str, optional
+        If `'str'`, returns the plot as a string. Otherwise, the plot will be
+        directly printed to stdout.
 
+
+    Returns
+    -------
+    result
+        See Notes.
+"""
+
+
+def add_fig_doc(func):
+    """Add figure params to docstring of func"""
+
+    @wraps(func)
+    def func_fig_doc(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    func_fig_doc.__doc__ = func.__doc__ + __figure_doc
+    return func_fig_doc
+
+
+@add_fig_doc
 def plot(*args, **kwargs):
     """Plot x versus y as scatter.
 
@@ -28,33 +65,15 @@ def plot(*args, **kwargs):
     color : array, optional
         Color of scatter. Needs to be of same dimension as x, y
         Should be 1-d np.ndarray or pandas series
-    figsize : a tuple (width, height) in ascii characters, optional
-        Size of the figure.
-    xlim : 2-tuple/list, optional
-        Set the x limits.
-    ylim : 2-tuple/list, optional
-        Set the y limits.
-    xlabel : str, optional
-        Name to use for the xlabel on x-axis.
-    ylabel : str, optional
-        Name to use for the ylabel on y-axis.
-    label : str/ list of str, optional
-        Labels that make the figure legend
-    return_type : str, optional
-        If `'str'`, returns the plot as a string. Otherwise, the plot will be
-        directly printed to stdout.
-
-    Returns
-    -------
-    result
-        See Notes.
-
+    line : bool, optional, default False
+        Whether a line should be plotted using the x, y points. This will use a
+        linear interpolation of the points.
     """
-
     plt_str = _plot(*args, **kwargs)
     return return_plt(plt_str, **kwargs)
 
 
+@add_fig_doc
 def hist(*args, **kwargs):
     """Plot a histogram of x
 
@@ -65,32 +84,12 @@ def hist(*args, **kwargs):
         pandas series.
     bins : int, optional
         Number of bins in histogram. Default is 10 bins.
-    figsize : a tuple (width, height) in ascii characters, optional
-        Size of the figure.
-    xlim : 2-tuple/list, optional
-        Set the x limits.
-    ylim : 2-tuple/list, optional
-        Set the y limits.
-    xlabel : str, optional
-        Name to use for the xlabel on x-axis.
-    ylabel : str, optional
-        Name to use for the ylabel on y-axis.
-    label : str/ list of str, optional
-        Labels that make the figure legend
-    return_type : str, optional
-        If `'str'`, returns the plot as a string. Otherwise, the plot will be
-        directly printed to stdout.
-
-    Returns
-    -------
-    result
-        See Notes.
-
     """
     plt_str = _hist(*args, **kwargs)
     return return_plt(plt_str, **kwargs)
 
 
+@add_fig_doc
 def barh(*args, **kwargs):
     """Plot horizontal bars
 
@@ -101,32 +100,12 @@ def barh(*args, **kwargs):
         series.
     labels : array-like
         Array that is used to label the bars. Needs to have the same dim as x.
-    figsize : a tuple (width, height) in ascii characters, optional
-        Size of the figure.
-    xlim : 2-tuple/list, optional
-        Set the x limits.
-    ylim : 2-tuple/list, optional
-        Set the y limits.
-    xlabel : str, optional
-        Name to use for the xlabel on x-axis.
-    ylabel : str, optional
-        Name to use for the ylabel on y-axis.
-    label : str/ list of str, optional
-        Labels that make the figure legend
-    return_type : str, optional
-        If `'str'`, returns the plot as a string. Otherwise, the plot will be
-        directly printed to stdout.
-
-    Returns
-    -------
-    result
-        See Notes.
-
     """
     plt_str = _barh(*args, **kwargs)
     return return_plt(plt_str, **kwargs)
 
 
+@add_fig_doc
 def boxplot(*args, **kwargs):
     """Plot a boxplot of x
 
@@ -139,27 +118,6 @@ def boxplot(*args, **kwargs):
         The horizontal coordinates of the data points.
         Can be 1d or 2d np.ndarray/ pandas series/ dataframe. If 2d, each 1d
         slice will be plotted as a separate boxplot.
-    figsize : a tuple (width, height) in ascii characters, optional
-        Size of the figure.
-    xlim : 2-tuple/list, optional
-        Set the x limits.
-    ylim : 2-tuple/list, optional
-        Set the y limits.
-    xlabel : str, optional
-        Name to use for the xlabel on x-axis.
-    ylabel : str, optional
-        Name to use for the ylabel on y-axis.
-    label : str/ list of str, optional
-        Labels that make the figure legend
-    return_type : str, optional
-        If `'str'`, returns the plot as a string. Otherwise, the plot will be
-        directly printed to stdout.
-
-    Returns
-    -------
-    result
-        See Notes.
-
     """
     plt_str = _boxplot(*args, **kwargs)
     return return_plt(plt_str, **kwargs)
@@ -202,7 +160,7 @@ def _init_figure(
     return x_axis, y_axis, canvas, legend
 
 
-def _plot(x, y, color=None, **kwargs):
+def _plot(x, y, color=None, line=False, **kwargs):
     """Scatterplot"""
 
     x_label, y_label = get_label(x), get_label(y)
@@ -236,14 +194,14 @@ def _plot(x, y, color=None, **kwargs):
             mask = val == color_scaled
             idx = x_scaled[:, mask].compressed()
             idy = y_scaled[:, mask].compressed()
-            canvas[idx, idy] = ii + 1
+            canvas = _add_xy(canvas=canvas, idx=idx, idy=idy, marker=ii + 1, line=line)
 
         legend = {ii + 1: val for ii, val in enumerate(values)}
     else:
         for ii in range(y_scaled.shape[0]):
             idx = x_scaled[ii, :].compressed()
             idy = y_scaled[ii, :].compressed()
-            canvas[idx, idy] = ii + 1
+            canvas = _add_xy(canvas=canvas, idx=idx, idy=idy, marker=ii + 1, line=line)
 
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
@@ -343,8 +301,37 @@ def _boxplot(x, labels=None, **kwargs):
 
 
 # -----------------------------------------------------------------------------
-# Canvas elements
+# Function to add canvas elements
 # -----------------------------------------------------------------------------
+
+
+def _add_xy(canvas, idx, idy, marker=0, line=False):
+    """Add x, y series to canvas, as marker and/ or line"""
+    if line:
+        x_line, y_line = _line_interp(idx, idy)
+        canvas[x_line, y_line] = 10
+    if marker is not None:
+        canvas[idx, idy] = marker
+    return canvas
+
+
+def _line_interp(x, y, round_tol=0.4):
+    """Interpolate for line plotting"""
+    x_interp = np.arange(x.min(), x.max(), 1)
+    y_interp = np.interp(x_interp, x, y)
+
+    # Point selection is turned off for now
+    # is_discrete = np.isclose(
+    #     y_interp,
+    #     np.around(y_interp).astype(int),
+    #     atol=round_tol,
+    # )
+    is_discrete = True
+
+    x_line = x_interp[is_discrete].astype(int)
+    y_line = np.around(y_interp[is_discrete]).astype(int)
+
+    return x_line, y_line
 
 
 def _add_vbar(canvas, start, width, height):
