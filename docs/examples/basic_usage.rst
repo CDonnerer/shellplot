@@ -12,7 +12,7 @@ Scatter plots can be created via the ``plot`` function::
 
         >>> import numpy as np
         >>> import shellplot as plt
-        >>> x = np.arange(-4, 4, 0.3)
+        >>> x = np.arange(-4, 4, 0.01)
         >>> y = np.cos(x)
         >>> plt.plot(x, y)
 
@@ -108,7 +108,7 @@ Multiple series can be plotted by providing 2d arrays to the plot function::
 
         >>> import numpy as np
         >>> import shellplot as plt
-        >>> x = np.arange(-3, 6, 0.01)
+        >>> x = np.arange(-3, 6, 0.3)
         >>> y1 = np.cos(x)
         >>> y2 = np.sin(x)
         >>> x, y = np.vstack((x, x)), np.vstack((y1, y2))
