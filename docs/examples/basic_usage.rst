@@ -12,7 +12,7 @@ Scatter plots can be created via the ``plot`` function::
 
         >>> import numpy as np
         >>> import shellplot as plt
-        >>> x = np.arange(-4, 4, 0.01)
+        >>> x = np.arange(-4, 4, 0.3)
         >>> y = np.cos(x)
         >>> plt.plot(x, y)
 
