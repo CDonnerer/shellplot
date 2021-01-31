@@ -215,6 +215,7 @@ def _hist(x, bins=10, **kwargs):
         kwargs.update({"ylabel": "counts"})
 
     x_axis, y_axis, canvas, legend = _init_figure(**kwargs)
+    _check_bins(bins, x_axis)
 
     x = numpy_1d(x)
     x = x[~np.isnan(x)]
@@ -235,6 +236,17 @@ def _hist(x, bins=10, **kwargs):
     x_axis.scale = display_max / (x_axis.limits[1] - x_axis.limits[0])
 
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
+
+
+def _check_bins(bins, x_axis):
+    if isinstance(bins, int):
+        bin_len = bins
+    elif isinstance(bins, np.ndarray) or isinstance(bins, list):
+        bin_len = len(bins)
+    else:
+        raise ValueError("Please provider either integer or array of bins!")
+    if bin_len > x_axis.display_max:
+        raise ValueError("Number of bins needs to be less than figsize along x!")
 
 
 def _barh(x, labels=None, **kwargs):

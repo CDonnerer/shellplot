@@ -169,11 +169,6 @@ def test_plot_multi_linear(x, y, expected_linear_multi_plot):
     assert plt_str == expected_linear_multi_plot
 
 
-# -----------------------------------------------------------------------------
-# Test `line` function
-# -----------------------------------------------------------------------------
-
-
 @pytest.fixture
 def expected_linear_line_plot():
     return "\n".join(
@@ -283,6 +278,26 @@ def test_hist(x, expected_hist):
         return_type="str",
     )
     assert plt_str == expected_hist
+
+
+@pytest.mark.parametrize(
+    "bins, figsize",
+    [
+        (30, (20, 10)),
+        (20, (20, 10)),
+        (np.linspace(0, 1, 20), (20, 10)),
+        ([0, 1, 2, 3, 4, 5], (5, 5)),
+        ("not a bin", (20, 10)),
+    ],
+)
+def test_hist_bin_failure(bins, figsize):
+    x = np.random.randn(100)
+    with pytest.raises(ValueError):
+        hist(
+            x=x,
+            bins=bins,
+            figsize=figsize,
+        )
 
 
 # -----------------------------------------------------------------------------
