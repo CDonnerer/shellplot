@@ -6,6 +6,7 @@ Version xxx
 ---------------
 - Added option to add line in plot function
 - Safeguard number of bins in hist
+- Default docs are now stable versions
 
 
 Version 0.1.5
