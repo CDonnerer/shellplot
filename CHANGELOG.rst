@@ -4,7 +4,8 @@ Changelog
 
 Version xxx
 ---------------
-- Added option to make line plot
+- Added option to add line in plot function
+- Safeguard number of bins in hist
 
 
 Version 0.1.5
