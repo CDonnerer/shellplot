@@ -84,7 +84,7 @@ pandas plotting backend to shellplot::
         >>> pd.set_option("plotting.backend", "shellplot")
 
 
-Please refer to `pandas visualisation`_ in the `documentation`_ for further
+Please refer to `pandas visualisation`_ page in the `documentation`_ for further
 details.
 
 Note
