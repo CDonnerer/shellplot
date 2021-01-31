@@ -281,7 +281,14 @@ def test_hist(x, expected_hist):
 
 
 @pytest.mark.parametrize(
-    "bins, figsize", [(30, (20, 10)), (20, (20, 10)), ("not a bin", (20, 10))]
+    "bins, figsize",
+    [
+        (30, (20, 10)),
+        (20, (20, 10)),
+        (np.linspace(0, 1, 20), (20, 10)),
+        ([0, 1, 2, 3, 4, 5], (5, 5)),
+        ("not a bin", (20, 10)),
+    ],
 )
 def test_hist_bin_failure(bins, figsize):
     x = np.random.randn(100)

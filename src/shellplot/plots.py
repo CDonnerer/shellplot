@@ -242,7 +242,7 @@ def _hist(x, bins=10, **kwargs):
 def _check_bins(bins, x_axis):
     if isinstance(bins, int):
         bin_len = bins
-    elif isinstance(bins, collections.Sequence):
+    elif isinstance(bins, np.ndarray) or isinstance(bins, collections.Sequence):
         bin_len = len(bins)
     else:
         raise ValueError("Please provider either integer or array of bins!")
