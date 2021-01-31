@@ -84,7 +84,8 @@ pandas plotting backend to shellplot::
         >>> pd.set_option("plotting.backend", "shellplot")
 
 
-Please refer to the `documentation`_ for further details.
+Please refer to `pandas visualisation`_ page in the `documentation`_ for further
+details.
 
 Note
 ====
@@ -93,7 +94,8 @@ This project has been set up using PyScaffold 3.2.3. For details and usage
 information on PyScaffold see https://pyscaffold.org/.
 
 
-.. _documentation: https://shellplot.readthedocs.io/en/latest/
-.. _examples: https://shellplot.readthedocs.io/en/latest/examples/index.html
+.. _documentation: https://shellplot.readthedocs.io/en/stable/
+.. _examples: https://shellplot.readthedocs.io/en/stable/examples/index.html
+.. _pandas visualisation: https://shellplot.readthedocs.io/en/latest/examples/pandas.html
 .. _matplotlib: https://matplotlib.org/contents.html#
 .. _pandas: https://pandas.pydata.org/
