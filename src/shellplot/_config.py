@@ -14,6 +14,7 @@ def get_option(key):
 
 def set_option(key, value):
     if key not in _available_keys:
-        raise ValueError(f"Option not available! Please use any of {_available_keys}")
-
+        raise NotImplementedError(
+            f"Option not available! Please use one of {_available_keys}"
+        )
     _global_config[key] = value
