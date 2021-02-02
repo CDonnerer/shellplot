@@ -4,6 +4,7 @@ from functools import wraps
 
 import numpy as np
 
+from shellplot._config import _global_config as config
 from shellplot.axis import Axis
 from shellplot.drawing import draw
 from shellplot.utils import get_index, get_label, numpy_1d, numpy_2d
@@ -146,7 +147,7 @@ def _init_figure(
         - add tick labels
     """
     if figsize is None:
-        figsize = (81, 31)  # this should go somewhere else
+        figsize = config["figsize"]
 
     x_axis = Axis(figsize[0], label=xlabel, limits=xlim)
     y_axis = Axis(figsize[1], label=ylabel, limits=ylim)
