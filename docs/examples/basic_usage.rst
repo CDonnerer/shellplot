@@ -311,6 +311,19 @@ parameter::
                                       my_fun_distribution
 
 
+Global options
+-------------------
+
+Global options for shellplot can be viewed and set via ``get_option`` and
+``set_option``. For example, this allows to override the standard figure size::
+
+
+        >>> import shellplot as plt
+        >>> plt.set_option("figsize", (70, 30))
+        >>> plt.get_option("figsize")
+
+        (70, 30)
+
 
 .. _pandas: https://pandas.pydata.org/
 .. _matplotlib: https://matplotlib.org/contents.html#
