@@ -207,6 +207,36 @@ def _plot(x, y, color=None, line=False, **kwargs):
     return draw(canvas=canvas, y_axis=y_axis, x_axis=x_axis, legend=legend)
 
 
+def _new_plot(x, y, l_kwargs, fig=None):
+    """Scatterplot"""
+
+    fig.x_axis.fit(np.concatenate([x for x in x]))
+    fig.y_axis.fit(np.concatenate([y for y in y]))
+
+    for ii, (x, y, plt_kwargs) in enumerate(zip(x, y, l_kwargs)):
+        x_scaled = fig.x_axis.transform(numpy_1d(x))
+        y_scaled = fig.y_axis.transform(numpy_1d(y))
+
+        outside_display = np.logical_or(x_scaled.mask, y_scaled.mask)
+        x_scaled.mask = outside_display
+        y_scaled.mask = outside_display
+
+        idx = x_scaled.compressed()
+        idy = y_scaled.compressed()
+
+        _add_xy(
+            canvas=fig.canvas,
+            idx=idx,
+            idy=idy,
+            marker=ii + 1,
+            line=plt_kwargs.get("line"),
+        )
+
+        label = plt_kwargs.get("label")
+        if label is not None:
+            fig.legend.update({ii + 1: label})
+
+
 def _hist(x, bins=10, **kwargs):
     """Histogram"""
 
