@@ -80,6 +80,7 @@ class Axis:
     @ticks.setter
     def ticks(self, ticks):
         self._ticks = numpy_1d(ticks)
+        self.ticklabels = self.ticks
 
     @property
     def ticklabels(self):

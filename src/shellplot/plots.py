@@ -6,7 +6,7 @@ import numpy as np
 
 from shellplot._config import _global_config as config
 from shellplot.axis import Axis
-from shellplot.drawing import draw
+from shellplot.drawing import LINES, MARKERS, draw
 from shellplot.utils import get_index, get_label, numpy_1d, numpy_2d
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
@@ -149,8 +149,12 @@ def _init_figure(
     if figsize is None:
         figsize = config["figsize"]
 
-    x_axis = Axis(figsize[0], label=xlabel, limits=xlim)
-    y_axis = Axis(figsize[1], label=ylabel, limits=ylim)
+    x_axis = Axis(figsize[0])
+    x_axis.label = xlabel
+    x_axis.limits = xlim
+    y_axis = Axis(figsize[1])
+    y_axis.label = ylabel
+    y_axis.limits = ylim
     canvas = np.zeros(shape=(figsize[0], figsize[1]), dtype=int)
 
     if label is not None:
@@ -213,28 +217,44 @@ def _new_plot(x, y, l_kwargs, fig=None):
     fig.x_axis.fit(np.concatenate([x for x in x]))
     fig.y_axis.fit(np.concatenate([y for y in y]))
 
-    for ii, (x, y, plt_kwargs) in enumerate(zip(x, y, l_kwargs)):
-        x_scaled = fig.x_axis.transform(numpy_1d(x))
-        y_scaled = fig.y_axis.transform(numpy_1d(y))
-
-        outside_display = np.logical_or(x_scaled.mask, y_scaled.mask)
-        x_scaled.mask = outside_display
-        y_scaled.mask = outside_display
-
-        idx = x_scaled.compressed()
-        idy = y_scaled.compressed()
-
-        _add_xy(
-            canvas=fig.canvas,
-            idx=idx,
-            idy=idy,
-            marker=ii + 1,
-            line=plt_kwargs.get("line"),
+    for x, y, plt_kwargs in zip(x, y, l_kwargs):
+        _single_plot(
+            fig=fig,
+            x=x,
+            y=y,
+            marker=plt_kwargs.get("marker", next(MARKERS)),
+            line=plt_kwargs.get("line", next(LINES)),
+            label=plt_kwargs.get("label"),
         )
 
-        label = plt_kwargs.get("label")
-        if label is not None:
-            fig.legend.update({ii + 1: label})
+
+def _single_plot(fig, x, y, marker=None, line=None, label=None):
+    x_scaled = fig.x_axis.transform(numpy_1d(x))
+    y_scaled = fig.y_axis.transform(numpy_1d(y))
+
+    idx, idy = within_display(x_scaled, y_scaled)
+
+    _add_xy(
+        canvas=fig.canvas,
+        idx=idx,
+        idy=idy,
+        marker=marker,
+        line=line,
+    )
+
+    if label is not None:
+        key = marker or line
+        fig.legend.update({key: label})
+
+
+def within_display(x, y):
+    outside_display = np.logical_or(x.mask, y.mask)
+    x.mask = outside_display
+    y.mask = outside_display
+
+    idx = x.compressed()
+    idy = y.compressed()
+    return idx, idy
 
 
 def _hist(x, bins=10, **kwargs):
@@ -348,11 +368,11 @@ def _boxplot(x, labels=None, **kwargs):
 # -----------------------------------------------------------------------------
 
 
-def _add_xy(canvas, idx, idy, marker=0, line=False):
+def _add_xy(canvas, idx, idy, marker=None, line=None):
     """Add x, y series to canvas, as marker and/ or line"""
-    if line:
+    if line is not None:
         x_line, y_line = _line_interp(idx, idy)
-        canvas[x_line, y_line] = 10
+        canvas[x_line, y_line] = line
     if marker is not None:
         canvas[idx, idy] = marker
     return canvas

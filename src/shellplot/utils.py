@@ -50,19 +50,19 @@ def tolerance_round(x, tol=1e-3):
 
 
 def round_up(n, decimals=0):
-    if decimals == 0:  # avoid float div for int rounded value
-        return math.ceil(n)
-    else:
-        multiplier = 10 ** decimals
-        return math.ceil(n * multiplier) / multiplier
+    return _round_to_decimals(n=n, decimals=decimals, round_func=math.ceil)
 
 
 def round_down(n, decimals=0):
+    return _round_to_decimals(n=n, decimals=decimals, round_func=math.floor)
+
+
+def _round_to_decimals(n, decimals, round_func):
     if decimals == 0:  # avoid float div for int rounded value
-        return math.floor(n)
+        return round_func(n)
     else:
         multiplier = 10 ** decimals
-        return math.floor(n * multiplier) / multiplier
+        return round_func(n * multiplier) / multiplier
 
 
 def timedelta_round(x):

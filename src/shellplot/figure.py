@@ -15,12 +15,15 @@ fig.show()
 """
 import numpy as np
 
+from shellplot._config import _global_config as config
 from shellplot.axis import Axis
 from shellplot.drawing import draw
 from shellplot.plots import _new_plot
 
 
-def figure(figsize=(60, 25)):
+def figure(figsize=None):
+    if figsize is None:
+        figsize = config["figsize"]
     return Figure(figsize)
 
 
@@ -31,6 +34,9 @@ class Figure:
         self.figsize = figsize
         self.x_axis = Axis(self.figsize[0])
         self.y_axis = Axis(self.figsize[1])
+        self._init_figure_elements()
+
+    def _init_figure_elements(self):
         self.x = list()
         self.y = list()
         self.plt_kwargs = list()
@@ -42,9 +48,7 @@ class Figure:
         self.plt_kwargs.append(kwargs)
 
     def show(self):
-
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
-
         _new_plot(self.x, self.y, self.plt_kwargs, fig=self)
         print(self.draw())
 
@@ -56,8 +60,12 @@ class Figure:
             legend=self.legend,
         )
 
+    def clear(self):
+        self._init_figure_elements()
+
     # -------------------------------------------------------------------------
     # Axis setters
+    # TODO: this could  be done with getatrr, setattr?
     # -------------------------------------------------------------------------
 
     def set_xlim(self, value):
