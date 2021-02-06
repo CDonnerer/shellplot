@@ -27,16 +27,16 @@ class Figure:
 
     def __init__(self, figsize):
         self.figsize = figsize
-        self.x_axis = Axis(self.figsize[0])
-        self.y_axis = Axis(self.figsize[1])
         self._init_figure_elements()
 
     def _init_figure_elements(self):
+        self.x_axis = Axis(self.figsize[0])
+        self.y_axis = Axis(self.figsize[1])
+        self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
         self.x = list()
         self.y = list()
         self.plt_kwargs = list()
         self.legend = dict()
-        self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
         self.markers = cycle([1, 2, 3, 4, 5, 6])
         self.lines = cycle([10, 11])
 
@@ -50,6 +50,10 @@ class Figure:
     #     self.x.append(x)
 
     def show(self):
+        self.markers = cycle([1, 2, 3, 4, 5, 6])
+        self.lines = cycle([10, 11])
+        self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
+        self.legend = dict()
         _plot(self, self.x, self.y, self.plt_kwargs)
         print(self.draw())
 
@@ -99,7 +103,7 @@ class Figure:
         self.y_axis.ticks = value
 
     def set_yticklabels(self, value):
-        self.y_axis.yticklabels = value
+        self.y_axis.ticklabels = value
 
     def set_ylabel(self, value):
         self.y_axis.label = value
