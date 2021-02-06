@@ -87,6 +87,8 @@ def plot(x, y, **kwargs):
 
     label = kwargs.get("label")
     if isinstance(label, list):
+        # TODO: this can't be quite right. There should be a clean sepration
+        # between constant (fig) params and the ones for a given plot
         for plt_kwargs, plt_label in zip(l_kwargs, label):
             plt_kwargs.update({"label": plt_label})
 
