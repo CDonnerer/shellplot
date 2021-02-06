@@ -59,7 +59,7 @@ class Axis:
         if limits is not None:
             self._limits, _ = to_numeric(np.array(limits))
             self._set_scale()
-            self._reset()
+            self._reset_ticks()
 
     @property
     def n_ticks(self):
@@ -189,9 +189,9 @@ class Axis:
         remainders = np.remainder(self.display_max, ticks)
         return ticks[np.argmin(remainders)] + 1
 
-    def _reset(self):
+    def _reset_ticks(self):
         """Reset axis ticks and ticklabels"""
-        attrs = ["ticks", "ticklabels"]
+        attrs = ["_ticks", "_ticklabels"]
         for attr in attrs:
             if hasattr(self, attr):
-                delattr(self, "_" + attr)
+                delattr(self, attr)

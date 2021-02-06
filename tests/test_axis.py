@@ -91,10 +91,10 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
 )
 def test_axis_datetime_ticks(limits, n_ticks, expected_labels):
     axis = Axis(display_length=80)
+    axis.fit(np.array(limits))
     axis.limits = limits
     axis.n_ticks = n_ticks
-    axis.fit(np.array(limits))
-    labels = axis.labels
+    labels = axis.ticklabels
 
     assert list(labels) == list(expected_labels)
 
@@ -126,13 +126,13 @@ def test_axis_tick_labels(limits, ticks, expected_tick_labels):
         (np.array([0.5, 1.5]), np.array(["a"])),
     ],
 )
-def test_axis_labels_len_error(ticks, labels):
+def test_axis_ticklabels_len_error(ticks, labels):
     """Test error raising when tick labels do not match ticks"""
     axis = Axis(display_length=80)
     axis.ticks = ticks
 
     with pytest.raises(ValueError):
-        axis.labels = labels
+        axis.ticklabels = labels
 
 
 def test_axis_properties():
