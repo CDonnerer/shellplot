@@ -5,7 +5,8 @@ import pytest
 import numpy as np
 import pandas as pd
 
-from shellplot.plots import _add_hbar, _add_vbar, barh, boxplot, hist, plot
+from shellplot._plotting import _add_hbar, _add_vbar
+from shellplot.plots import barh, boxplot, hist, plot
 
 # -----------------------------------------------------------------------------
 # Test `plot` function

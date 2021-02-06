@@ -1,30 +1,23 @@
 """OO API for shellplot
-
-fig = plt.figure(figsize=(80, 40))
-
-fig.plot(x, y, marker=True, line=False)
-
-figure holds x, y, kwargs
-
-fig.plot(x, x**2, line=True, marker=False)
-
-fig.set_xlim((0, 10))
-
-fig.show()
-
 """
 import numpy as np
 
 from shellplot._config import _global_config as config
+from shellplot._plotting import _plot
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.plots import _new_plot
 
 
-def figure(figsize=None):
-    if figsize is None:
-        figsize = config["figsize"]
-    return Figure(figsize)
+def figure(figsize, **kwargs):
+    figsize = figsize or config["figsize"]
+    fig = Figure(figsize)
+
+    fig_kwargs = {k: v for k, v in kwargs.items() if k in fig.setters}
+
+    for key, value in fig_kwargs.items():
+        getattr(fig, f"set_{key}")(value)
+
+    return fig
 
 
 class Figure:
@@ -41,15 +34,19 @@ class Figure:
         self.y = list()
         self.plt_kwargs = list()
         self.legend = dict()
+        self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
 
     def plot(self, x, y, **kwargs):
         self.x.append(x)
         self.y.append(y)
         self.plt_kwargs.append(kwargs)
 
+    # def hist(self, x, bins, **kwargs):
+    # TODO: How?
+    #     self.x.append(x)
+
     def show(self):
-        self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
-        _new_plot(self.x, self.y, self.plt_kwargs, fig=self)
+        _plot(self, self.x, self.y, self.plt_kwargs)
         print(self.draw())
 
     def draw(self):
@@ -67,6 +64,17 @@ class Figure:
     # Axis setters
     # TODO: this could  be done with getatrr, setattr?
     # -------------------------------------------------------------------------
+
+    setters = {
+        "xlim",
+        "xticks",
+        "xticklabels",
+        "xlabel",
+        "ylim",
+        "yticks",
+        "yticklabels",
+        "ylabel",
+    }
 
     def set_xlim(self, value):
         self.x_axis.limits = value
