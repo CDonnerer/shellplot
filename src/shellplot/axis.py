@@ -26,9 +26,12 @@ from shellplot.utils import (
 
 
 class Axis:
-    def __init__(self, display_length):
+    def __init__(self, display_length, **kwargs):
         self.display_max = display_length - 1
         self._is_datetime = False  # datetime axis
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     # -------------------------------------------------------------------------
     # Public properties that can be set by the user

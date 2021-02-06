@@ -59,10 +59,12 @@ def test_draw_x_axis(axis, expected_axis_lines):
 
 
 @pytest.mark.parametrize(
-    "axis,expected_axis_lines",
+    "axis,label,limits, expected_axis_lines",
     [
         (
-            Axis(display_length=16, label="my_fun_label", limits=(0, 1)),
+            Axis(display_length=16),
+            "my_fun_label",
+            (0, 1),
             [
                 "    my_fun_label",
                 "      0.99┤",
@@ -85,7 +87,10 @@ def test_draw_x_axis(axis, expected_axis_lines):
         ),
     ],
 )
-def test_draw_y_axis(axis, expected_axis_lines):
+def test_draw_y_axis(axis, label, limits, expected_axis_lines):
+    axis.label = label
+    axis.limits = limits
+
     y_lines = _draw_y_axis(y_axis=axis, left_pad=10)
     assert y_lines == expected_axis_lines
 

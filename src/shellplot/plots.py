@@ -50,7 +50,7 @@ def add_fig_doc(func):
 
 
 @add_fig_doc
-def plot(x, y, **kwargs):
+def plot(x, y, color=None, **kwargs):
     """Plot x versus y as scatter.
 
     Parameters
@@ -92,7 +92,7 @@ def plot(x, y, **kwargs):
         for plt_kwargs, plt_label in zip(l_kwargs, label):
             plt_kwargs.update({"label": plt_label})
 
-    _plot(fig, x, y, l_kwargs)
+    _plot(fig, x, y, l_kwargs, color=color)
     return return_plt(fig.draw(), **kwargs)
 
 

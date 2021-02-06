@@ -3,19 +3,23 @@
 These functions require an instantiated figure, their call then updates the
 figure state.
 """
+import copy
 
 import numpy as np
 
 from shellplot.utils import numpy_1d, numpy_2d
 
 
-def _plot(fig, x, y, l_kwargs):
+def _plot(fig, l_x, l_y, l_kwargs, color=None):
     """Scatterplot"""
 
-    fig.x_axis.fit(np.concatenate([x for x in x]))
-    fig.y_axis.fit(np.concatenate([y for y in y]))
+    fig.x_axis.fit(np.concatenate([x for x in l_x]))
+    fig.y_axis.fit(np.concatenate([y for y in l_y]))
 
-    for x, y, plt_kwargs in zip(x, y, l_kwargs):
+    if color is not None:
+        l_x, l_y, l_kwargs = _split_on_color(l_x, l_y, color, l_kwargs)
+
+    for x, y, plt_kwargs in zip(l_x, l_y, l_kwargs):
         _single_plot(
             fig=fig,
             x=x,
@@ -24,6 +28,24 @@ def _plot(fig, x, y, l_kwargs):
             line=plt_kwargs.get("line"),
             label=plt_kwargs.get("label"),
         )
+
+
+def _split_on_color(x, y, color, kwargs):
+    color = numpy_1d(color).squeeze()
+    values = np.unique(color)
+
+    l_x, l_y, l_kwargs = list(), list(), list()
+
+    for value in values:
+        mask = value == color
+        for x_c, y_c, kwargs_c in zip(x, y, kwargs):
+            l_x.append(x_c[mask])
+            l_y.append(y_c[mask])
+            val_kwargs = copy.deepcopy(kwargs_c)
+            val_kwargs.update({"label": value})
+            l_kwargs.append(val_kwargs)
+
+    return l_x, l_y, l_kwargs
 
 
 def _single_plot(fig, x, y, marker=None, line=None, label=None):
