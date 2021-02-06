@@ -1,4 +1,11 @@
-"""OO API for shellplot
+"""Object-oriented API for shellplot
+
+Can be used like:
+
+fig = plt.figure()
+fig.plot(x, y)
+fig.show()
+
 """
 from itertools import cycle
 
@@ -22,39 +29,59 @@ def figure(figsize=None, **kwargs):
     return fig
 
 
+# @dataclass
+# class FuncCall:
+#     """Class for keeping track of function calls."""
+#
+#     func: callable
+#     args: List
+#     kwargs: Dict
+#
+#     def __call__(self, fig):
+#         self.func(fig, *self.args, **self.kwargs)
+
+
+class PlotCall:
+    def __init__(self):
+        self.l_x = list()
+        self.l_y = list()
+        self.l_kwargs = list()
+
+    def add(self, x, y, kwargs):
+        self.l_x.append(x)
+        self.l_y.append(y)
+        self.l_kwargs.append(kwargs)
+
+    def __call__(self, fig):
+        _plot(fig, self.l_x, self.l_y, self.l_kwargs)
+
+
 class Figure:
     """Encapsulates a shellplot figure"""
 
     def __init__(self, figsize):
         self.figsize = figsize
+        self.x_axis = Axis(self.figsize[0])
+        self.y_axis = Axis(self.figsize[1])
+        self.plot_call = PlotCall()
         self._init_figure_elements()
 
     def _init_figure_elements(self):
-        self.x_axis = Axis(self.figsize[0])
-        self.y_axis = Axis(self.figsize[1])
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
-        self.x = list()
-        self.y = list()
-        self.plt_kwargs = list()
         self.legend = dict()
         self.markers = cycle([1, 2, 3, 4, 5, 6])
         self.lines = cycle([10, 11])
 
     def plot(self, x, y, **kwargs):
-        self.x.append(x)
-        self.y.append(y)
-        self.plt_kwargs.append(kwargs)
+        self.plot_call.add(x=x, y=y, kwargs=kwargs)
 
     # def hist(self, x, bins, **kwargs):
     # TODO: How?
     #     self.x.append(x)
 
     def show(self):
-        self.markers = cycle([1, 2, 3, 4, 5, 6])
-        self.lines = cycle([10, 11])
-        self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
-        self.legend = dict()
-        _plot(self, self.x, self.y, self.plt_kwargs)
+        self._init_figure_elements()
+        self.plot_call(self)
         print(self.draw())
 
     def draw(self):
@@ -67,6 +94,7 @@ class Figure:
 
     def clear(self):
         self._init_figure_elements()
+        self.plot_call = PlotCall()
 
     # -------------------------------------------------------------------------
     # Axis setters

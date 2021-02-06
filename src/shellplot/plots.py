@@ -1,4 +1,9 @@
 """Functional API for shellplot
+
+Can be used like so:
+
+plt.plot(x, y)
+
 """
 import copy
 from functools import wraps
@@ -29,7 +34,6 @@ __figure_doc = """figsize : a tuple (width, height) in ascii characters, optiona
     return_type : str, optional
         If `'str'`, returns the plot as a string. Otherwise, the plot will be
         directly printed to stdout.
-
 
     Returns
     -------

@@ -1,7 +1,7 @@
 """Module that contains Axis class (usable for both x and y axis)
 
 The main function of an axis is to transform from the data coordinates to the
-display coordinates, hence we loosely follow an sklearn transfomer api.
+display coordinates, hence we loosely follow an sklearn transformer api.
 
 It can be used like so:
 
@@ -10,7 +10,6 @@ x_axis = x_axis.fit(x)
 x_display = x_axis.transform(x)
 
 where x_display is the data in display coordinates
-
 """
 import numpy as np
 
