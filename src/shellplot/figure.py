@@ -1,5 +1,7 @@
 """OO API for shellplot
 """
+from itertools import cycle
+
 import numpy as np
 
 from shellplot._config import _global_config as config
@@ -8,7 +10,7 @@ from shellplot.axis import Axis
 from shellplot.drawing import draw
 
 
-def figure(figsize, **kwargs):
+def figure(figsize=None, **kwargs):
     figsize = figsize or config["figsize"]
     fig = Figure(figsize)
 
@@ -35,6 +37,8 @@ class Figure:
         self.plt_kwargs = list()
         self.legend = dict()
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
+        self.markers = cycle([1, 2, 3, 4, 5, 6])
+        self.lines = cycle([10, 11])
 
     def plot(self, x, y, **kwargs):
         self.x.append(x)

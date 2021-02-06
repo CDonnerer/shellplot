@@ -1,10 +1,11 @@
 """Functional API for shellplot
 """
+import copy
 from functools import wraps
 
 from shellplot._plotting import _barh, _boxplot, _hist, _plot
 from shellplot.figure import figure
-from shellplot.utils import get_index, get_label
+from shellplot.utils import get_index, get_label, numpy_2d
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -80,9 +81,16 @@ def plot(x, y, **kwargs):
             kwargs.update({"xlabel": x_label})
 
     fig = figure(**kwargs)
-    # x = numpy_2d(x)
-    # y = numpy_2d(y)
-    _plot(fig, [x], [y], [kwargs])
+    x = numpy_2d(x)
+    y = numpy_2d(y)
+    l_kwargs = [copy.deepcopy(kwargs) for i in range(x.shape[0])]
+
+    label = kwargs.get("label")
+    if isinstance(label, list):
+        for plt_kwargs, plt_label in zip(l_kwargs, label):
+            plt_kwargs.update({"label": plt_label})
+
+    _plot(fig, x, y, l_kwargs)
     return return_plt(fig.draw(), **kwargs)
 
 

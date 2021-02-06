@@ -4,7 +4,6 @@ Functions for taking the elements of the plot (e.g. canvas, axis, legend) and
 converts them to strings. Please note that drawing is entirely agnostic to the
 type of plot.
 """
-from itertools import cycle
 from typing import List
 
 PALETTE = {
@@ -26,9 +25,6 @@ PALETTE = {
     22: "-",
     23: "┐",
 }
-
-MARKERS = cycle([1, 2, 3, 4, 5, 6])
-LINES = cycle([10, 11])
 
 
 def draw(canvas, x_axis, y_axis, legend=None) -> str:

@@ -6,7 +6,6 @@ figure state.
 
 import numpy as np
 
-from shellplot.drawing import LINES, MARKERS
 from shellplot.utils import numpy_1d, numpy_2d
 
 
@@ -21,8 +20,8 @@ def _plot(fig, x, y, l_kwargs):
             fig=fig,
             x=x,
             y=y,
-            marker=plt_kwargs.get("marker", next(MARKERS)),
-            line=plt_kwargs.get("line", next(LINES)),
+            marker=plt_kwargs.get("marker", True),
+            line=plt_kwargs.get("line"),
             label=plt_kwargs.get("label"),
         )
 
@@ -30,6 +29,11 @@ def _plot(fig, x, y, l_kwargs):
 def _single_plot(fig, x, y, marker=None, line=None, label=None):
     x_scaled = fig.x_axis.transform(numpy_1d(x))
     y_scaled = fig.y_axis.transform(numpy_1d(y))
+
+    if line is not None:
+        line = next(fig.lines)
+    if marker is not None:
+        marker = next(fig.markers)
 
     idx, idy = _within_display(x_scaled, y_scaled)
 
