@@ -1,4 +1,4 @@
-"""Shellplot plots
+"""Functional API for shellplot
 """
 from functools import wraps
 
@@ -83,7 +83,6 @@ def plot(x, y, **kwargs):
     # x = numpy_2d(x)
     # y = numpy_2d(y)
     _plot(fig, [x], [y], [kwargs])
-
     return return_plt(fig.draw(), **kwargs)
 
 
@@ -126,9 +125,7 @@ def barh(x, labels=None, **kwargs):
         labels = get_index(x)
 
     fig = figure(**kwargs)
-
     _barh(fig, x, labels=labels)
-
     return return_plt(fig.draw(), **kwargs)
 
 
@@ -150,9 +147,7 @@ def boxplot(x, labels=None, **kwargs):
         labels = get_label(x)
 
     fig = figure(**kwargs)
-
     _boxplot(fig, x, labels=labels, **kwargs)
-
     return return_plt(fig.draw(), **kwargs)
 
 
