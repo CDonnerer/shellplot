@@ -52,7 +52,7 @@ def add_fig_doc(func):
 
 
 @add_fig_doc
-def plot(x, y, color=None, **kwargs):
+def plot(x, y, color=None, fig=None, **kwargs):
     """Plot x versus y as scatter.
 
     Parameters
@@ -82,18 +82,23 @@ def plot(x, y, color=None, **kwargs):
         if kwargs.get("xlabel") is None:
             kwargs.update({"xlabel": x_label})
 
-    fig = figure(**kwargs)
+    show = False
+
+    if fig is None:
+        fig = figure(**kwargs)
+        show = True
 
     x = numpy_2d(x)
     y = numpy_2d(y)
 
     fig.plot(x, y, color=color, **kwargs)
 
-    return return_plt(fig.draw(), **kwargs)
+    if show:
+        return return_plt(fig.draw(), **kwargs)
 
 
 @add_fig_doc
-def hist(x, bins=10, **kwargs):
+def hist(x, bins=10, fig=None, **kwargs):
     """Plot a histogram of x
 
     Parameters
@@ -109,13 +114,15 @@ def hist(x, bins=10, **kwargs):
     if kwargs.get("ylabel") is None:
         kwargs.update({"ylabel": "counts"})
 
-    fig = figure(**kwargs)
+    if fig is None:
+        fig = figure(**kwargs)
+
     fig.hist(x, bins=bins, **kwargs)
     return return_plt(fig.draw(), **kwargs)
 
 
 @add_fig_doc
-def barh(x, labels=None, **kwargs):
+def barh(x, labels=None, fig=None, **kwargs):
     """Plot horizontal bars
 
     Parameters
@@ -130,13 +137,15 @@ def barh(x, labels=None, **kwargs):
     if labels is None:
         labels = get_index(x)
 
-    fig = figure(**kwargs)
+    if fig is None:
+        fig = figure(**kwargs)
+
     fig.barh(x, labels=labels, **kwargs)
     return return_plt(fig.draw(), **kwargs)
 
 
 @add_fig_doc
-def boxplot(x, labels=None, **kwargs):
+def boxplot(x, labels=None, fig=None, **kwargs):
     """Plot a boxplot of x
 
     Note that currently this makes a boxplot using the quantiles:
@@ -152,7 +161,8 @@ def boxplot(x, labels=None, **kwargs):
     if labels is None:
         labels = get_label(x)
 
-    fig = figure(**kwargs)
+    if fig is None:
+        fig = figure(**kwargs)
     fig.boxplot(x, labels=labels, **kwargs)
     return return_plt(fig.draw(), **kwargs)
 
