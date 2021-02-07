@@ -155,7 +155,11 @@ class Axis:
         unit = timedelta_round(limits_delta)
         n_units = limits_delta / np.timedelta64(1, unit)
         td_step = np.timedelta64(int(n_units / (self.n_ticks - 1)), unit)
-        return np.arange(axis_td[0], axis_td[1] + td_step, td_step)
+        return np.arange(
+            np.datetime64(axis_td[0], unit),
+            np.datetime64(axis_td[1], unit) + td_step,
+            td_step,
+        )
 
     def _auto_limits(self, x, frac=0.25):
         """Automatically find `good` axis limits"""

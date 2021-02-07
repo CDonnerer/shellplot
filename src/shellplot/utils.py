@@ -70,7 +70,7 @@ def timedelta_round(x):
     units = ["Y", "M", "D", "h", "m", "s", "ms", "us", "ns"]
     for unit in units:
         x_rounded = x.astype(f"timedelta64[{unit}]")
-        if x_rounded == x:
+        if x_rounded == x:  # TODO: apparently raises a # WARNING: ?
             return unit
 
 

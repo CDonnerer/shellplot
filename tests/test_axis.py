@@ -90,7 +90,7 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
     ],
 )
 def test_axis_datetime_ticks(limits, n_ticks, expected_labels):
-    axis = Axis(display_length=80)
+    axis = Axis(display_length=79)
     axis.fit(np.array(limits))
     axis.limits = limits
     axis.n_ticks = n_ticks
