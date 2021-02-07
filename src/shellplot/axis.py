@@ -161,6 +161,14 @@ class Axis:
             td_step,
         )
 
+    def _datetime_labels(self, ticks):
+        # TODO: I don't know why the uncommented code existed
+        # [ns] should not be hardcoded
+        # dt_ticks = to_datetime(ticks.astype("timedelta64[ns]"))
+        # delta_ticks = dt_ticks[1] - dt_ticks[0]  # TODO: this could fail
+        # unit = timedelta_round(delta_ticks)
+        return np.datetime_as_string(ticks)  # , unit=unit)
+
     def _auto_limits(self, x, frac=0.25):
         """Automatically find `good` axis limits"""
         x_max = x.max()
@@ -177,13 +185,6 @@ class Axis:
             rounded = round_func(val, dec)
             if abs(rounded - val) <= max_difference:
                 return rounded
-
-    def _datetime_labels(self, ticks):
-        # TODO: [ns] should not be hardcoded
-        dt_ticks = to_datetime(ticks.astype("timedelta64[ns]"))
-        delta_ticks = dt_ticks[1] - dt_ticks[0]  # TODO: this could fail
-        unit = timedelta_round(delta_ticks)
-        return np.datetime_as_string(dt_ticks, unit=unit)
 
     def _auto_nticks(self):
         """Automatically find a `good` number of axis ticks that fits display"""
