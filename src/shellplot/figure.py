@@ -37,8 +37,7 @@ class Figure:
         self.figsize = figsize
         self.x_axis = Axis(self.figsize[0])
         self.y_axis = Axis(self.figsize[1])
-        self.plotter = Plotter()
-        self._init_figure_elements()
+        self.clear()
 
     def _init_figure_elements(self):
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
@@ -47,6 +46,9 @@ class Figure:
         self.lines = cycle([10, 11])
 
     def plot(self, x, y, color=None, **kwargs):
+        x = numpy_2d(x)
+        y = numpy_2d(y)
+
         for x, y, kwargs in array_split(x, y, kwargs):
             for x, y, kwargs in color_split(x, y, color, kwargs):
                 call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
@@ -79,6 +81,7 @@ class Figure:
         )
 
     def clear(self):
+        self.plotter = Plotter()
         self._init_figure_elements()
 
     # -------------------------------------------------------------------------

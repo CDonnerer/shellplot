@@ -5,6 +5,7 @@ import pytest
 import numpy as np
 import pandas as pd
 
+from shellplot.figure import figure
 from shellplot.plots import barh, boxplot, hist, plot
 
 # -----------------------------------------------------------------------------
@@ -54,6 +55,23 @@ def test_plot_linear(x, expected_linear_plot):
         return_type="str",
     )
     assert plt_str == expected_linear_plot
+
+
+@pytest.mark.parametrize(
+    "x",
+    [
+        (np.arange(0, 10, 1)),
+        (pd.Series(np.arange(0, 10, 1))),
+    ],
+)
+def test_plot_linear_fig(x, expected_linear_plot):
+    fig = figure(figsize=(19, 10), xlim=(0, 9), ylim=(0, 9), xlabel="x", ylabel="y")
+    fig.plot(x, x)
+    assert fig.draw() == expected_linear_plot
+
+    fig.clear()
+    plot(x, x, fig=fig)
+    assert fig.draw() == expected_linear_plot
 
 
 def test_plot_linear_pd_labels(expected_linear_plot):
