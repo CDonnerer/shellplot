@@ -6,7 +6,10 @@ import numpy as np
 
 from shellplot.axis import Axis
 
-np.random.seed(42)
+
+@pytest.fixture(autouse=True)
+def set_np_seed():
+    np.random.seed(42)
 
 
 @pytest.mark.parametrize(
@@ -132,6 +135,23 @@ def test_axis_ticklabels_len_error(ticks, labels):
 
     with pytest.raises(ValueError):
         axis.ticklabels = labels
+
+
+def test_axis_reset():
+    """Check that updating limits leads to new axis ticks"""
+
+    x = np.array([45, 123])
+
+    axis = Axis(display_length=80)
+    axis.fit(x)
+
+    axis.limits = (0, 300)
+    ticks = axis.ticks
+    np.testing.assert_array_equal(ticks, np.array([0, 50, 100, 150, 200, 250, 300]))
+
+    axis.limits = (50, 80)
+    ticks = axis.ticks
+    np.testing.assert_array_equal(ticks, np.array([50, 55, 60, 65, 70, 75, 80]))
 
 
 def test_axis_properties():
