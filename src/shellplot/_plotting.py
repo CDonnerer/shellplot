@@ -34,7 +34,6 @@ class Plotter:
 
     def fit(self, fig):
         l_x, l_y = list(), list()
-
         for plot_call in self._plot_calls:
             x, y = plot_call.args
             l_x.append(x)
@@ -50,7 +49,9 @@ class Plotter:
             plot_call(fig)
 
 
-def _plot(fig, x, y, marker=True, line=None, label=None):
+def _plot(fig, x, y, marker=True, line=None, label=None, **kwargs):
+    # TODO: the kwargs is a catch all cop out. this arises from kwargs
+    # containing figure params, which should really be popped out somewhere
     x_scaled = fig.x_axis.transform(numpy_1d(x))
     y_scaled = fig.y_axis.transform(numpy_1d(y))
 

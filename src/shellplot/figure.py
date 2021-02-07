@@ -13,7 +13,7 @@ from itertools import cycle
 import numpy as np
 
 from shellplot._config import _global_config as config
-from shellplot._plotting import PlotCall, Plotter, _hist, _plot
+from shellplot._plotting import PlotCall, Plotter, _barh, _boxplot, _hist, _plot
 from shellplot.axis import Axis
 from shellplot.drawing import draw
 from shellplot.utils import numpy_1d, numpy_2d
@@ -52,16 +52,16 @@ class Figure:
                 call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
                 self.plotter.add(call)
 
-        # if color is not None:
-        #
-        #         call = PlotCall(func=_plot, args=[x_c, y_c], kwargs=kwargs_c)
-        #         self.plotter.add(call)
-        # else:
-        #     call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
-        #     self.plotter.add(call)
-
     def hist(self, x, **kwargs):
         call = PlotCall(func=_hist, args=[x], kwargs=kwargs)
+        self.plotter.add(call)
+
+    def barh(self, x, **kwargs):
+        call = PlotCall(func=_barh, args=[x], kwargs=kwargs)
+        self.plotter.add(call)
+
+    def boxplot(self, x, **kwargs):
+        call = PlotCall(func=_boxplot, args=[x], kwargs=kwargs)
         self.plotter.add(call)
 
     def show(self):
@@ -139,7 +139,11 @@ def color_split(x, y, color, kwargs):
 def array_split(x, y, kwargs):
     """If x, y contain multiple lines, we split"""
     if numpy_2d(x).shape[0] == 1:
-        yield x, y, kwargs
+        yield x.squeeze(), y.squeeze(), kwargs
     else:
+        label = kwargs.pop("label")
         for x, y in zip(x, y):
+            if len(label) != 0:
+                kwargs = copy.deepcopy(kwargs)
+                kwargs.update({"label": label.pop(0)})
             yield x, y, kwargs

@@ -7,9 +7,8 @@ plt.plot(x, y)
 """
 from functools import wraps
 
-from shellplot._plotting import _barh, _boxplot, _hist
 from shellplot.figure import figure
-from shellplot.utils import get_index, get_label
+from shellplot.utils import get_index, get_label, numpy_2d
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -85,20 +84,11 @@ def plot(x, y, color=None, **kwargs):
 
     fig = figure(**kwargs)
 
+    x = numpy_2d(x)
+    y = numpy_2d(y)
+
     fig.plot(x, y, color=color, **kwargs)
 
-    # x = numpy_2d(x)
-    # y = numpy_2d(y)
-    # l_kwargs = [copy.deepcopy(kwargs) for i in range(x.shape[0])]
-    #
-    # label = kwargs.get("label")
-    # if isinstance(label, list):
-    #     # TODO: this can't be quite right. There should be a clean sepration
-    #     # between constant (fig) params and the ones for a given plot
-    #     for plt_kwargs, plt_label in zip(l_kwargs, label):
-    #         plt_kwargs.update({"label": plt_label})
-    #
-    # _plot(fig, x, y, l_kwargs, color=color)
     return return_plt(fig.draw(), **kwargs)
 
 
@@ -120,7 +110,7 @@ def hist(x, bins=10, **kwargs):
         kwargs.update({"ylabel": "counts"})
 
     fig = figure(**kwargs)
-    _hist(fig, x, bins, **kwargs)
+    fig.hist(x, bins=bins, **kwargs)
     return return_plt(fig.draw(), **kwargs)
 
 
@@ -141,7 +131,7 @@ def barh(x, labels=None, **kwargs):
         labels = get_index(x)
 
     fig = figure(**kwargs)
-    _barh(fig, x, labels=labels)
+    fig.barh(x, labels=labels, **kwargs)
     return return_plt(fig.draw(), **kwargs)
 
 
@@ -163,7 +153,8 @@ def boxplot(x, labels=None, **kwargs):
         labels = get_label(x)
 
     fig = figure(**kwargs)
-    _boxplot(fig, x, labels=labels, **kwargs)
+    fig.boxplot(x, labels=labels, **kwargs)
+    # _boxplot(fig, x, labels=labels, **kwargs)
     return return_plt(fig.draw(), **kwargs)
 
 
