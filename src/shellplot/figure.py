@@ -16,7 +16,7 @@ from shellplot._config import _global_config as config
 from shellplot._plotting import PlotCall, Plotter, _barh, _boxplot, _hist, _plot
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import numpy_1d, numpy_2d
+from shellplot.utils import get_index, numpy_1d, numpy_2d
 
 
 def figure(figsize=None, **kwargs):
@@ -59,6 +59,8 @@ class Figure:
         self.plotter.add(call)
 
     def barh(self, x, **kwargs):
+        if kwargs.get("labels") is None:
+            kwargs["labels"] = get_index(x)
         call = PlotCall(func=_barh, args=[x], kwargs=kwargs)
         self.plotter.add(call)
 

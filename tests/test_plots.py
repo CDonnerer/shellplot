@@ -56,15 +56,6 @@ def test_plot_linear(x, expected_linear_plot):
     )
     assert plt_str == expected_linear_plot
 
-
-@pytest.mark.parametrize(
-    "x",
-    [
-        (np.arange(0, 10, 1)),
-        (pd.Series(np.arange(0, 10, 1))),
-    ],
-)
-def test_plot_linear_fig(x, expected_linear_plot):
     fig = figure(figsize=(19, 10), xlim=(0, 9), ylim=(0, 9), xlabel="x", ylabel="y")
     fig.plot(x, x)
     assert fig.draw() == expected_linear_plot
@@ -297,6 +288,10 @@ def test_hist(x, expected_hist):
     )
     assert plt_str == expected_hist
 
+    fig = figure(figsize=(30, 10), ylabel="counts")  # TODO: consistent?
+    fig.hist(x, bins=3)
+    assert fig.draw() == expected_hist
+
 
 @pytest.mark.parametrize(
     "bins, figsize",
@@ -360,6 +355,14 @@ def expected_barh():
 def test_barh(x, labels, expected_barh):
     plt_str = barh(x, labels=labels, figsize=(30, 9), return_type="str")
     assert plt_str == expected_barh
+
+    fig = figure(figsize=(30, 9))
+    fig.barh(x, labels=labels)
+    assert fig.draw() == expected_barh
+
+    fig.clear()
+    barh(x, labels=labels, fig=fig)
+    assert fig.draw() == expected_barh
 
 
 # -----------------------------------------------------------------------------

@@ -8,7 +8,7 @@ plt.plot(x, y)
 from functools import wraps
 
 from shellplot.figure import figure
-from shellplot.utils import get_index, get_label, numpy_2d
+from shellplot.utils import get_label, numpy_2d
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -134,8 +134,6 @@ def barh(x, labels=None, fig=None, **kwargs):
         Array that is used to label the bars. Needs to have the same dim as x.
     """
     kwargs.update({"xlabel": get_label(x)})
-    if labels is None:
-        labels = get_index(x)
 
     if fig is None:
         fig = figure(**kwargs)
