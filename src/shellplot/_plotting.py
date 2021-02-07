@@ -3,59 +3,61 @@
 These functions require an instantiated figure, their call then updates the
 figure state.
 """
-import copy
+from dataclasses import dataclass
+from typing import Dict, List
 
 import numpy as np
 
 from shellplot.utils import numpy_1d, numpy_2d
 
 
-def _plot(fig, l_x, l_y, l_kwargs, color=None):
-    """Scatterplot"""
+@dataclass(frozen=True)
+class PlotCall:
+    """Class for keeping track of calls to various plot functions."""
 
-    fig.x_axis.fit(np.concatenate([x for x in l_x]))
-    fig.y_axis.fit(np.concatenate([y for y in l_y]))
+    func: callable
+    args: List
+    kwargs: Dict
 
-    if color is not None:
-        l_x, l_y, l_kwargs = _split_on_color(l_x, l_y, color, l_kwargs)
-
-    for x, y, plt_kwargs in zip(l_x, l_y, l_kwargs):
-        _single_plot(
-            fig=fig,
-            x=x,
-            y=y,
-            marker=plt_kwargs.get("marker", True),
-            line=plt_kwargs.get("line"),
-            label=plt_kwargs.get("label"),
-        )
+    def __call__(self, fig):
+        self.func(fig, *self.args, **self.kwargs)
 
 
-def _split_on_color(x, y, color, kwargs):
-    color = numpy_1d(color).squeeze()
-    values = np.unique(color)
+class Plotter:
+    """Class that stores and executes plot calls"""
 
-    l_x, l_y, l_kwargs = list(), list(), list()
+    def __init__(self):
+        self._plot_calls = list()
 
-    for value in values:
-        mask = value == color
-        for x_c, y_c, kwargs_c in zip(x, y, kwargs):
-            l_x.append(x_c[mask])
-            l_y.append(y_c[mask])
-            val_kwargs = copy.deepcopy(kwargs_c)
-            val_kwargs.update({"label": value})
-            l_kwargs.append(val_kwargs)
+    def add(self, call):
+        self._plot_calls.append(call)
 
-    return l_x, l_y, l_kwargs
+    def fit(self, fig):
+        l_x, l_y = list(), list()
+
+        for plot_call in self._plot_calls:
+            x, y = plot_call.args
+            l_x.append(x)
+            l_y.append(y)
+
+        fig.x_axis.fit(np.concatenate([x for x in l_x]))
+        fig.y_axis.fit(np.concatenate([y for y in l_y]))
+
+    def fill_figure(self, fig):
+        if self._plot_calls[0].func is _plot:
+            self.fit(fig)
+        for plot_call in self._plot_calls:
+            plot_call(fig)
 
 
-def _single_plot(fig, x, y, marker=None, line=None, label=None):
+def _plot(fig, x, y, marker=True, line=None, label=None):
     x_scaled = fig.x_axis.transform(numpy_1d(x))
     y_scaled = fig.y_axis.transform(numpy_1d(y))
 
-    if line is not None:
-        line = next(fig.lines)
     if marker is not None:
         marker = next(fig.markers)
+    if line is not None:
+        line = next(fig.lines)
 
     idx, idy = _within_display(x_scaled, y_scaled)
 

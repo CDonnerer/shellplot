@@ -7,14 +7,16 @@ fig.plot(x, y)
 fig.show()
 
 """
+import copy
 from itertools import cycle
 
 import numpy as np
 
 from shellplot._config import _global_config as config
-from shellplot._plotting import _plot
+from shellplot._plotting import PlotCall, Plotter, _hist, _plot
 from shellplot.axis import Axis
 from shellplot.drawing import draw
+from shellplot.utils import numpy_1d, numpy_2d
 
 
 def figure(figsize=None, **kwargs):
@@ -25,35 +27,7 @@ def figure(figsize=None, **kwargs):
 
     for key, value in fig_kwargs.items():
         getattr(fig, f"set_{key}")(value)
-
     return fig
-
-
-# @dataclass
-# class FuncCall:
-#     """Class for keeping track of function calls."""
-#
-#     func: callable
-#     args: List
-#     kwargs: Dict
-#
-#     def __call__(self, fig):
-#         self.func(fig, *self.args, **self.kwargs)
-
-
-class PlotCall:
-    def __init__(self):
-        self.l_x = list()
-        self.l_y = list()
-        self.l_kwargs = list()
-
-    def add(self, x, y, kwargs):
-        self.l_x.append(x)
-        self.l_y.append(y)
-        self.l_kwargs.append(kwargs)
-
-    def __call__(self, fig):
-        _plot(fig, self.l_x, self.l_y, self.l_kwargs)
 
 
 class Figure:
@@ -63,7 +37,7 @@ class Figure:
         self.figsize = figsize
         self.x_axis = Axis(self.figsize[0])
         self.y_axis = Axis(self.figsize[1])
-        self.plot_call = PlotCall()
+        self.plotter = Plotter()
         self._init_figure_elements()
 
     def _init_figure_elements(self):
@@ -72,19 +46,31 @@ class Figure:
         self.markers = cycle([1, 2, 3, 4, 5, 6])
         self.lines = cycle([10, 11])
 
-    def plot(self, x, y, **kwargs):
-        self.plot_call.add(x=x, y=y, kwargs=kwargs)
+    def plot(self, x, y, color=None, **kwargs):
+        for x, y, kwargs in array_split(x, y, kwargs):
+            for x, y, kwargs in color_split(x, y, color, kwargs):
+                call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
+                self.plotter.add(call)
 
-    # def hist(self, x, bins, **kwargs):
-    # TODO: How?
-    #     self.x.append(x)
+        # if color is not None:
+        #
+        #         call = PlotCall(func=_plot, args=[x_c, y_c], kwargs=kwargs_c)
+        #         self.plotter.add(call)
+        # else:
+        #     call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
+        #     self.plotter.add(call)
+
+    def hist(self, x, **kwargs):
+        call = PlotCall(func=_hist, args=[x], kwargs=kwargs)
+        self.plotter.add(call)
 
     def show(self):
-        self._init_figure_elements()
-        self.plot_call(self)
-        print(self.draw())
+        plt_str = self.draw()
+        print(plt_str)
 
     def draw(self):
+        self._init_figure_elements()
+        self.plotter.fill_figure(self)
         return draw(
             canvas=self.canvas,
             y_axis=self.y_axis,
@@ -94,11 +80,10 @@ class Figure:
 
     def clear(self):
         self._init_figure_elements()
-        self.plot_call = PlotCall()
 
     # -------------------------------------------------------------------------
     # Axis setters
-    # TODO: this could  be done with getatrr, setattr?
+    # TODO: quite boilerplatey. could  this be done with getatrr, setattr?
     # -------------------------------------------------------------------------
 
     setters = {
@@ -135,3 +120,26 @@ class Figure:
 
     def set_ylabel(self, value):
         self.y_axis.label = value
+
+
+def color_split(x, y, color, kwargs):
+    if color is None:
+        yield x, y, kwargs
+    else:
+        color = numpy_1d(color).squeeze()
+        values = np.unique(color)
+
+        for value in values:
+            mask = value == color
+            val_kwargs = copy.deepcopy(kwargs)
+            val_kwargs.update({"label": value})
+            yield x[mask], y[mask], val_kwargs
+
+
+def array_split(x, y, kwargs):
+    """If x, y contain multiple lines, we split"""
+    if numpy_2d(x).shape[0] == 1:
+        yield x, y, kwargs
+    else:
+        for x, y in zip(x, y):
+            yield x, y, kwargs

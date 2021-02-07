@@ -5,12 +5,11 @@ Can be used like so:
 plt.plot(x, y)
 
 """
-import copy
 from functools import wraps
 
-from shellplot._plotting import _barh, _boxplot, _hist, _plot
+from shellplot._plotting import _barh, _boxplot, _hist
 from shellplot.figure import figure
-from shellplot.utils import get_index, get_label, numpy_2d
+from shellplot.utils import get_index, get_label
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -85,18 +84,21 @@ def plot(x, y, color=None, **kwargs):
             kwargs.update({"xlabel": x_label})
 
     fig = figure(**kwargs)
-    x = numpy_2d(x)
-    y = numpy_2d(y)
-    l_kwargs = [copy.deepcopy(kwargs) for i in range(x.shape[0])]
 
-    label = kwargs.get("label")
-    if isinstance(label, list):
-        # TODO: this can't be quite right. There should be a clean sepration
-        # between constant (fig) params and the ones for a given plot
-        for plt_kwargs, plt_label in zip(l_kwargs, label):
-            plt_kwargs.update({"label": plt_label})
+    fig.plot(x, y, color=color, **kwargs)
 
-    _plot(fig, x, y, l_kwargs, color=color)
+    # x = numpy_2d(x)
+    # y = numpy_2d(y)
+    # l_kwargs = [copy.deepcopy(kwargs) for i in range(x.shape[0])]
+    #
+    # label = kwargs.get("label")
+    # if isinstance(label, list):
+    #     # TODO: this can't be quite right. There should be a clean sepration
+    #     # between constant (fig) params and the ones for a given plot
+    #     for plt_kwargs, plt_label in zip(l_kwargs, label):
+    #         plt_kwargs.update({"label": plt_label})
+    #
+    # _plot(fig, x, y, l_kwargs, color=color)
     return return_plt(fig.draw(), **kwargs)
 
 
