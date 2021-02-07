@@ -124,7 +124,7 @@ class Axis:
         self = self.fit(x)
         return self.transform(x)
 
-    def tick_labels(self):
+    def gen_tick_labels(self):
         """Generate display tick location and labels"""
         display_ticks = self.transform(self.ticks)
         within_display = np.logical_and(
@@ -133,7 +133,7 @@ class Axis:
         display_labels = self.ticklabels[within_display]
         display_ticks = display_ticks[within_display]
 
-        return list(zip(display_ticks, display_labels))  # generator?
+        return zip(display_ticks, display_labels)
 
     def _set_scale(self):
         self.scale = self.display_max / float(self.limits[1] - self.limits[0])

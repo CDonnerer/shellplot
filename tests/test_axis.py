@@ -112,7 +112,7 @@ def test_axis_tick_labels(limits, ticks, expected_tick_labels):
     axis = Axis(display_length=80)
     axis.limits = limits
     axis.ticks = ticks
-    tick_labels = axis.tick_labels()
+    tick_labels = list(axis.gen_tick_labels())
 
     assert tick_labels == expected_tick_labels
 
