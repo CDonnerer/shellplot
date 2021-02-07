@@ -154,7 +154,6 @@ def boxplot(x, labels=None, **kwargs):
 
     fig = figure(**kwargs)
     fig.boxplot(x, labels=labels, **kwargs)
-    # _boxplot(fig, x, labels=labels, **kwargs)
     return return_plt(fig.draw(), **kwargs)
 
 
