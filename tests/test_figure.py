@@ -41,6 +41,10 @@ def test_array_split_arrays(x, y, expected_xy):
             {"label": ["a"]},
             [{"label": "a"}, {}]
         ),
+        (
+            {},
+            [{}, {}]
+        ),
     ],
 )
 def test_array_split_label_kwargs(kwargs, expected_kwargs):

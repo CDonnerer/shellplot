@@ -150,6 +150,7 @@ def array_split(x, y, kwargs):
         label = kwargs.get("label", [])
         if kwargs.get("label") is not None:
             kwargs.pop("label")
+
         for x, y in zip(x, y):
             val_kwargs = copy.deepcopy(kwargs)
             if len(label) != 0:
