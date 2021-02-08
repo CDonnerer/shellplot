@@ -108,7 +108,12 @@ def _(x):
 
 @numpy_2d.register
 def _(x: list):
-    return [numpy_1d(x) for x in x]
+    if isinstance(x[0], np.ndarray):
+        return numpy_1d(x)
+    elif isinstance(x[0], list):
+        return np.array([numpy_1d(x) for x in x])
+    else:
+        return np.array([numpy_1d((x))])
 
 
 @singledispatch
