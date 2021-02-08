@@ -4,7 +4,7 @@ import pytest
 
 import numpy as np
 
-from shellplot.figure import array_split
+from shellplot.figure import array_split, figure
 
 
 @pytest.mark.parametrize(
@@ -53,3 +53,21 @@ def test_array_split_label_kwargs(kwargs, expected_kwargs):
 
     for x, y, kwargs in array_split(x, y, kwargs):
         assert kwargs == expected_kwargs.pop(0)
+
+
+def test_figure_setters():
+    """Faux test for checking that setters do not fail"""
+    fig = figure()
+
+    properties = {
+        "xlim": (0, 1),
+        "ylim": (0, 1),
+        "xlabel": "a",
+        "ylabel": "b",
+        "xticks": [0, 1],
+        "yticks": [0, 1],
+        "xticklabels": ["a", "b"],
+        "yticklabels": ["a", "b"],
+    }
+    for key, val in properties.items():
+        getattr(fig, f"set_{key}")(val)
