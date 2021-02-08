@@ -8,7 +8,7 @@ plt.plot(x, y)
 from functools import wraps
 
 from shellplot.figure import figure
-from shellplot.utils import get_label, numpy_2d
+from shellplot.utils import get_label
 
 __all__ = ["plot", "hist", "barh", "boxplot"]
 
@@ -82,10 +82,7 @@ def plot(x, y, color=None, fig=None, **kwargs):
         if kwargs.get("xlabel") is None:
             kwargs.update({"xlabel": x_label})
 
-    fig, show = validate_fig(fig, kwargs)
-
-    x = numpy_2d(x)
-    y = numpy_2d(y)
+    fig, show = validate_fig(fig, **kwargs)
 
     fig.plot(x, y, color=color, **kwargs)
 
@@ -109,7 +106,7 @@ def hist(x, bins=10, fig=None, **kwargs):
     if kwargs.get("ylabel") is None:
         kwargs.update({"ylabel": "counts"})
 
-    fig, show = validate_fig(fig, kwargs)
+    fig, show = validate_fig(fig, **kwargs)
 
     fig.hist(x, bins=bins, **kwargs)
 
@@ -130,7 +127,7 @@ def barh(x, labels=None, fig=None, **kwargs):
     """
     kwargs.update({"xlabel": get_label(x)})
 
-    fig, show = validate_fig(fig, kwargs)
+    fig, show = validate_fig(fig, **kwargs)
 
     fig.barh(x, labels=labels, **kwargs)
 
@@ -154,7 +151,7 @@ def boxplot(x, labels=None, fig=None, **kwargs):
     if labels is None:
         labels = get_label(x)
 
-    fig, show = validate_fig(fig, kwargs)
+    fig, show = validate_fig(fig, **kwargs)
 
     fig.boxplot(x, labels=labels, **kwargs)
 

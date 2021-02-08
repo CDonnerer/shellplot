@@ -128,6 +128,7 @@ class Figure:
 
 
 def color_split(x, y, color, kwargs):
+    """If a color array is provided, we split on it"""
     if color is None:
         yield x, y, kwargs
     else:
@@ -143,12 +144,14 @@ def color_split(x, y, color, kwargs):
 
 def array_split(x, y, kwargs):
     """If x, y contain multiple lines, we split"""
-    if numpy_2d(x).shape[0] == 1:
+    if x.shape[0] == 1:
         yield x.squeeze(), y.squeeze(), kwargs
     else:
-        label = kwargs.pop("label")
+        label = kwargs.get("label", [])
+        if kwargs.get("label") is not None:
+            kwargs.pop("label")
         for x, y in zip(x, y):
+            val_kwargs = copy.deepcopy(kwargs)
             if len(label) != 0:
-                kwargs = copy.deepcopy(kwargs)
-                kwargs.update({"label": label.pop(0)})
-            yield x, y, kwargs
+                val_kwargs.update({"label": label.pop(0)})
+            yield x, y, val_kwargs
