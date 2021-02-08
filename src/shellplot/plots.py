@@ -82,19 +82,14 @@ def plot(x, y, color=None, fig=None, **kwargs):
         if kwargs.get("xlabel") is None:
             kwargs.update({"xlabel": x_label})
 
-    show = False
-
-    if fig is None:
-        fig = figure(**kwargs)
-        show = True
+    fig, show = validate_fig(fig, kwargs)
 
     x = numpy_2d(x)
     y = numpy_2d(y)
 
     fig.plot(x, y, color=color, **kwargs)
 
-    if show:
-        return return_plt(fig.draw(), **kwargs)
+    return return_plt(fig, show, **kwargs)
 
 
 @add_fig_doc
@@ -114,11 +109,11 @@ def hist(x, bins=10, fig=None, **kwargs):
     if kwargs.get("ylabel") is None:
         kwargs.update({"ylabel": "counts"})
 
-    if fig is None:
-        fig = figure(**kwargs)
+    fig, show = validate_fig(fig, kwargs)
 
     fig.hist(x, bins=bins, **kwargs)
-    return return_plt(fig.draw(), **kwargs)
+
+    return return_plt(fig, show, **kwargs)
 
 
 @add_fig_doc
@@ -135,11 +130,11 @@ def barh(x, labels=None, fig=None, **kwargs):
     """
     kwargs.update({"xlabel": get_label(x)})
 
-    if fig is None:
-        fig = figure(**kwargs)
+    fig, show = validate_fig(fig, kwargs)
 
     fig.barh(x, labels=labels, **kwargs)
-    return return_plt(fig.draw(), **kwargs)
+
+    return return_plt(fig, show, **kwargs)
 
 
 @add_fig_doc
@@ -159,14 +154,24 @@ def boxplot(x, labels=None, fig=None, **kwargs):
     if labels is None:
         labels = get_label(x)
 
+    fig, show = validate_fig(fig, kwargs)
+
+    fig.boxplot(x, labels=labels, **kwargs)
+
+    return return_plt(fig, show, **kwargs)
+
+
+def validate_fig(fig, **kwargs):
+    show = False
     if fig is None:
         fig = figure(**kwargs)
-    fig.boxplot(x, labels=labels, **kwargs)
-    return return_plt(fig.draw(), **kwargs)
+        show = True
+    return fig, show
 
 
-def return_plt(plt_str, **kwargs):
-    if kwargs.get("return_type") == "str":
-        return plt_str
-    else:
-        print(plt_str)
+def return_plt(fig, show, **kwargs):
+    if show:
+        if kwargs.get("return_type") == "str":
+            return fig.draw()
+        else:
+            fig.show()

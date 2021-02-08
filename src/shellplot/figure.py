@@ -39,6 +39,10 @@ class Figure:
         self.y_axis = Axis(self.figsize[1])
         self.clear()
 
+    def clear(self):
+        self.plotter = Plotter()
+        self._init_figure_elements()
+
     def _init_figure_elements(self):
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
         self.legend = dict()
@@ -81,10 +85,6 @@ class Figure:
             x_axis=self.x_axis,
             legend=self.legend,
         )
-
-    def clear(self):
-        self.plotter = Plotter()
-        self._init_figure_elements()
 
     # -------------------------------------------------------------------------
     # Axis setters
