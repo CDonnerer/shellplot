@@ -6,7 +6,10 @@ import numpy as np
 
 from shellplot.axis import Axis
 
-np.random.seed(42)
+
+@pytest.fixture(autouse=True)
+def set_np_seed():
+    np.random.seed(42)
 
 
 @pytest.mark.parametrize(
@@ -90,11 +93,10 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
     ],
 )
 def test_axis_datetime_ticks(limits, n_ticks, expected_labels):
-    axis = Axis(display_length=80)
-    axis.limits = limits
-    axis.n_ticks = n_ticks
+    axis = Axis(display_length=79)
     axis.fit(np.array(limits))
-    labels = axis.labels
+    axis.n_ticks = n_ticks
+    labels = axis.ticklabels
 
     assert list(labels) == list(expected_labels)
 
@@ -113,7 +115,7 @@ def test_axis_tick_labels(limits, ticks, expected_tick_labels):
     axis = Axis(display_length=80)
     axis.limits = limits
     axis.ticks = ticks
-    tick_labels = axis.tick_labels()
+    tick_labels = list(axis.gen_tick_labels())
 
     assert tick_labels == expected_tick_labels
 
@@ -126,13 +128,30 @@ def test_axis_tick_labels(limits, ticks, expected_tick_labels):
         (np.array([0.5, 1.5]), np.array(["a"])),
     ],
 )
-def test_axis_labels_len_error(ticks, labels):
+def test_axis_ticklabels_len_error(ticks, labels):
     """Test error raising when tick labels do not match ticks"""
     axis = Axis(display_length=80)
     axis.ticks = ticks
 
     with pytest.raises(ValueError):
-        axis.labels = labels
+        axis.ticklabels = labels
+
+
+def test_axis_reset():
+    """Check that updating limits leads to new axis ticks"""
+
+    x = np.array([45, 123])
+
+    axis = Axis(display_length=80)
+    axis.fit(x)
+
+    axis.limits = (0, 300)
+    ticks = axis.ticks
+    np.testing.assert_array_equal(ticks, np.array([0, 50, 100, 150, 200, 250, 300]))
+
+    axis.limits = (50, 80)
+    ticks = axis.ticks
+    np.testing.assert_array_equal(ticks, np.array([50, 55, 60, 65, 70, 75, 80]))
 
 
 def test_axis_properties():

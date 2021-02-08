@@ -5,7 +5,8 @@ import pytest
 import numpy as np
 import pandas as pd
 
-from shellplot.plots import _add_hbar, _add_vbar, barh, boxplot, hist, plot
+from shellplot.figure import figure
+from shellplot.plots import barh, boxplot, hist, plot
 
 # -----------------------------------------------------------------------------
 # Test `plot` function
@@ -54,6 +55,14 @@ def test_plot_linear(x, expected_linear_plot):
         return_type="str",
     )
     assert plt_str == expected_linear_plot
+
+    fig = figure(figsize=(19, 10), xlim=(0, 9), ylim=(0, 9), xlabel="x", ylabel="y")
+    fig.plot(x, x)
+    assert fig.draw() == expected_linear_plot
+
+    fig.clear()
+    plot(x, x, fig=fig)
+    assert fig.draw() == expected_linear_plot
 
 
 def test_plot_linear_pd_labels(expected_linear_plot):
@@ -279,6 +288,10 @@ def test_hist(x, expected_hist):
     )
     assert plt_str == expected_hist
 
+    fig = figure(figsize=(30, 10), ylabel="counts")  # TODO: consistent?
+    fig.hist(x, bins=3)
+    assert fig.draw() == expected_hist
+
 
 @pytest.mark.parametrize(
     "bins, figsize",
@@ -342,6 +355,14 @@ def expected_barh():
 def test_barh(x, labels, expected_barh):
     plt_str = barh(x, labels=labels, figsize=(30, 9), return_type="str")
     assert plt_str == expected_barh
+
+    fig = figure(figsize=(30, 9))
+    fig.barh(x, labels=labels)
+    assert fig.draw() == expected_barh
+
+    fig.clear()
+    barh(x, labels=labels, fig=fig)
+    assert fig.draw() == expected_barh
 
 
 # -----------------------------------------------------------------------------
@@ -437,46 +458,3 @@ def expected_multi_boxplot():
 def test_multi_boxplot(x, labels, expected_multi_boxplot):
     plt_str = boxplot(x, labels=labels, figsize=(41, 21), return_type="str")
     assert plt_str == expected_multi_boxplot
-
-
-# -----------------------------------------------------------------------------
-# Test canvas elements
-# -----------------------------------------------------------------------------
-
-
-@pytest.fixture
-def expected_canvas_vbar():
-    return np.array(
-        [
-            [0, 0, 0, 0, 0],
-            [20, 20, 20, 0, 0],
-            [0, 0, 0, 22, 0],
-            [20, 20, 20, 0, 0],
-            [0, 0, 0, 0, 0],
-        ]
-    )
-
-
-def test_add_vbar(expected_canvas_vbar):
-    canvas = np.zeros(shape=(5, 5), dtype=int)
-    canvas = _add_vbar(canvas, start=1, width=1, height=3)
-    np.testing.assert_equal(canvas, expected_canvas_vbar)
-
-
-@pytest.fixture
-def expected_canvas_hbar():
-    return np.array(
-        [
-            [22, 0, 0, 22, 0],
-            [22, 0, 0, 22, 0],
-            [0, 20, 20, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-        ]
-    )
-
-
-def test_add_hbar(expected_canvas_hbar):
-    canvas = np.zeros(shape=(5, 5), dtype=int)
-    canvas = _add_hbar(canvas, start=0, width=2, height=2)
-    np.testing.assert_equal(canvas, expected_canvas_hbar)

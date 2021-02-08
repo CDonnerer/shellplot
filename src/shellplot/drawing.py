@@ -4,7 +4,6 @@ Functions for taking the elements of the plot (e.g. canvas, axis, legend) and
 converts them to strings. Please note that drawing is entirely agnostic to the
 type of plot.
 """
-
 from typing import List
 
 PALETTE = {
@@ -19,6 +18,7 @@ PALETTE = {
     6: "■",
     # line drawing
     10: "·",
+    11: ":",
     # bar drawing
     20: "|",
     21: "_",
@@ -52,7 +52,7 @@ def draw(canvas, x_axis, y_axis, legend=None) -> str:
     """
     canvas_lines = _draw_canvas(canvas)
 
-    left_pad = max([len(str(val)) for (t, val) in y_axis.tick_labels()]) + 1
+    left_pad = max([len(str(val)) for (t, val) in y_axis.gen_tick_labels()]) + 1
     y_lines = _draw_y_axis(y_axis, left_pad)
     x_lines = _draw_x_axis(x_axis, left_pad)
 
@@ -84,7 +84,7 @@ def _draw_canvas(canvas) -> List[str]:
 def _draw_y_axis(y_axis, left_pad) -> List[str]:
     y_lines = list()
 
-    y_ticks = y_axis.tick_labels()
+    y_ticks = list(y_axis.gen_tick_labels())
 
     for i in reversed(range(y_axis.display_max + 1)):
         ax_line = ""
@@ -103,7 +103,7 @@ def _draw_y_axis(y_axis, left_pad) -> List[str]:
 
 
 def _draw_x_axis(x_axis, left_pad) -> List[str]:
-    x_ticks = x_axis.tick_labels()
+    x_ticks = list(x_axis.gen_tick_labels())
 
     upper_ax = " " * left_pad + "└"
     lower_ax = " " * left_pad + " "

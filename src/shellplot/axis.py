@@ -1,7 +1,7 @@
 """Module that contains Axis class (usable for both x and y axis)
 
 The main function of an axis is to transform from the data coordinates to the
-display coordinates, hence we loosely follow an sklearn transfomer api.
+display coordinates, hence we loosely follow an sklearn transformer api.
 
 It can be used like so:
 
@@ -10,11 +10,11 @@ x_axis = x_axis.fit(x)
 x_display = x_axis.transform(x)
 
 where x_display is the data in display coordinates
-
 """
 import numpy as np
 
 from shellplot.utils import (
+    numpy_1d,
     round_down,
     round_up,
     timedelta_round,
@@ -25,16 +25,12 @@ from shellplot.utils import (
 
 
 class Axis:
-    def __init__(self, display_length, label=None, limits=None):
+    def __init__(self, display_length, **kwargs):
         self.display_max = display_length - 1
-        self.label = label
-        self.limits = limits
-
         self._is_datetime = False  # datetime axis
 
-        # reverted setting ticks and labels - need to think about the logic here
-        # self.ticks = ticks
-        # self.labels = labels
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     # -------------------------------------------------------------------------
     # Public properties that can be set by the user
@@ -42,6 +38,8 @@ class Axis:
 
     @property
     def label(self):
+        if not hasattr(self, "_label"):
+            self._label = None
         return self._label
 
     @label.setter
@@ -50,6 +48,8 @@ class Axis:
 
     @property
     def limits(self):
+        if not hasattr(self, "_limits"):
+            self.limits = None
         return self._limits
 
     @limits.setter
@@ -58,6 +58,7 @@ class Axis:
         if limits is not None:
             self._limits, _ = to_numeric(np.array(limits))
             self._set_scale()
+            self._reset_ticks()
 
     @property
     def n_ticks(self):
@@ -80,22 +81,23 @@ class Axis:
 
     @ticks.setter
     def ticks(self, ticks):
-        self._ticks = ticks
+        self._ticks = numpy_1d(ticks)
+        self.ticklabels = self.ticks
 
     @property
-    def labels(self):
-        if not hasattr(self, "_labels"):
+    def ticklabels(self):
+        if not hasattr(self, "_ticklabels"):
             if self._is_datetime:
-                self.labels = self._datetime_labels(self.ticks)
+                self.ticklabels = self._datetime_labels(self.ticks)
             else:
-                self.labels = self.ticks
-        return self._labels
+                self.ticklabels = self.ticks
+        return self._ticklabels
 
-    @labels.setter
-    def labels(self, labels):
+    @ticklabels.setter
+    def ticklabels(self, labels):
         if len(labels) != len(self.ticks):
             raise ValueError("Len of tick labels must equal len of ticks!")
-        self._labels = labels
+        self._ticklabels = numpy_1d(labels)
 
     # -------------------------------------------------------------------------
     # Methods
@@ -122,16 +124,16 @@ class Axis:
         self = self.fit(x)
         return self.transform(x)
 
-    def tick_labels(self):
+    def gen_tick_labels(self):
         """Generate display tick location and labels"""
         display_ticks = self.transform(self.ticks)
         within_display = np.logical_and(
             display_ticks >= 0, display_ticks <= self.display_max
         )
-        display_labels = self.labels[within_display]
+        display_labels = self.ticklabels[within_display]
         display_ticks = display_ticks[within_display]
 
-        return list(zip(display_ticks, display_labels))  # generator?
+        return zip(display_ticks, display_labels)
 
     def _set_scale(self):
         self.scale = self.display_max / float(self.limits[1] - self.limits[0])
@@ -153,7 +155,19 @@ class Axis:
         unit = timedelta_round(limits_delta)
         n_units = limits_delta / np.timedelta64(1, unit)
         td_step = np.timedelta64(int(n_units / (self.n_ticks - 1)), unit)
-        return np.arange(axis_td[0], axis_td[1] + td_step, td_step)
+        return np.arange(
+            np.datetime64(axis_td[0], unit),
+            np.datetime64(axis_td[1], unit) + td_step,
+            td_step,
+        )
+
+    def _datetime_labels(self, ticks):
+        # TODO: I don't know why the uncommented code existed
+        # [ns] should not be hardcoded
+        # dt_ticks = to_datetime(ticks.astype("timedelta64[ns]"))
+        # delta_ticks = dt_ticks[1] - dt_ticks[0]  # TODO: this could fail
+        # unit = timedelta_round(delta_ticks)
+        return np.datetime_as_string(ticks)  # , unit=unit)
 
     def _auto_limits(self, x, frac=0.25):
         """Automatically find `good` axis limits"""
@@ -172,16 +186,16 @@ class Axis:
             if abs(rounded - val) <= max_difference:
                 return rounded
 
-    def _datetime_labels(self, ticks):
-        # TODO: [ns] should not be hardcoded
-        dt_ticks = to_datetime(ticks.astype("timedelta64[ns]"))
-        delta_ticks = dt_ticks[1] - dt_ticks[0]  # TODO: this could fail
-        unit = timedelta_round(delta_ticks)
-        return np.datetime_as_string(dt_ticks, unit=unit)
-
     def _auto_nticks(self):
         """Automatically find a `good` number of axis ticks that fits display"""
         max_ticks = int(1.5 * self.display_max ** 0.3) + 1
         ticks = np.arange(max_ticks, max_ticks - 2, -1)
         remainders = np.remainder(self.display_max, ticks)
         return ticks[np.argmin(remainders)] + 1
+
+    def _reset_ticks(self):
+        """Reset axis ticks and ticklabels"""
+        attrs = ["_ticks", "_ticklabels"]
+        for attr in attrs:
+            if hasattr(self, attr):
+                delattr(self, attr)

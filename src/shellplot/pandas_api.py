@@ -24,8 +24,7 @@ def plot(data, kind, **kwargs):
     elif isinstance(data, pd.DataFrame):
         return _plot_frame(data, kind, **kwargs)
     else:
-        # we should never get here
-        raise ValueError
+        raise ValueError  # we should never get here
 
 
 def hist_series(data, **kwargs):
