@@ -60,7 +60,7 @@ useful for more complex plots, such as plotting multiple arrays::
         >>> x = np.arange(-4, 4, 0.5)
         >>> fig = plt.figure()
         >>> fig.plot(x, np.cos(x), label="cos(x)")
-        >>> fig.plot(x, np.sin(x), label='sin(x)', marker=None, line=True)
+        >>> fig.plot(x, np.sin(x), label="sin(x)", marker=None, line=True)
         >>> fig.set_xlim((-4, 2))
         >>> fig.set_xlabel("x axis")
         >>> fig.set_xlabel("y axis")
@@ -102,48 +102,46 @@ useful for more complex plots, such as plotting multiple arrays::
 Histogram
 -------------------
 
-Histogram plots can be created via the ``hist`` function::
+Histogram plots can be created via the ``hist`` function. Below, we attach a
+Histogram to an exiting figure::
 
 
         >>> import numpy as np
         >>> import shellplot as plt
-        >>> x = np.random.randn(10000)
-        >>> plt.hist(x, bins=8)
+        >>> x = np.random.randn(10_000)
+        >>> fig = plt.figure()
+        >>> plt.hist(x, bins=8, fig=fig)
+        >>> fig.show()
 
-          counts
-         3220┤                                         ---------
-             |                                        |         |
-             |                               ---------|         |
-             |                              |         |         |
-             |                              |         |         |
-             |                              |         |         |
-         2576┤                              |         |         |
-             |                              |         |         |
-             |                              |         |         |
-             |                              |         |         |
-             |                              |         |         |
-             |                              |         |         |
-         1932┤                              |         |         |
-             |                              |         |         |
-             |                              |         |         |
-             |                              |         |         |---------
-             |                              |         |         |         |
-             |                     ---------|         |         |         |
-         1288┤                    |         |         |         |         |
-             |                    |         |         |         |         |
-             |                    |         |         |         |         |
-             |                    |         |         |         |         |
-             |                    |         |         |         |         |
-             |                    |         |         |         |         |
-          644┤                    |         |         |         |         |
-             |                    |         |         |         |         |
-             |                    |         |         |         |         |---------
-             |           ---------|         |         |         |         |         |
-             |          |         |         |         |         |         |         |
-             |          |         |         |         |         |         |         |---------
-            0┤ ---------|         |         |         |         |         |         |         |
-             └┬-------------------┬-------------------┬-------------------┬-------------------┬
-              -4                  -2                  0                   2                   4
+         3492┤                         -------
+             |                        |       |
+             |                        |       |
+             |                        |       |
+             |                        |       |
+             |                        |       |-------
+             |                        |       |       |
+         2619┤                        |       |       |
+             |                        |       |       |
+             |                        |       |       |
+             |                        |       |       |
+             |                 -------|       |       |
+             |                |       |       |       |
+         1746┤                |       |       |       |
+             |                |       |       |       |
+             |                |       |       |       |
+             |                |       |       |       |
+             |                |       |       |       |
+             |                |       |       |       |-------
+             |                |       |       |       |       |
+          873┤                |       |       |       |       |
+             |                |       |       |       |       |
+             |         -------|       |       |       |       |
+             |        |       |       |       |       |       |
+             |        |       |       |       |       |       |
+             |        |       |       |       |       |       |-------
+            0┤ -------|       |       |       |       |       |       |-------
+             └┬---------------┬---------------┬---------------┬---------------┬------
+              -4              -2              0               2               4
 
 
 

@@ -1,11 +1,4 @@
 """Object-oriented API for shellplot
-
-Can be used like:
-
-fig = plt.figure()
-fig.plot(x, y)
-fig.show()
-
 """
 import copy
 from itertools import cycle
@@ -20,6 +13,19 @@ from shellplot.utils import get_index, numpy_1d, numpy_2d
 
 
 def figure(figsize=None, **kwargs):
+    """Create a new shellplot figure
+
+    Parameters
+    ----------
+    figsize : a tuple (width, height) in ascii characters, optional
+        Size of the figure.
+
+    Returns
+    -------
+    `shellplot.figure.Figure`
+        Instantiated shellplot figure
+
+    """
     figsize = figsize or config["figsize"]
     fig = Figure(figsize)
 
@@ -31,7 +37,7 @@ def figure(figsize=None, **kwargs):
 
 
 class Figure:
-    """Encapsulates a shellplot figure"""
+    """Encapsulates a shellplot figure. Should be instantiated via `shellplot.figure`"""
 
     def __init__(self, figsize):
         self.figsize = figsize
@@ -40,6 +46,7 @@ class Figure:
         self.clear()
 
     def clear(self):
+        """Clear the figure, by removing all attached plots."""
         self.plotter = Plotter()
         self._init_figure_elements()
 
@@ -50,6 +57,23 @@ class Figure:
         self.lines = cycle([10, 11])
 
     def plot(self, x, y, color=None, **kwargs):
+        """Plot x versus y as scatter.
+
+        Parameters
+        ----------
+        x : array-like
+            The horizontal coordinates of the data points.
+            Should be 1d or 2d np.ndarray or pandas series
+        y : array-like
+            The vertical coordinates of the data points.
+            Should be 1d or 2d np.ndarray or pandas series
+        color : array, optional
+            Color of scatter. Needs to be of same dimension as x, y
+            Should be 1-d np.ndarray or pandas series
+        line : bool, optional, default False
+            Whether a line should be plotted using the x, y points. This will use a
+            linear interpolation of the points.
+        """
         x = numpy_2d(x)
         y = numpy_2d(y)
 
@@ -59,16 +83,49 @@ class Figure:
                 self.plotter.add(call)
 
     def hist(self, x, **kwargs):
+        """Plot a histogram of x
+
+        Parameters
+        ----------
+        x : array-like
+            The array of points to plot a histogram of. Should be 1d np.ndarray or
+            pandas series.
+        bins : int, optional
+            Number of bins in histogram. Default is 10 bins.
+        """
         call = PlotCall(func=_hist, args=[x], kwargs=kwargs)
         self.plotter.add(call)
 
     def barh(self, x, **kwargs):
+        """Plot horizontal bars
+
+        Parameters
+        ----------
+        x : array-like
+            The width of the horizontal bars. Should be 1d np.ndarray or pandas
+            series.
+        labels : array-like
+            Array that is used to label the bars. Needs to have the same dim as x.
+        """
         if kwargs.get("labels") is None:
             kwargs["labels"] = get_index(x)
         call = PlotCall(func=_barh, args=[x], kwargs=kwargs)
         self.plotter.add(call)
 
     def boxplot(self, x, **kwargs):
+        """Plot a boxplot of x
+
+        Note that currently this makes a boxplot using the quantiles:
+        [0, 0.25, 0.5, 0.75, 1.0] - i.e. it the whiskers will not exclude outliers
+
+        Parameters
+        ----------
+        x : array-like
+            The horizontal coordinates of the data points.
+            Can be 1d or 2d np.ndarray/ pandas series/ dataframe. If 2d, each 1d
+            slice will be plotted as a separate boxplot.
+        """
+
         call = PlotCall(func=_boxplot, args=[x], kwargs=kwargs)
         self.plotter.add(call)
 
