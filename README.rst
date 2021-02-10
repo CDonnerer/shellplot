@@ -40,38 +40,38 @@ Quickstart
 ===========
 
 Shellplot loosely replicates the `matplotlib`_ API, offering both a figure and
-functional `api`_, enabling scatter, line, histogram, bar and boxplots. It's as
-easy as::
+functional `api`_. It currently supports scatter, line, histogram, bar and
+boxplots. It's as easy as:: python
 
       >>> import shellplot as plt
       >>> df = plt.load_dataset("penguins")
       >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
         flipper_length_mm
-         232┤                                 o o  oo    oo        o
-            |                                  oo o  o      o
-            |                                  ooooo
-            |                          o ooo ooo oo  o
-            |                      ooo oo oo o ooo o   o
-         217┤                     o o oo oooo oooo
-            |                 o   o o oooo o o*oo
-            |                   oooo + ooooo oo   * *
-            |                 +   oooo o      o     *       *
-            |                  +             o *  *   **
-         202┤       +          ++   *            ****    *
-            |     +    ++++  ++ ++     *   * * *** *
-            |       +++   ++++++++++ +  *** *  ********
-            |    + +  ++++  +++++  +    ***     * ***
-            |   + ++++ ++++++ ++ +     ****  *   *
-         187┤+    ++ ++ ++++++*+  **   * *         *
-            |    ++ + ++++ ++ +           *
-            |         + ++++  ++ *                              *
-            |  +       ++   +            *                           + Adelie
-            |           +    +                                       * Chinstrap
-         172┤            +                                           o Gentoo
-            └┬-----------┬-----------┬----------┬-----------┬--------
-             32          38          44         50          56
-                                  bill_length_mm
+         232┤                                    o oo  oo    o o        o
+            |                                     oo o  o       o
+            |                                      oooo
+            |                            o oooo ooo oo   o
+            |                        oo oooo oo o o o o    o
+         217┤                       o o oo ooooo ooo o
+            |                   o   o o ooooo o o*oo
+            |                     o oo + oooo oooo   *  *
+            |                   +   oooo o       o      *       *
+            |                   ++              o *  **   **
+         202┤        +           +    *             ** **    *
+            |      +    ++++   +  +      *    **   ****
+            |        ++    +++ +++ +++ +  ** **   ***** **
+            |     +++  ++++   ++ ++  +    *+**     * ***
+            |   +  + ++++++++++ ++++     *+***  *   *
+         187┤+    + + ++ +++++++*+ * *    **           *
+            |    ++  ++++++ + +++            *
+            |          + ++ +  + + *                                 *
+            |  +        ++   +             *                              + Adelie
+            |            +     +                                          * Chinstrap
+         172┤             +                                               o Gentoo
+            └┬----------┬---------┬----------┬----------┬----------┬------
+             32         37        42         47         52         57
+                                    bill_length_mm
 
 
 Shellplot also provides a convenient integration with `pandas`_. Simply set the
