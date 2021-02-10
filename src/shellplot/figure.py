@@ -48,7 +48,8 @@ class Figure:
     """Encapsulates a shellplot figure. Should be instantiated via `shellplot.figure`"""
 
     def __init__(self, figsize):
-        """
+        """Instantiate a new figure
+
         Parameters
         ----------
         figsize : a tuple (width, height) in ascii characters, optional

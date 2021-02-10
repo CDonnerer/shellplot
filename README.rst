@@ -39,7 +39,8 @@ Run::
 Quickstart
 ===========
 
-Shellplot loosely replicates the `matplotlib`_ API, it's as easy as:
+Shellplot loosely replicates the `matplotlib`_ API, offering both a figure and
+functional `api`_. It's as easy as:
 
 
 .. code-block:: python
@@ -104,40 +105,34 @@ which yields:
 
 .. code-block::
 
-
         flipper_length_mm
-         232┤                                         o  o   o o    o o          o
-            |                                          ooo o   o        o
-            |                                           o ooo
-            |                                 o         oooo
-            |                            o   oo o oo ooo oooo   o
-            |                            o  o  o o o  o  oo  o    o
-         217┤                             o o   oo oo  oo  o
-            |                      o   ooo  oooooooooo   o
-            |                                oo o  o   o
-            |                      + ooooooo ooooo o oo*   *  *
-            |                                o                *         *
-            |                      +                 o  *  **   * *
-         202┤         +             +    *                ** **     *
-            |      +      ++++   ++  ++       *    * *  **** *
-            |                  +++    ++++ +  *+         ** *****
-            |     +  +++++ ++ +++++++ + +      * * *   *** * **
-            |       + +   +  ++ +  ++++  +    *+***   *
-            |+   + ++ ++++ +++++++++  +       ****        *
-         187┤      + + + + ++ +++ +*   * *      *            *
-            |     ++  + +++++ + +  +              *
-            |           +  ++ +   ++   *                                     *
-            |              +  +   +   +
-            |   +         +    + +              *                                  + Adelie
-            |              +                                                       * Chinstrap
-         172┤               +                                                      o Gentoo
-            └┬--------------┬--------------┬-------------┬--------------┬----------
-             32             38             44            50             56
-                                        bill_length_mm
+         232┤                              o o  oo   oo       o
+            |                               oo o o      o
+            |                               oooo
+            |                        oooo ooo o   o
+            |                    ooooooo oo oooo   o
+         217┤                   o o oooooo oo o
+            |                o  o oooo oooo*oo
+            |                 oooo +oooo ooo   * *
+            |                +  ooo oo     o     *     *
+            |                +            o * **  **
+         202┤       +         +   *           ****   *
+            |     +   ++++  + ++     *   ** ****
+            |      +++   +++++++++ + *** *  **** **
+            |     ++ ++++  ++++  +   *+**   * ***
+            |   + ++++++++++ +++     ***  *  *
+         187┤+   + +++  +++++*  **   **         *
+            |    +  ++++++ +++          *
+            |        + ++++ ++ +*                          *
+            |  +      +   +           *                         + Adelie
+            |          +    +                                   * Chinstrap
+         172┤           +                                       o Gentoo
+            └┬----------┬---------┬----------┬----------┬-------
+             32         38        44         50         56
+                               bill_length_mm
 
 
-Please refer to `pandas visualisation`_ page in the `documentation`_ for further
-details.
+Please refer to `pandas visualisation`_ page for further details.
 
 Note
 ====
@@ -148,6 +143,7 @@ information on PyScaffold see https://pyscaffold.org/.
 
 .. _documentation: https://shellplot.readthedocs.io/en/stable/
 .. _examples: https://shellplot.readthedocs.io/en/stable/examples/index.html
+.. _api: https://shellplot.readthedocs.io/en/stable/api.html
 .. _pandas visualisation: https://shellplot.readthedocs.io/en/latest/examples/pandas.html
 .. _matplotlib: https://matplotlib.org/contents.html#
 .. _pandas: https://pandas.pydata.org/

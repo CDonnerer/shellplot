@@ -11,9 +11,9 @@ Figure API
 .. autosummary::
     :toctree: api/
 
-    figure
+    shellplot.figure
 
-    figure.Figure
+    shellplot.figure.Figure
     :noindex:
     :members:
     :undoc-members:
@@ -24,10 +24,10 @@ Plotting functions
 .. autosummary::
     :toctree: api/
 
-    plot
-    hist
-    barh
-    boxplot
+    shellplot.plot
+    shellplot.hist
+    shellplot.barh
+    shellplot.boxplot
 
 
 Data loading
@@ -36,4 +36,4 @@ Data loading
 .. autosummary::
     :toctree: api/
 
-    load_dataset
+    shellplot.load_dataset
