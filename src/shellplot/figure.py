@@ -9,7 +9,7 @@ from shellplot._config import _global_config as config
 from shellplot._plotting import PlotCall, Plotter, _barh, _boxplot, _hist, _plot
 from shellplot.axis import Axis
 from shellplot.drawing import draw
-from shellplot.utils import get_index, numpy_1d, numpy_2d
+from shellplot.utils import get_index, numpy_1d, numpy_2d, remove_any_nan
 
 
 def figure(figsize=None, **kwargs):
@@ -96,6 +96,7 @@ class Figure:
 
         for x, y, kwargs in array_split(x, y, kwargs):
             for x, y, kwargs in color_split(x, y, color, kwargs):
+                x, y = remove_any_nan(x, y)
                 call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
                 self.plotter.add(call)
 
