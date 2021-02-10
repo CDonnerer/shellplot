@@ -44,49 +44,6 @@ Shellplot loosely replicates the `matplotlib`_ API, it's as easy as:
 
 .. code-block:: python
 
-        >>> import shellplot as plt
-        >>> df = plt.load_dataset("penguins")
-        >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
-
-
-.. code-block::
-
-
-        flipper_length_mm
-         232┤                                         o  o   o o    o o          o
-            |                                          ooo o   o        o
-            |                                           o ooo
-            |                                 o         oooo
-            |                            o   oo o oo ooo oooo   o
-            |                            o  o  o o o  o  oo  o    o
-         217┤                             o o   oo oo  oo  o
-            |                      o   ooo  oooooooooo   o
-            |                                oo o  o   o
-            |                      + ooooooo ooooo o oo*   *  *
-            |                                o                *         *
-            |                      +                 o  *  **   * *
-         202┤         +             +    *                ** **     *
-            |      +      ++++   ++  ++       *    * *  **** *
-            |                  +++    ++++ +  *+         ** *****
-            |     +  +++++ ++ +++++++ + +      * * *   *** * **
-            |       + +   +  ++ +  ++++  +    *+***   *
-            |+   + ++ ++++ +++++++++  +       ****        *
-         187┤      + + + + ++ +++ +*   * *      *            *
-            |     ++  + +++++ + +  +              *
-            |           +  ++ +   ++   *                                     *
-            |              +  +   +   +
-            |   +         +    + +              *                                  + Adelie
-            |              +                                                       * Chinstrap
-         172┤               +                                                      o Gentoo
-            └┬--------------┬--------------┬-------------┬--------------┬----------
-             32             38             44            50             56
-                                        bill_length_mm
-
-
-Similarly to:
-
-.. code-block:: python
-
         >>> import numpy as np
         >>> import shellplot as plt
         >>> x = np.arange(-4, 4, 0.5)
@@ -95,6 +52,8 @@ Similarly to:
         >>> fig.plot(x, np.sin(x), label="sin(x)", marker=None, line=True)
         >>> fig.set_xlabel("x axis")
         >>> fig.show()
+
+which yields:
 
 .. code-block::
 
@@ -132,16 +91,54 @@ Similarly to:
 
 
 
-
-
-
+Pandas integration
+===================
 
 Shellplot also provides a convenient integration with `pandas`_. Simply set the
 pandas plotting backend to shellplot::
 
+.. code-block:: python
 
         >>> import pandas as pd
+        >>> import shellplot as plt
         >>> pd.set_option("plotting.backend", "shellplot")
+        >>> df = plt.load_dataset("penguins")
+        >>> df.plot("bill_length_mm", "flipper_length_mm", color="species")
+
+which yields:
+
+.. code-block::
+
+
+        flipper_length_mm
+         232┤                                         o  o   o o    o o          o
+            |                                          ooo o   o        o
+            |                                           o ooo
+            |                                 o         oooo
+            |                            o   oo o oo ooo oooo   o
+            |                            o  o  o o o  o  oo  o    o
+         217┤                             o o   oo oo  oo  o
+            |                      o   ooo  oooooooooo   o
+            |                                oo o  o   o
+            |                      + ooooooo ooooo o oo*   *  *
+            |                                o                *         *
+            |                      +                 o  *  **   * *
+         202┤         +             +    *                ** **     *
+            |      +      ++++   ++  ++       *    * *  **** *
+            |                  +++    ++++ +  *+         ** *****
+            |     +  +++++ ++ +++++++ + +      * * *   *** * **
+            |       + +   +  ++ +  ++++  +    *+***   *
+            |+   + ++ ++++ +++++++++  +       ****        *
+         187┤      + + + + ++ +++ +*   * *      *            *
+            |     ++  + +++++ + +  +              *
+            |           +  ++ +   ++   *                                     *
+            |              +  +   +   +
+            |   +         +    + +              *                                  + Adelie
+            |              +                                                       * Chinstrap
+         172┤               +                                                      o Gentoo
+            └┬--------------┬--------------┬-------------┬--------------┬----------
+             32             38             44            50             56
+                                        bill_length_mm
 
 
 Please refer to `pandas visualisation`_ page in the `documentation`_ for further
