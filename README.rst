@@ -40,54 +40,39 @@ Quickstart
 ===========
 
 Shellplot loosely replicates the `matplotlib`_ API, offering both a figure and
-functional `api`_. It's as easy as:
+functional `api`_, enabling scatter, line, histogram, bar and boxplots. It's as
+easy as::
 
+      >>> import shellplot as plt
+      >>> df = plt.load_dataset("penguins")
+      >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
-.. code-block:: python
+        flipper_length_mm
+         232┤                                 o o  oo    oo        o
+            |                                  oo o  o      o
+            |                                  ooooo
+            |                          o ooo ooo oo  o
+            |                      ooo oo oo o ooo o   o
+         217┤                     o o oo oooo oooo
+            |                 o   o o oooo o o*oo
+            |                   oooo + ooooo oo   * *
+            |                 +   oooo o      o     *       *
+            |                  +             o *  *   **
+         202┤       +          ++   *            ****    *
+            |     +    ++++  ++ ++     *   * * *** *
+            |       +++   ++++++++++ +  *** *  ********
+            |    + +  ++++  +++++  +    ***     * ***
+            |   + ++++ ++++++ ++ +     ****  *   *
+         187┤+    ++ ++ ++++++*+  **   * *         *
+            |    ++ + ++++ ++ +           *
+            |         + ++++  ++ *                              *
+            |  +       ++   +            *                           + Adelie
+            |           +    +                                       * Chinstrap
+         172┤            +                                           o Gentoo
+            └┬-----------┬-----------┬----------┬-----------┬--------
+             32          38          44         50          56
+                                  bill_length_mm
 
-        >>> import numpy as np
-        >>> import shellplot as plt
-        >>> x = np.arange(-4, 4, 0.5)
-        >>> fig = plt.figure()
-        >>> fig.plot(x, np.cos(x), label="cos(x)")
-        >>> fig.plot(x, np.sin(x), label="sin(x)", marker=None, line=True)
-        >>> fig.set_xlabel("x axis")
-        >>> fig.show()
-
-which yields:
-
-.. code-block::
-
-
-        1.0┤                              +         ···
-           |                          +      +     ·   ··
-           |·                                    ··      ··
-           | ·                                  ·          ·
-           |  ·                               ··            ·
-        0.5┤   ·                  +          ·   +           ·
-           |    ·                                             ·
-           |                                ·
-           |     ·                         ·                   ·
-           |      ·           +                      +          ·
-        0.0┤                              ·
-           |       ·                     ·                       ·
-           |        ·                   ·                         ·
-           |
-           |         ·     +           ·                +
-       -0.5┤          ·               ·
-           |           ·            ··
-           |+           ·          ·
-           |           + ··      ··                         +
-           |    +          ··   ·                                  +    + cos(x)
-       -1.0┤       +         ···                                +       · sin(x)
-           └┬--------------┬--------------┬-------------┬--------------┬
-            -4             -2             0             2              4
-                                       x axis
-
-
-
-Pandas integration
-===================
 
 Shellplot also provides a convenient integration with `pandas`_. Simply set the
 pandas plotting backend to shellplot:
@@ -96,40 +81,7 @@ pandas plotting backend to shellplot:
 .. code-block:: python
 
         >>> import pandas as pd
-        >>> import shellplot as plt
         >>> pd.set_option("plotting.backend", "shellplot")
-        >>> df = plt.load_dataset("penguins")
-        >>> df.plot("bill_length_mm", "flipper_length_mm", color="species")
-
-which yields:
-
-.. code-block::
-
-        flipper_length_mm
-         232┤                              o o  oo   oo       o
-            |                               oo o o      o
-            |                               oooo
-            |                        oooo ooo o   o
-            |                    ooooooo oo oooo   o
-         217┤                   o o oooooo oo o
-            |                o  o oooo oooo*oo
-            |                 oooo +oooo ooo   * *
-            |                +  ooo oo     o     *     *
-            |                +            o * **  **
-         202┤       +         +   *           ****   *
-            |     +   ++++  + ++     *   ** ****
-            |      +++   +++++++++ + *** *  **** **
-            |     ++ ++++  ++++  +   *+**   * ***
-            |   + ++++++++++ +++     ***  *  *
-         187┤+   + +++  +++++*  **   **         *
-            |    +  ++++++ +++          *
-            |        + ++++ ++ +*                          *
-            |  +      +   +           *                         + Adelie
-            |          +    +                                   * Chinstrap
-         172┤           +                                       o Gentoo
-            └┬----------┬---------┬----------┬----------┬-------
-             32         38        44         50         56
-                               bill_length_mm
 
 
 Please refer to `pandas visualisation`_ page for further details.
