@@ -73,12 +73,12 @@ which yields:
            |        ·                   ·                         ·
            |
            |         ·     +           ·                +
-        -0.5┤          ·               ·
+       -0.5┤          ·               ·
            |           ·            ··
            |+           ·          ·
            |           + ··      ··                         +
            |    +          ··   ·                                  +    + cos(x)
-        -1.0┤       +         ···                                +       · sin(x)
+       -1.0┤       +         ···                                +       · sin(x)
            └┬--------------┬--------------┬-------------┬--------------┬
             -4             -2             0             2              4
                                        x axis
@@ -89,7 +89,8 @@ Pandas integration
 ===================
 
 Shellplot also provides a convenient integration with `pandas`_. Simply set the
-pandas plotting backend to shellplot::
+pandas plotting backend to shellplot:
+
 
 .. code-block:: python
 
