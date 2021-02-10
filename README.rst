@@ -31,7 +31,7 @@ Please take a look at the `documentation`_, which contains many `examples`_.
 Installation
 ============
 
-Run::
+.. code-block:: console
 
         $ pip install shellplot
 
@@ -41,7 +41,7 @@ Quickstart
 
 Shellplot loosely replicates the `matplotlib`_ API, offering both a figure and
 functional `api`_. It currently supports scatter, line, histogram, bar and
-boxplots. It's as easy as:
+boxplots, with many options to customize the figure. It's as easy as:
 
 
 .. code-block:: python
