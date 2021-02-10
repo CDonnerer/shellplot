@@ -44,7 +44,7 @@ functional `api`_. It currently supports scatter, line, histogram, bar and
 boxplots. It's as easy as:
 
 
-.. code-block:: python
+.. code-block::
 
       >>> import shellplot as plt
       >>> df = plt.load_dataset("penguins")
