@@ -53,7 +53,7 @@ try:
     if parse_version(sphinx.__version__) >= parse_version("1.7"):
         args = args[1:]
 
-    apidoc.main(args)
+    # apidoc.main(args)
 except Exception as e:
     print("Running `sphinx-apidoc` failed!\n{}".format(e))
 
@@ -76,6 +76,12 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
 ]
+
+autodoc_default_flags = ["members"]
+autodoc_default_options = {"members": True}
+
+# Generate autosummary pages. Output should be set with: `:toctree: api/`
+autosummary_generate = ["api.rst"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

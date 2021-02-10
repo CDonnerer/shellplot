@@ -52,6 +52,7 @@ class Plotter:
 def _plot(fig, x, y, marker=True, line=None, label=None, **kwargs):
     # TODO: the kwargs is a catch all cop out. this arises from kwargs
     # containing figure params, which should really be popped out somewhere
+
     x_scaled = fig.x_axis.transform(numpy_1d(x))
     y_scaled = fig.y_axis.transform(numpy_1d(y))
 

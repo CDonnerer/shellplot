@@ -31,61 +31,65 @@ Please take a look at the `documentation`_, which contains many `examples`_.
 Installation
 ============
 
-Run::
+.. code-block:: console
 
-        pip install shellplot
+        $ pip install shellplot
 
 
 Quickstart
 ===========
 
-Shellplot loosely replicates the `matplotlib`_ API, it's as easy as::
+Shellplot loosely replicates the `matplotlib`_ API, offering both a figure and
+functional `api`_. It currently supports scatter, line, histogram, bar and
+boxplots, with many options to customize the figure. It's as easy as:
 
-        >>> import shellplot as plt
-        >>> df = plt.load_dataset("penguins")
-        >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
-        flipper_length_mm
-         232┤                                         o  o   o o    o o          o
-            |                                          ooo o   o        o
-            |                                           o ooo
-            |                                 o         oooo
-            |                            o   oo o oo ooo oooo   o
-            |                            o  o  o o o  o  oo  o    o
-         217┤                             o o   oo oo  oo  o
-            |                      o   ooo  oooooooooo   o
-            |                                oo o  o   o
-            |                      + ooooooo ooooo o oo*   *  *
-            |                                o                *         *
-            |                      +                 o  *  **   * *
-         202┤         +             +    *                ** **     *
-            |      +      ++++   ++  ++       *    * *  **** *
-            |                  +++    ++++ +  *+         ** *****
-            |     +  +++++ ++ +++++++ + +      * * *   *** * **
-            |       + +   +  ++ +  ++++  +    *+***   *
-            |+   + ++ ++++ +++++++++  +       ****        *
-         187┤      + + + + ++ +++ +*   * *      *            *
-            |     ++  + +++++ + +  +              *
-            |           +  ++ +   ++   *                                     *
-            |              +  +   +   +
-            |   +         +    + +              *                                  + Adelie
-            |              +                                                       * Chinstrap
-         172┤               +                                                      o Gentoo
-            └┬--------------┬--------------┬-------------┬--------------┬----------
-             32             38             44            50             56
-                                        bill_length_mm
+.. code-block:: python
+
+      >>> import shellplot as plt
+      >>> df = plt.load_dataset("penguins")
+      >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
+
+.. code-block::
+
+      flipper_length_mm
+       232┤                                    o oo  oo    o o        o
+          |                                     oo o  o       o
+          |                                      oooo
+          |                            o oooo ooo oo   o
+          |                        oo oooo oo o o o o    o
+       217┤                       o o oo ooooo ooo o
+          |                   o   o o ooooo o o*oo
+          |                     o oo + oooo oooo   *  *
+          |                   +   oooo o       o      *       *
+          |                   ++              o *  **   **
+       202┤        +           +    *             ** **    *
+          |      +    ++++   +  +      *    **   ****
+          |        ++    +++ +++ +++ +  ** **   ***** **
+          |     +++  ++++   ++ ++  +    *+**     * ***
+          |   +  + ++++++++++ ++++     *+***  *   *
+       187┤+    + + ++ +++++++*+ * *    **           *
+          |    ++  ++++++ + +++            *
+          |          + ++ +  + + *                                 *
+          |  +        ++   +             *                              + Adelie
+          |            +     +                                          * Chinstrap
+       172┤             +                                               o Gentoo
+          └┬----------┬---------┬----------┬----------┬----------┬------
+           32         37        42         47         52         57
+                                  bill_length_mm
 
 
 Shellplot also provides a convenient integration with `pandas`_. Simply set the
-pandas plotting backend to shellplot::
+pandas plotting backend to shellplot:
 
+
+.. code-block:: python
 
         >>> import pandas as pd
         >>> pd.set_option("plotting.backend", "shellplot")
 
 
-Please refer to `pandas visualisation`_ page in the `documentation`_ for further
-details.
+Please refer to `pandas visualisation`_ page for further details.
 
 Note
 ====
@@ -96,6 +100,7 @@ information on PyScaffold see https://pyscaffold.org/.
 
 .. _documentation: https://shellplot.readthedocs.io/en/stable/
 .. _examples: https://shellplot.readthedocs.io/en/stable/examples/index.html
+.. _api: https://shellplot.readthedocs.io/en/stable/api.html
 .. _pandas visualisation: https://shellplot.readthedocs.io/en/latest/examples/pandas.html
 .. _matplotlib: https://matplotlib.org/contents.html#
 .. _pandas: https://pandas.pydata.org/

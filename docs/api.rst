@@ -3,19 +3,37 @@
 API Reference
 ===================
 
+.. currentmodule:: shellplot
+
+Figure API
+-------------------
+
+.. autosummary::
+    :toctree: api/
+
+    shellplot.figure
+
+    shellplot.figure.Figure
+    :noindex:
+    :members:
+    :undoc-members:
+
 Plotting functions
 -------------------
 
-.. autofunction:: shellplot.plot
+.. autosummary::
+    :toctree: api/
 
-.. autofunction:: shellplot.hist
-
-.. autofunction:: shellplot.barh
-
-.. autofunction:: shellplot.boxplot
+    shellplot.plot
+    shellplot.hist
+    shellplot.barh
+    shellplot.boxplot
 
 
 Data loading
 -------------------
 
-.. autofunction:: shellplot.load_dataset
+.. autosummary::
+    :toctree: api/
+
+    shellplot.load_dataset
