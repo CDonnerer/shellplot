@@ -39,11 +39,18 @@ Run::
 Quickstart
 ===========
 
-Shellplot loosely replicates the `matplotlib`_ API, it's as easy as::
+Shellplot loosely replicates the `matplotlib`_ API, it's as easy as:
+
+
+.. code-block:: python
 
         >>> import shellplot as plt
         >>> df = plt.load_dataset("penguins")
         >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
+
+
+.. code-block::
+
 
         flipper_length_mm
          232┤                                         o  o   o o    o o          o
@@ -78,7 +85,6 @@ Shellplot loosely replicates the `matplotlib`_ API, it's as easy as::
 
 Similarly to:
 
-
 .. code-block:: python
 
         >>> import numpy as np
@@ -89,6 +95,9 @@ Similarly to:
         >>> fig.plot(x, np.sin(x), label="sin(x)", marker=None, line=True)
         >>> fig.set_xlabel("x axis")
         >>> fig.show()
+
+.. code-block::
+
 
           1.0┤                                   +           ····
              |                                              ·    ··
