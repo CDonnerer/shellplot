@@ -50,6 +50,8 @@ boxplots. It's as easy as:
       >>> df = plt.load_dataset("penguins")
       >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
 
+.. code-block::
+
         flipper_length_mm
          232┤                                    o oo  oo    o o        o
             |                                     oo o  o       o
