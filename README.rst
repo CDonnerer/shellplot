@@ -76,6 +76,57 @@ Shellplot loosely replicates the `matplotlib`_ API, it's as easy as::
                                         bill_length_mm
 
 
+Similarly to:
+
+
+.. code-block:: python
+
+        >>> import numpy as np
+        >>> import shellplot as plt
+        >>> x = np.arange(-4, 4, 0.5)
+        >>> fig = plt.figure()
+        >>> fig.plot(x, np.cos(x), label="cos(x)")
+        >>> fig.plot(x, np.sin(x), label="sin(x)", marker=None, line=True)
+        >>> fig.set_xlabel("x axis")
+        >>> fig.show()
+
+          1.0┤                                   +           ····
+             |                                              ·    ··
+             |                               +       +    ··       ·
+             |·                                          ·          ··
+             | ·                                        ·             ·
+             |                                         ·               ·
+          0.5┤  ·                       +             ·   +             ·
+             |   ·                                   ·
+             |    ·                                 ·                    ·
+             |     ·
+             |                                     ·                      ·
+             |      ·                                                      ·
+             |       ·              +             ·           +             ·
+          0.0┤                                   ·
+             |        ·                         ·                            ·
+             |         ·                                                      ·
+             |          ·                      ·
+             |                                                                 ·
+             |           ·      +             ·                   +
+             |                               ·
+         -0.5┤            ·                 ·
+             |+            ·               ·
+             |              ·             ·
+             |             + ··          ·                             +
+             |                 ·       ··
+             |    +             ··    ·                                         +    + cos(x)
+         -1.0┤         +          ····                                     +         · sin(x)
+             └┬-----------------┬----------------┬----------------┬-----------------┬
+              -4                -2               0                2                 4
+                                              x axis
+
+
+
+
+
+
+
 Shellplot also provides a convenient integration with `pandas`_. Simply set the
 pandas plotting backend to shellplot::
 
