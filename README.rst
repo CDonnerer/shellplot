@@ -41,7 +41,10 @@ Quickstart
 
 Shellplot loosely replicates the `matplotlib`_ API, offering both a figure and
 functional `api`_. It currently supports scatter, line, histogram, bar and
-boxplots. It's as easy as:: python
+boxplots. It's as easy as:
+
+
+.. code-block:: python
 
       >>> import shellplot as plt
       >>> df = plt.load_dataset("penguins")
