@@ -49,7 +49,7 @@ boxplots. It's as easy as:
       >>> import shellplot as plt
       >>> df = plt.load_dataset("penguins")
       >>> plt.plot(df["bill_length_mm"], df["flipper_length_mm"], color=df["species"])
-      """
+
         flipper_length_mm
          232┤                                    o oo  oo    o o        o
             |                                     oo o  o       o
@@ -75,7 +75,6 @@ boxplots. It's as easy as:
             └┬----------┬---------┬----------┬----------┬----------┬------
              32         37        42         47         52         57
                                     bill_length_mm
-        """
 
 
 Shellplot also provides a convenient integration with `pandas`_. Simply set the
