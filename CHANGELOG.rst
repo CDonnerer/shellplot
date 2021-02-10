@@ -2,12 +2,13 @@
 Changelog
 =========
 
-Version xxx
+Version 0.2.0
 ---------------
 - Added object-orientated figure API, entailed major refactor of plotting code
+- Examples of figure api in docs, updated api reference
 - Added option to add line in plot function
-- Safeguard number of bins in hist
-- Default docs are now stable versions
+- Safeguarding number of bins in hist
+- Default docs now refer to stable versions
 - Added config for global options, such as figsize
 
 
