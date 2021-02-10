@@ -19,6 +19,14 @@ def figure(figsize=None, **kwargs):
     ----------
     figsize : a tuple (width, height) in ascii characters, optional
         Size of the figure.
+    xlim : 2-tuple/list, optional
+        Set the x limits.
+    ylim : 2-tuple/list, optional
+        Set the y limits.
+    xlabel : str, optional
+        Name to use for the xlabel on x-axis.
+    ylabel : str, optional
+        Name to use for the ylabel on y-axis.
 
     Returns
     -------
@@ -40,6 +48,12 @@ class Figure:
     """Encapsulates a shellplot figure. Should be instantiated via `shellplot.figure`"""
 
     def __init__(self, figsize):
+        """
+        Parameters
+        ----------
+        figsize : a tuple (width, height) in ascii characters, optional
+            Size of the figure.
+        """
         self.figsize = figsize
         self.x_axis = Axis(self.figsize[0])
         self.y_axis = Axis(self.figsize[1])
@@ -73,6 +87,8 @@ class Figure:
         line : bool, optional, default False
             Whether a line should be plotted using the x, y points. This will use a
             linear interpolation of the points.
+        label : str
+            The label of the plot for display in the legend
         """
         x = numpy_2d(x)
         y = numpy_2d(y)
@@ -92,6 +108,8 @@ class Figure:
             pandas series.
         bins : int, optional
             Number of bins in histogram. Default is 10 bins.
+        label : str
+            The label of the plot for display in the legend
         """
         call = PlotCall(func=_hist, args=[x], kwargs=kwargs)
         self.plotter.add(call)
@@ -124,16 +142,33 @@ class Figure:
             The horizontal coordinates of the data points.
             Can be 1d or 2d np.ndarray/ pandas series/ dataframe. If 2d, each 1d
             slice will be plotted as a separate boxplot.
+        labels : array-like
+            Array that is used to label the boxplots.
         """
 
         call = PlotCall(func=_boxplot, args=[x], kwargs=kwargs)
         self.plotter.add(call)
 
     def show(self):
+        """Show the figure by printing to stdout.
+
+        Returns
+        -------
+        None
+
+        """
         plt_str = self.draw()
         print(plt_str)
 
     def draw(self):
+        """Draw the figure as a string
+
+        Returns
+        -------
+        str
+            Ascii string of figure
+
+        """
         self._init_figure_elements()
         self.plotter.fill_figure(self)
         return draw(
@@ -160,27 +195,35 @@ class Figure:
     }
 
     def set_xlim(self, value):
+        """Set limits of x-axis"""
         self.x_axis.limits = value
 
     def set_xticks(self, value):
+        """Set x-axis ticks"""
         self.x_axis.ticks = value
 
     def set_xticklabels(self, value):
+        """Set x-axis tick labels."""
         self.x_axis.ticklabels = value
 
     def set_xlabel(self, value):
+        """Set the label of the x-axis"""
         self.x_axis.label = value
 
     def set_ylim(self, value):
+        """Set limits of y-axis"""
         self.y_axis.limits = value
 
     def set_yticks(self, value):
+        """Set y-axis ticks"""
         self.y_axis.ticks = value
 
     def set_yticklabels(self, value):
+        """Set y-axis tick labels."""
         self.y_axis.ticklabels = value
 
     def set_ylabel(self, value):
+        """Set y-axis tick labels."""
         self.y_axis.label = value
 
 

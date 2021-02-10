@@ -13,21 +13,16 @@ __all__ = ["plot", "hist", "barh", "boxplot"]
 # Exposed functions that directly print the plot
 # -----------------------------------------------------------------------------
 
-__figure_doc = """figsize : a tuple (width, height) in ascii characters, optional
-        Size of the figure.
-    xlim : 2-tuple/list, optional
-        Set the x limits.
-    ylim : 2-tuple/list, optional
-        Set the y limits.
-    xlabel : str, optional
-        Name to use for the xlabel on x-axis.
-    ylabel : str, optional
-        Name to use for the ylabel on y-axis.
-    label : str/ list of str, optional
-        Labels that make the figure legend
+__figure_doc = """
+    fig : `shellplot.figure.Figure`, optional, default None
+        If provided, plot will be attached to figure. Otherwise, a new figure
+        is created for the plot
     return_type : str, optional
         If `'str'`, returns the plot as a string. Otherwise, the plot will be
         directly printed to stdout.
+    **kwargs
+        Additional parameters passed to `shellplot.figure`
+        (Only used if the fig keyword is None)
 
     Returns
     -------
@@ -44,15 +39,18 @@ def add_fig_doc(fig_func="plot"):
         def func_fig_doc(*args, **kwargs):
             return func(*args, **kwargs)
 
-        func_fig_doc.__doc__ = inspect.getdoc(getattr(Figure, fig_func))
-        # + inspect.cleandoc(__figure_doc)
+        func_fig_doc.__doc__ = (
+            inspect.getdoc(getattr(Figure, fig_func))
+            + "\n"
+            + inspect.cleandoc(__figure_doc)
+        )
         return func_fig_doc
 
     return decorate
 
 
 @add_fig_doc("plot")
-def plot(x, y, color=None, fig=None, **kwargs):
+def plot(x, y, fig=None, **kwargs):
     x_label, y_label = get_label(x), get_label(y)
 
     if isinstance(y_label, list):  # multi label goes into legend
@@ -64,9 +62,9 @@ def plot(x, y, color=None, fig=None, **kwargs):
         if kwargs.get("xlabel") is None:
             kwargs.update({"xlabel": x_label})
 
-    fig, show = validate_fig(fig, **kwargs)
+    fig, show = check_fig(fig, **kwargs)
 
-    fig.plot(x, y, color=color, **kwargs)
+    fig.plot(x, y, **kwargs)
 
     return return_plt(fig, show, **kwargs)
 
@@ -78,7 +76,7 @@ def hist(x, bins=10, fig=None, **kwargs):
     if kwargs.get("ylabel") is None:
         kwargs.update({"ylabel": "counts"})
 
-    fig, show = validate_fig(fig, **kwargs)
+    fig, show = check_fig(fig, **kwargs)
 
     fig.hist(x, bins=bins, **kwargs)
 
@@ -89,7 +87,7 @@ def hist(x, bins=10, fig=None, **kwargs):
 def barh(x, labels=None, fig=None, **kwargs):
     kwargs.update({"xlabel": get_label(x)})
 
-    fig, show = validate_fig(fig, **kwargs)
+    fig, show = check_fig(fig, **kwargs)
 
     fig.barh(x, labels=labels, **kwargs)
 
@@ -101,14 +99,15 @@ def boxplot(x, labels=None, fig=None, **kwargs):
     if labels is None:
         labels = get_label(x)
 
-    fig, show = validate_fig(fig, **kwargs)
+    fig, show = check_fig(fig, **kwargs)
 
     fig.boxplot(x, labels=labels, **kwargs)
 
     return return_plt(fig, show, **kwargs)
 
 
-def validate_fig(fig, **kwargs):
+def check_fig(fig, **kwargs):
+    """Check if figure is included in kwargs. Otherwise, creates a new fig"""
     show = False
     if fig is None:
         fig = figure(**kwargs)
