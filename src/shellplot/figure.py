@@ -37,7 +37,7 @@ def figure(figsize=None, **kwargs):
     figsize = figsize or config["figsize"]
     fig = Figure(figsize)
 
-    fig_kwargs = {k: v for k, v in kwargs.items() if k in fig.setters}
+    fig_kwargs = {k: v for k, v in kwargs.items() if k in fig._setters}
 
     for key, value in fig_kwargs.items():
         getattr(fig, f"set_{key}")(value)
@@ -185,7 +185,7 @@ class Figure:
     # TODO: quite boilerplatey. could  this be done with getatrr, setattr?
     # -------------------------------------------------------------------------
 
-    setters = {
+    _setters = {
         "xlim",
         "xticks",
         "xticklabels",
