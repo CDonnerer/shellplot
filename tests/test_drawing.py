@@ -6,6 +6,7 @@ import numpy as np
 
 from shellplot.axis import Axis
 from shellplot.drawing import (
+    LegendItem,
     _draw_canvas,
     _draw_legend,
     _draw_x_axis,
@@ -15,7 +16,7 @@ from shellplot.drawing import (
 
 
 def test_draw_legend():
-    legend = {1: "one", 2: "two"}
+    legend = [LegendItem(1, "one"), LegendItem(2, "two")]
     legend_lines = ["+ one", "* two"]
     assert legend_lines == _draw_legend(legend)
 
