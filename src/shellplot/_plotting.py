@@ -8,6 +8,7 @@ from typing import Dict, List
 
 import numpy as np
 
+from shellplot.drawing import LegendItem
 from shellplot.utils import numpy_1d, numpy_2d
 
 
@@ -73,7 +74,7 @@ def _plot(fig, x, y, marker=True, line=None, label=None, **kwargs):
 
     if label is not None:
         key = marker or line
-        fig.legend.update({key: label})
+        fig.legend.append(LegendItem(symbol=key, name=label))
 
 
 def _within_display(x, y):

@@ -67,7 +67,7 @@ class Figure:
 
     def _init_figure_elements(self):
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
-        self.legend = dict()
+        self.legend = list()
         self.markers = cycle([1, 2, 3, 4, 5, 6])
         self.lines = cycle([10, 11])
 

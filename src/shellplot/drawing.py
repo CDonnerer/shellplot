@@ -4,6 +4,7 @@ Functions for taking the elements of the plot (e.g. canvas, axis, legend) and
 converts them to strings. Please note that drawing is entirely agnostic to the
 type of plot.
 """
+from collections import namedtuple
 from typing import List
 
 PALETTE = {
@@ -25,6 +26,8 @@ PALETTE = {
     22: "-",
     23: "┐",
 }
+
+LegendItem = namedtuple("LegendItem", ["symbol", "name"])
 
 
 def draw(canvas, x_axis, y_axis, legend=None) -> str:
@@ -132,8 +135,8 @@ def _draw_x_axis(x_axis, left_pad) -> List[str]:
 def _draw_legend(legend) -> List[str]:
     legend_lines = list()
 
-    for marker, name in legend.items():
-        legend_str = f"{PALETTE[marker]} {name}"
+    for item in legend:
+        legend_str = f"{PALETTE[item.symbol]} {item.name}"
         legend_lines.append(legend_str)
     return legend_lines
 
