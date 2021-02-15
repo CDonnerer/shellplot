@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 0.2.1
+---------------
+- Fixed bug to allow legend with non-unique labels
+- Moved line and marker styles options into drawing module
+
 Version 0.2.0
 ---------------
 - Added object-orientated figure API, entailed major refactor of plotting code
