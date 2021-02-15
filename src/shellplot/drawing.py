@@ -9,7 +9,7 @@ from typing import List
 
 MARKER_STYLES = {1: "+", 2: "*", 3: "o", 4: "x", 5: "@", 6: "■"}
 
-LINE_STYLES = {10: "·", 11: ":"}
+LINE_STYLES = {10: "·", 11: ":", 12: "÷", 13: "×"}
 
 PALETTE = {
     # empty space
