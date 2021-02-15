@@ -8,7 +8,7 @@ import numpy as np
 from shellplot._config import _global_config as config
 from shellplot._plotting import PlotCall, Plotter, _barh, _boxplot, _hist, _plot
 from shellplot.axis import Axis
-from shellplot.drawing import draw
+from shellplot.drawing import LINE_STYLES, MARKER_STYLES, draw
 from shellplot.utils import get_index, numpy_1d, numpy_2d, remove_any_nan
 
 
@@ -68,8 +68,8 @@ class Figure:
     def _init_figure_elements(self):
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
         self.legend = list()
-        self.markers = cycle([1, 2, 3, 4, 5, 6])
-        self.lines = cycle([10, 11])
+        self.markers = cycle(MARKER_STYLES.keys())
+        self.lines = cycle(LINE_STYLES.keys())
 
     def plot(self, x, y, color=None, **kwargs):
         """Plot x versus y as scatter.
