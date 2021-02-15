@@ -7,25 +7,20 @@ type of plot.
 from collections import namedtuple
 from typing import List
 
+MARKER_STYLES = {1: "+", 2: "*", 3: "o", 4: "x", 5: "@", 6: "■"}
+
+LINE_STYLES = {10: "·", 11: ":", 12: "÷", 13: "×"}
+
 PALETTE = {
     # empty space
     0: " ",
-    # scatter points
-    1: "+",
-    2: "*",
-    3: "o",
-    4: "x",
-    5: "@",
-    6: "■",
-    # line drawing
-    10: "·",
-    11: ":",
-    # bar drawing
     20: "|",
     21: "_",
     22: "-",
     23: "┐",
 }
+PALETTE.update(MARKER_STYLES)
+PALETTE.update(LINE_STYLES)
 
 LegendItem = namedtuple("LegendItem", ["symbol", "name"])
 
