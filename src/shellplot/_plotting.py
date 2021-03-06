@@ -98,16 +98,15 @@ def _hist(fig, x, bins=10, **kwargs):
     fig.y_axis.limits = (0, max(counts))
     counts_scaled = fig.y_axis.transform(counts)
     fig.x_axis.fit(bin_edges)
+    bin_width = fig.x_axis.display_max // len(counts) - 1
+    display_max = (bin_width + 1) * len(counts)
+    fig.x_axis.scale = display_max / (fig.x_axis.limits[1] - fig.x_axis.limits[0])
 
     bin = 0
-    bin_width = fig.x_axis.display_max // len(counts) - 1
 
     for count in counts_scaled:
         _add_vbar(fig.canvas, bin, bin_width, count)
         bin += bin_width + 1
-
-    display_max = (bin_width + 1) * len(counts)
-    fig.x_axis.scale = display_max / (fig.x_axis.limits[1] - fig.x_axis.limits[0])
 
 
 def _check_bins(bins, x_axis):
@@ -130,18 +129,17 @@ def _barh(fig, x, labels=None, **kwargs):
     fig.y_axis.fit(np.arange(0, len(x) + 1, 1))
     fig.y_axis.ticks = np.array(list(range(len(x)))) + 0.5
 
+    bin_width = fig.y_axis.display_max // len(x) - 1
+    display_max = (bin_width + 1) * len(x)
+    fig.y_axis.scale = display_max / (fig.y_axis.limits[1] - fig.y_axis.limits[0])
+
     if labels is not None:
         fig.y_axis.ticklabels = labels
 
     bin = 0
-    bin_width = fig.y_axis.display_max // len(x) - 1
-
     for val in x_scaled.data:
         _add_hbar(fig.canvas, bin, bin_width, val)
         bin += bin_width + 1
-
-    display_max = (bin_width + 1) * len(x)
-    fig.y_axis.scale = (display_max) / (fig.y_axis.limits[1] - fig.y_axis.limits[0])
 
 
 def _boxplot(fig, x, labels=None, **kwargs):
@@ -187,10 +185,17 @@ def _add_xy(canvas, idx, idy, marker=None, line=None):
 
 def _line_interp(x, y, round_tol=0.4):
     """Interpolate for line plotting"""
-    x_interp = np.arange(x.min(), x.max(), 1)
-    y_interp = np.interp(x_interp, x, y)
+
+    x_min, x_max = x.min(), x.max()
+    if x_min == x_max:
+        y_interp = np.arange(y.min(), y.max(), 1)
+        x_interp = np.interp(y_interp, y, x)
+    else:
+        x_interp = np.arange(x.min(), x.max(), 1)
+        y_interp = np.interp(x_interp, x, y)
 
     # Point selection is turned off for now
+    # (This could allow 'nicer' plotting when no good fit in the grid is found)
     # is_discrete = np.isclose(
     #     y_interp,
     #     np.around(y_interp).astype(int),
