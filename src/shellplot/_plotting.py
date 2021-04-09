@@ -14,7 +14,7 @@ from shellplot.utils import numpy_1d, numpy_2d
 
 @dataclass(frozen=True)
 class PlotCall:
-    """Class for keeping track of calls to various plot functions."""
+    """Class for storing a call to a plot functions."""
 
     func: callable
     args: List
@@ -96,8 +96,9 @@ def _hist(fig, x, bins=10, **kwargs):
     counts, bin_edges = np.histogram(x, bins)
 
     fig.y_axis.limits = (0, max(counts))
-    counts_scaled = fig.y_axis.transform(counts)
     fig.x_axis.fit(bin_edges)
+
+    counts_scaled = fig.y_axis.transform(counts)
     bin_width = fig.x_axis.display_max // len(counts) - 1
     display_max = (bin_width + 1) * len(counts)
     fig.x_axis.scale = display_max / (fig.x_axis.limits[1] - fig.x_axis.limits[0])
@@ -124,7 +125,7 @@ def _barh(fig, x, labels=None, **kwargs):
     """Horizontal bar plot"""
 
     fig.x_axis.limits = (0, x.max())
-    x_scaled = fig.x_axis.fit_transform(x)
+    x_scaled = fig.x_axis.transform(x)
 
     fig.y_axis.fit(np.arange(0, len(x) + 1, 1))
     fig.y_axis.ticks = np.array(list(range(len(x)))) + 0.5
