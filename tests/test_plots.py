@@ -222,6 +222,49 @@ def test_plot_linear_line(x, expected_linear_line_plot):
     assert plt_str == expected_linear_line_plot
 
 
+@pytest.fixture
+def expected_interp_plot():
+    return "\n".join(
+        [
+            "",
+            " 9┤                   ",
+            "  |:              ÷÷÷ ",
+            "  |:             ÷    ",
+            " 6┤:          ÷÷÷     ",
+            "  |:         ÷        ",
+            "  |:      ÷÷÷         ",
+            " 3┤:     ÷            ",
+            "  |:  ÷÷÷             ",
+            "  |: ÷                ",
+            " 0┤÷÷················ ",
+            "  └┬-----┬-----┬-----┬",
+            "   0     3     6     9",
+            "",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x, y",
+    [
+        ([[0, 9], [0, 0], [0, 9]], [[0, 0], [0, 9], [0, 9]]),
+    ],
+)
+def test_plot_interp(x, y, expected_interp_plot):
+
+    plt_str = plot(
+        x=x,
+        y=y,
+        figsize=(19, 10),
+        xlim=(0, 9),
+        ylim=(0, 9),
+        line=True,
+        marker=None,
+        return_type="str",
+    )
+    assert plt_str == expected_interp_plot
+
+
 # -----------------------------------------------------------------------------
 # Test `hist` function
 # -----------------------------------------------------------------------------
