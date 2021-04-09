@@ -458,3 +458,73 @@ def expected_multi_boxplot():
 def test_multi_boxplot(x, labels, expected_multi_boxplot):
     plt_str = boxplot(x, labels=labels, figsize=(41, 21), return_type="str")
     assert plt_str == expected_multi_boxplot
+
+
+# -----------------------------------------------------------------------------
+# Test plot mixing
+# -----------------------------------------------------------------------------
+
+
+@pytest.fixture
+def expected_hist_with_line():
+    return "\n".join(
+        [
+            "",
+            "counts",
+            " 9┤···························   ",
+            "  |                  |        |  ",
+            "  |                  |        |  ",
+            " 6┤                  |        |  ",
+            "  |                  |        |  ",
+            "  |                  |        |  ",
+            " 3┤          --------|        |  ",
+            "  |         |        |        |  ",
+            "  | --------|        |        |  ",
+            " 0┤|        |        |        |  ",
+            "  └┬--------┬--------┬--------┬--",
+            "   0        1        2        3",
+            "",
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "x",
+    [
+        (
+            np.array(
+                # fmt: off
+                [
+                    0,
+                    1, 1, 1,
+                    2, 2, 2,
+                    3, 3, 3, 3, 3, 3,
+                ]
+            )
+        ),
+        (
+            pd.Series(
+                np.array(
+                    # fmt: off
+                    [
+                        0,
+                        1, 1, 1,
+                        2, 2, 2,
+                        3, 3, 3, 3, 3, 3,
+                    ]
+                )
+            )
+        ),
+    ],
+)
+def test_hist_with_line(x, expected_hist_with_line):
+    fig = figure(figsize=(30, 10), ylabel="counts")
+    fig.hist(x, bins=3)
+    fig.plot([0, 3], [9, 9], line=True, marker=None)
+    assert fig.draw() == expected_hist_with_line
+
+    # changing the order should yield the same result
+    fig = figure(figsize=(30, 10), ylabel="counts")
+    fig.plot([0, 3], [9, 9], line=True, marker=None)
+    fig.hist(x, bins=3)
+    assert fig.draw() == expected_hist_with_line
