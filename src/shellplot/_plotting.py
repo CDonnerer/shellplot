@@ -44,8 +44,23 @@ class Plotter:
         fig.y_axis.fit(np.concatenate([y for y in l_y]))
 
     def fill_figure(self, fig):
-        if self._plot_calls[0].func is _plot:
+        """Fill the a figure using the plot calls stored in self
+
+        Parameters
+        ----------
+        fig : shellplot.figure.Figure
+
+        Returns
+        -------
+        None
+
+        """
+        if all(plot_call.func is _plot for plot_call in self._plot_calls):
             self.fit(fig)
+        else:
+            # if we mix plot types, we make sure that _plot function is called
+            # last. all other plotting funcs will Internally fit fig axes.
+            self._plot_calls.sort(key=lambda x: 1 if x.func is _plot else 0)
         for plot_call in self._plot_calls:
             plot_call(fig)
 
