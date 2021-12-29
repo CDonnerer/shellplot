@@ -197,6 +197,7 @@ class Figure:
         "yticks",
         "yticklabels",
         "ylabel",
+        "title",
     }
 
     def set_xlim(self, value):
