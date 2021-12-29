@@ -63,6 +63,7 @@ class Figure:
     def clear(self):
         """Clear the figure, by removing all attached plots."""
         self.plotter = Plotter()
+        self.title = None
         self._init_figure_elements()
 
     def _init_figure_elements(self):
@@ -173,11 +174,13 @@ class Figure:
         """
         self._init_figure_elements()
         self.plotter.fill_figure(self)
+
         return draw(
             canvas=self.canvas,
             y_axis=self.y_axis,
             x_axis=self.x_axis,
             legend=self.legend,
+            title=self.title,
         )
 
     # -------------------------------------------------------------------------
@@ -227,6 +230,9 @@ class Figure:
     def set_ylabel(self, value):
         """Set y-axis tick labels."""
         self.y_axis.label = value
+
+    def set_title(self, value):
+        self.title = value
 
 
 def color_split(x, y, color, kwargs):

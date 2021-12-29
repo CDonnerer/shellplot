@@ -12,7 +12,6 @@ MARKER_STYLES = {1: "+", 2: "*", 3: "o", 4: "x", 5: "@", 6: "■"}
 LINE_STYLES = {10: "·", 11: ":", 12: "÷", 13: "×"}
 
 PALETTE = {
-    # empty space
     0: " ",
     20: "|",
     21: "_",
@@ -25,7 +24,7 @@ PALETTE.update(LINE_STYLES)
 LegendItem = namedtuple("LegendItem", ["symbol", "name"])
 
 
-def draw(canvas, x_axis, y_axis, legend=None) -> str:
+def draw(canvas, x_axis, y_axis, legend=None, title=None) -> str:
     """Draw figure from plot elements (i.e. canvas, x-axis, y-axis, legend)
 
     Internally, this functions draws all elements as list of strings, and then
@@ -59,7 +58,12 @@ def draw(canvas, x_axis, y_axis, legend=None) -> str:
     else:
         legend_lines = None
 
-    return _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines)
+    if title is not None:
+        title_line = _draw_title(title, x_axis.display_max, left_pad)
+    else:
+        title_line = None
+
+    return _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines, title_line)
 
 
 # ------------------------------------------------------------------------------
@@ -136,18 +140,27 @@ def _draw_legend(legend) -> List[str]:
     return legend_lines
 
 
+def _draw_title(title, x_display_max, left_pad) -> List[str]:
+    label_pad = (x_display_max + 1) // 2 - len(str(title)) // 2
+    title_line = " " * (left_pad + 1 + label_pad) + str(title)
+    return title_line
+
+
 # ------------------------------------------------------------------------------
 # Helper functions
 # ------------------------------------------------------------------------------
 
 
-def _join_plot_lines(plt_lines, y_lines, x_lines, legend_lines):
+def _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines, title_str):
     plt_str = "\n"
-    plt_lines = _pad_lines(plt_lines, y_lines)
+    canvas_lines = _pad_lines(canvas_lines, y_lines)
     legend_lines = _pad_lines(legend_lines, y_lines)
 
-    for ax, plt, leg in zip(y_lines, plt_lines, legend_lines):
-        plt_str += ax + plt + leg + "\n"
+    if title_str is not None:
+        plt_str += f"{title_str}\n"
+
+    for ax, canvas, leg in zip(y_lines, canvas_lines, legend_lines):
+        plt_str += ax + canvas + leg + "\n"
 
     for ax in x_lines:
         plt_str += ax
