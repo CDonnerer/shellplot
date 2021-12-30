@@ -37,10 +37,8 @@ class Axis:
         ticklabels: Sequence[Any] = None,
         ticks: Sequence[float] = None,
         nticks: int = None,
-        **kwargs
     ):
         self.display_max = display_length - 1
-
         self._is_datetime = False  # whether or not we are a datetime axis
         self._scale = None
 

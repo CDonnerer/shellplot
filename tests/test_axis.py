@@ -75,11 +75,10 @@ def test_axis_auto_nticks(axis, expected_n_ticks):
 def test_axis_ticks(limits, n_ticks, expected_ticks):
     """Test axis ticks generation"""
     axis = Axis(display_length=80)
-    axis.nticks = n_ticks
     axis.limits = limits
-    ticks = axis.ticks
+    axis.nticks = n_ticks
 
-    np.testing.assert_array_equal(ticks, expected_ticks)
+    np.testing.assert_array_equal(axis.ticks, expected_ticks)
 
 
 @pytest.mark.parametrize(
