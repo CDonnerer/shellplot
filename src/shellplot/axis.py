@@ -144,6 +144,23 @@ class Axis:
     def _set_scale(self):
         self._scale = self.display_max / float(self.limits[1] - self.limits[0])
 
+    def _auto_limits(self, x, margin=0.25):
+        """Automatically find reasonable axis limits"""
+        x_max, x_min = x.max(), x.min()
+
+        max_difference = margin * (x_max - x_min)
+        ax_min = difference_round(x_min, round_down, max_difference)
+        ax_max = difference_round(x_max, round_up, max_difference)
+
+        return ax_min, ax_max
+
+    def _auto_nticks(self):
+        """Automatically find reasonable number of ticks that fit display"""
+        max_ticks = int(1.5 * self.display_max ** 0.3) + 1
+        ticks = np.arange(max_ticks, max_ticks - 2, -1)
+        remainders = np.remainder(self.display_max, ticks)
+        return ticks[np.argmin(remainders)] + 1
+
     def _auto_ticks(self):
         if not self._is_datetime:
             return self._auto_numeric_ticks()
@@ -165,25 +182,9 @@ class Axis:
         unit = timedelta_round(limits_delta)
         n_units = limits_delta / np.timedelta64(1, unit)
         td_step = np.timedelta64(int(n_units / (self.nticks - 1)), unit)
+
         return np.arange(
             np.datetime64(axis_td[0], unit),
             np.datetime64(axis_td[1], unit) + td_step,
             td_step,
         )
-
-    def _auto_nticks(self):
-        """Automatically find a `good` number of axis ticks that fits display"""
-        max_ticks = int(1.5 * self.display_max ** 0.3) + 1
-        ticks = np.arange(max_ticks, max_ticks - 2, -1)
-        remainders = np.remainder(self.display_max, ticks)
-        return ticks[np.argmin(remainders)] + 1
-
-    def _auto_limits(self, x, margin=0.25):
-        """Automatically find `good` axis limits"""
-        x_max, x_min = x.max(), x.min()
-
-        max_difference = margin * (x_max - x_min)
-        ax_min = difference_round(x_min, round_down, max_difference)
-        ax_max = difference_round(x_max, round_up, max_difference)
-
-        return ax_min, ax_max
