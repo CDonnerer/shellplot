@@ -75,7 +75,7 @@ def test_axis_auto_nticks(axis, expected_n_ticks):
 def test_axis_ticks(limits, n_ticks, expected_ticks):
     """Test axis ticks generation"""
     axis = Axis(display_length=80)
-    axis._nticks = n_ticks
+    axis.nticks = n_ticks
     axis.limits = limits
     ticks = axis.ticks
 
@@ -94,7 +94,7 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
 )
 def test_axis_datetime_ticks(limits, n_ticks, expected_labels):
     axis = Axis(display_length=79)
-    axis._nticks = n_ticks
+    axis.nticks = n_ticks
     axis.fit(np.array(limits))
     labels = axis.ticklabels
 
