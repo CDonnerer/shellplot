@@ -14,6 +14,7 @@ where x_display is the data in display coordinates
 import numpy as np
 
 from shellplot.utils import (
+    difference_round,
     numpy_1d,
     round_down,
     round_up,
@@ -112,8 +113,6 @@ class Axis:
 
         if self.limits is None:
             self.limits = self._auto_limits(x)
-        # if self.n_ticks is None:
-        #     self.n_ticks = self._auto_nticks()
         if self.ticks is None:
             self.ticks = self._auto_ticks()
 
@@ -131,9 +130,23 @@ class Axis:
         self = self.fit(x)
         return self.transform(x)
 
+    def gen_tick_labels(self):
+        """Generate display tick location and labels"""
+        display_ticks = self.transform(self.ticks)
+        within_display = np.logical_and(
+            display_ticks >= 0, display_ticks <= self.display_max
+        )
+        display_labels = self.ticklabels[within_display]
+        display_ticks = display_ticks[within_display]
+
+        return zip(display_ticks, display_labels)
+
     # -------------------------------------------------------------------------
     # Auto scaling
     # -------------------------------------------------------------------------
+
+    def _set_scale(self):
+        self._scale = self.display_max / float(self.limits[1] - self.limits[0])
 
     def _auto_ticks(self):
         if not self._is_datetime:
@@ -174,36 +187,7 @@ class Axis:
         x_max, x_min = x.max(), x.min()
 
         max_difference = margin * (x_max - x_min)
-        ax_min = self._difference_round(x_min, round_down, max_difference)
-        ax_max = self._difference_round(x_max, round_up, max_difference)
+        ax_min = difference_round(x_min, round_down, max_difference)
+        ax_max = difference_round(x_max, round_up, max_difference)
 
         return ax_min, ax_max
-
-    def gen_tick_labels(self):
-        """Generate display tick location and labels"""
-        display_ticks = self.transform(self.ticks)
-        within_display = np.logical_and(
-            display_ticks >= 0, display_ticks <= self.display_max
-        )
-        display_labels = self.ticklabels[within_display]
-        display_ticks = display_ticks[within_display]
-
-        return zip(display_ticks, display_labels)
-
-    def _set_scale(self):
-        self._scale = self.display_max / float(self.limits[1] - self.limits[0])
-
-    def _difference_round(self, val, round_func, max_difference):
-        for dec in range(10):
-            rounded = round_func(val, dec)
-            if abs(rounded - val) <= max_difference:
-                return rounded
-
-    # def _reset_ticks(self):
-    #     """Reset axis ticks and ticklabels"""
-    #     self.ticks = None
-    #     self.ticklabels = None
-    # attrs = ["_ticks", "_ticklabels"]
-    # for attr in attrs:
-    #     if hasattr(self, attr):
-    #         delattr(self, attr)

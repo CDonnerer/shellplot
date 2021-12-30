@@ -49,6 +49,13 @@ def tolerance_round(x, tol=1e-3):
     return x_rounded, decimals
 
 
+def difference_round(val, round_func, max_difference):
+    for dec in range(10):
+        rounded = round_func(val, decimals=dec)
+        if abs(rounded - val) <= max_difference:
+            return rounded
+
+
 def round_up(n, decimals=0):
     return _round_to_decimals(n=n, decimals=decimals, round_func=math.ceil)
 
