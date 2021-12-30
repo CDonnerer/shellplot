@@ -106,7 +106,7 @@ def _draw_x_axis(x_axis, left_pad) -> List[str]:
     upper_ax = " " * left_pad + "└"
     lower_ax = " " * left_pad + " "
     marker = "┬"
-    overpad = 50
+    overpad = x_axis.display_max
 
     for j in range(x_axis.display_max + 1):
         if len(x_ticks) > 0 and j == x_ticks[0][0]:

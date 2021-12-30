@@ -33,15 +33,17 @@ class Axis:
         limits=None,
         ticklabels=None,
         ticks=None,
+        nticks: int = None,
         **kwargs
     ):
+        self.display_max = display_length - 1
+
         self._is_datetime = False  # whether or not we are a datetime axis
         self._scale = None
-        self._nticks = None
 
-        self.display_max = display_length - 1
         self.label = label
         self.limits = limits
+        self.nticks = nticks
         self.ticks = ticks
         self.ticklabels = ticklabels
 
@@ -67,7 +69,7 @@ class Axis:
         if limits is not None:
             self._limits, _ = to_numeric(np.array(limits))
             self._set_scale()
-            self.ticks = self._auto_ticks()
+            self.reset_ticks()
 
     @property
     def nticks(self):
@@ -75,19 +77,26 @@ class Axis:
             self._nticks = self._auto_nticks()
         return self._nticks
 
+    @nticks.setter
+    def nticks(self, nticks):
+        self.reset_ticks()
+        self._nticks = nticks
+
     @property
     def ticks(self):
         if self._ticks is None:
-            self.ticks = self._auto_ticks()
+            self._ticks = self._auto_ticks()
         return self._ticks
 
     @ticks.setter
     def ticks(self, ticks):
+        self.reset_ticks()
         self._ticks = numpy_1d(ticks)
-        self.ticklabels = ticks
 
     @property
     def ticklabels(self):
+        if self._ticklabels is None:
+            self._ticklabels = self._auto_ticklabels()
         return self._ticklabels
 
     @ticklabels.setter
@@ -108,9 +117,7 @@ class Axis:
         x, self._is_datetime = to_numeric(x)
 
         if self.limits is None:
-            self.limits = self._auto_limits(x)
-        if self.ticks is None:
-            self.ticks = self._auto_ticks()
+            self._limits = self._auto_limits(x)
 
         self._set_scale()
 
@@ -162,7 +169,9 @@ class Axis:
         return ticks[np.argmin(remainders)] + 1
 
     def _auto_ticks(self):
-        if not self._is_datetime:
+        if self.limits is None:
+            return None
+        elif not self._is_datetime:
             return self._auto_numeric_ticks()
         else:
             return self._auto_datetime_ticks()
@@ -188,3 +197,13 @@ class Axis:
             np.datetime64(axis_td[1], unit) + td_step,
             td_step,
         )
+
+    def _auto_ticklabels(self):
+        if self._is_datetime:
+            return np.datetime_as_string(self.ticks)
+        else:
+            return self.ticks
+
+    def reset_ticks(self):
+        self._ticks = None
+        self._ticklabels = None

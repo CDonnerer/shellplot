@@ -145,6 +145,7 @@ def _(x):
 
 
 @numpy_1d.register(list)
+@numpy_1d.register(tuple)
 def _(x):
     return np.array(x)
 
