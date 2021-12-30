@@ -4,7 +4,7 @@ These functions require an instantiated figure, their call then updates the
 figure state.
 """
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Callable, Dict, List
 
 import numpy as np
 
@@ -16,7 +16,7 @@ from shellplot.utils import numpy_1d, numpy_2d
 class PlotCall:
     """Class for storing a call to a plot functions."""
 
-    func: callable
+    func: Callable
     args: List
     kwargs: Dict
 
