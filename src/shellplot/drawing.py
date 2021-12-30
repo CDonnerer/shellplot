@@ -131,8 +131,9 @@ def _draw_legend(legend) -> List[str]:
     legend_lines = list()
 
     for item in legend:
-        legend_str = f"{PALETTE[item.symbol]} {item.name}"
+        legend_str = f"  {PALETTE[item.symbol]} {item.name}"
         legend_lines.append(legend_str)
+
     return legend_lines
 
 

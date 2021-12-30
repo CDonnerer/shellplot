@@ -11,6 +11,8 @@ x_display = x_axis.transform(x)
 
 where x_display is the data in display coordinates
 """
+from typing import Any, Sequence
+
 import numpy as np
 
 from shellplot.utils import (
@@ -30,9 +32,9 @@ class Axis:
         self,
         display_length: int = 20,
         label: str = None,
-        limits=None,
-        ticklabels=None,
-        ticks=None,
+        limits: Sequence[float] = None,
+        ticklabels: Sequence[Any] = None,
+        ticks: Sequence[float] = None,
         nticks: int = None,
         **kwargs
     ):
