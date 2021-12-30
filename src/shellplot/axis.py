@@ -75,8 +75,7 @@ class Axis:
 
     @property
     def nticks(self):
-        if self._nticks is None:
-            self._nticks = self._auto_nticks()
+        self._nticks = self._nticks or self._auto_nticks()
         return self._nticks
 
     @nticks.setter
@@ -86,8 +85,7 @@ class Axis:
 
     @property
     def ticks(self):
-        if self._ticks is None:
-            self._ticks = self._auto_ticks()
+        self._ticks = self._ticks or self._auto_ticks()
         return self._ticks
 
     @ticks.setter
@@ -97,8 +95,7 @@ class Axis:
 
     @property
     def ticklabels(self):
-        if self._ticklabels is None:
-            self._ticklabels = self._auto_ticklabels()
+        self._ticklabels = self._ticklabels or self._auto_ticklabels()
         return self._ticklabels
 
     @ticklabels.setter
