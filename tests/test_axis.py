@@ -75,8 +75,8 @@ def test_axis_auto_nticks(axis, expected_n_ticks):
 def test_axis_ticks(limits, n_ticks, expected_ticks):
     """Test axis ticks generation"""
     axis = Axis(display_length=80)
-    axis.limits = limits
     axis.n_ticks = n_ticks
+    axis.limits = limits
     ticks = axis.ticks
 
     np.testing.assert_array_equal(ticks, expected_ticks)
@@ -94,8 +94,8 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
 )
 def test_axis_datetime_ticks(limits, n_ticks, expected_labels):
     axis = Axis(display_length=79)
-    axis.fit(np.array(limits))
     axis.n_ticks = n_ticks
+    axis.fit(np.array(limits))
     labels = axis.ticklabels
 
     assert list(labels) == list(expected_labels)
