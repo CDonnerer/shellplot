@@ -37,10 +37,10 @@ class Axis:
     ):
         self._is_datetime = False  # whether or not we are a datetime axis
         self._scale = None
+        self._nticks = None
 
         self.display_max = display_length - 1
         self.label = label
-        self.n_ticks = None
         self.limits = limits
         self.ticks = ticks
         self.ticklabels = ticklabels
@@ -70,14 +70,10 @@ class Axis:
             self.ticks = self._auto_ticks()
 
     @property
-    def n_ticks(self):
-        if self._n_ticks is None:
-            self._n_ticks = self._auto_nticks()
-        return self._n_ticks
-
-    @n_ticks.setter
-    def n_ticks(self, n_ticks):
-        self._n_ticks = n_ticks
+    def nticks(self):
+        if self._nticks is None:
+            self._nticks = self._auto_nticks()
+        return self._nticks
 
     @property
     def ticks(self):
@@ -142,7 +138,7 @@ class Axis:
         return zip(display_ticks, display_labels)
 
     # -------------------------------------------------------------------------
-    # Auto scaling
+    # Auto scaling & ticks
     # -------------------------------------------------------------------------
 
     def _set_scale(self):
@@ -156,7 +152,7 @@ class Axis:
 
     def _auto_numeric_ticks(self, tol=0.05):
         step, precision = tolerance_round(
-            (self.limits[1] - self.limits[0]) / (self.n_ticks - 1),
+            (self.limits[1] - self.limits[0]) / (self.nticks - 1),
             tol=tol,
         )
         return np.around(
@@ -168,7 +164,7 @@ class Axis:
         limits_delta = axis_td[1] - axis_td[0]
         unit = timedelta_round(limits_delta)
         n_units = limits_delta / np.timedelta64(1, unit)
-        td_step = np.timedelta64(int(n_units / (self.n_ticks - 1)), unit)
+        td_step = np.timedelta64(int(n_units / (self.nticks - 1)), unit)
         return np.arange(
             np.datetime64(axis_td[0], unit),
             np.datetime64(axis_td[1], unit) + td_step,
