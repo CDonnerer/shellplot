@@ -116,7 +116,7 @@ def _hist(fig, x, bins=10, **kwargs):
     counts_scaled = fig.y_axis.transform(counts)
     bin_width = fig.x_axis.display_max // len(counts) - 1
     display_max = (bin_width + 1) * len(counts)
-    fig.x_axis.scale = display_max / (fig.x_axis.limits[1] - fig.x_axis.limits[0])
+    fig.x_axis._scale = display_max / (fig.x_axis.limits[1] - fig.x_axis.limits[0])
 
     bin = 0
 
@@ -147,7 +147,7 @@ def _barh(fig, x, labels=None, **kwargs):
 
     bin_width = fig.y_axis.display_max // len(x) - 1
     display_max = (bin_width + 1) * len(x)
-    fig.y_axis.scale = display_max / (fig.y_axis.limits[1] - fig.y_axis.limits[0])
+    fig.y_axis._scale = display_max / (fig.y_axis.limits[1] - fig.y_axis.limits[0])
 
     if labels is not None:
         fig.y_axis.ticklabels = labels

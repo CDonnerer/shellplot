@@ -39,8 +39,8 @@ class Axis:
 
         self.display_max = display_length - 1
         self.label = label
-        self.limits = limits
         self.n_ticks = None
+        self.limits = limits
         self.ticks = ticks
         self.ticklabels = ticklabels
 
@@ -66,7 +66,6 @@ class Axis:
         if limits is not None:
             self._limits, _ = to_numeric(np.array(limits))
             self._set_scale()
-            self._reset_ticks()
             self.ticks = self._auto_ticks()
 
     @property
@@ -138,11 +137,11 @@ class Axis:
 
     def _auto_ticks(self):
         if not self._is_datetime:
-            return self._auto_num_ticks()
+            return self._auto_numeric_ticks()
         else:
-            return self._auto_dt_ticks()
+            return self._auto_datetime_ticks()
 
-    def _auto_num_ticks(self, tol=0.05):
+    def _auto_numeric_ticks(self, tol=0.05):
         step, precision = tolerance_round(
             (self.limits[1] - self.limits[0]) / (self.n_ticks - 1),
             tol=tol,
@@ -151,7 +150,7 @@ class Axis:
             np.arange(self.limits[0], self.limits[1] + step, step), precision
         )
 
-    def _auto_dt_ticks(self):
+    def _auto_datetime_ticks(self):
         axis_td = to_datetime(np.array(self.limits, dtype="timedelta64[ns]"))
         limits_delta = axis_td[1] - axis_td[0]
         unit = timedelta_round(limits_delta)
@@ -172,8 +171,7 @@ class Axis:
 
     def _auto_limits(self, x, margin=0.25):
         """Automatically find `good` axis limits"""
-        x_max = x.max()
-        x_min = x.min()
+        x_max, x_min = x.max(), x.min()
 
         max_difference = margin * (x_max - x_min)
         ax_min = self._difference_round(x_min, round_down, max_difference)
@@ -201,11 +199,11 @@ class Axis:
             if abs(rounded - val) <= max_difference:
                 return rounded
 
-    def _reset_ticks(self):
-        """Reset axis ticks and ticklabels"""
-        self.ticks = None
-        self.ticklabels = None
-        # attrs = ["_ticks", "_ticklabels"]
-        # for attr in attrs:
-        #     if hasattr(self, attr):
-        #         delattr(self, attr)
+    # def _reset_ticks(self):
+    #     """Reset axis ticks and ticklabels"""
+    #     self.ticks = None
+    #     self.ticklabels = None
+    # attrs = ["_ticks", "_ticklabels"]
+    # for attr in attrs:
+    #     if hasattr(self, attr):
+    #         delattr(self, attr)
