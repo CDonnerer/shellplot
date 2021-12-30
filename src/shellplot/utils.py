@@ -182,13 +182,21 @@ def _(x):
     return np.array(x.index)
 
 
-def to_numeric(x):
+def is_datetime(x):
     x = numpy_1d(x)
-    """Convert np array to numeric values"""
     if x.dtype.kind in np.typecodes["Datetime"]:
-        return x.astype("datetime64[ns]") - ANCHOR_DATETIME, x.dtype
+        return x.dtype
     else:
-        return x, False
+        return False
+
+
+def to_numeric(x):
+    """Convert np array to numeric values"""
+    x = numpy_1d(x)
+    if is_datetime(x):
+        return x.astype("datetime64[ns]") - ANCHOR_DATETIME
+    else:
+        return x
 
 
 def to_datetime(x):

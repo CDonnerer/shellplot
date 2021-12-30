@@ -17,6 +17,7 @@ import numpy as np
 
 from shellplot.utils import (
     difference_round,
+    is_datetime,
     numpy_1d,
     round_down,
     round_up,
@@ -69,13 +70,14 @@ class Axis:
     def limits(self, limits):
         self._limits = limits
         if limits is not None:
-            self._limits, _ = to_numeric(np.array(limits))
+            self._limits = to_numeric(np.array(limits))
             self._set_scale()
             self.reset_ticks()
 
     @property
     def nticks(self):
-        self._nticks = self._nticks or self._auto_nticks()
+        if self._nticks is None:
+            self._nticks = self._auto_nticks()
         return self._nticks
 
     @nticks.setter
@@ -85,7 +87,8 @@ class Axis:
 
     @property
     def ticks(self):
-        self._ticks = self._ticks or self._auto_ticks()
+        if self._ticks is None:
+            self._ticks = self._auto_ticks()
         return self._ticks
 
     @ticks.setter
@@ -95,7 +98,8 @@ class Axis:
 
     @property
     def ticklabels(self):
-        self._ticklabels = self._ticklabels or self._auto_ticklabels()
+        if self._ticklabels is None:
+            self._ticklabels = self._auto_ticklabels()
         return self._ticklabels
 
     @ticklabels.setter
@@ -113,7 +117,8 @@ class Axis:
 
     def fit(self, x):
         """Fit axis to get conversion from data to plot scale"""
-        x, self._is_datetime = to_numeric(x)
+        self._is_datetime = is_datetime(x)
+        x = to_numeric(x)
 
         if self.limits is None:
             self._limits = self._auto_limits(x)
@@ -123,7 +128,7 @@ class Axis:
         return self
 
     def transform(self, x):
-        x, _ = to_numeric(x)
+        x = to_numeric(x)
         x_scaled = self._scale * (x - self.limits[0]).astype(float)
         x_display = np.around(x_scaled).astype(int)
         return np.ma.masked_outside(x_display, 0, self.display_max)
