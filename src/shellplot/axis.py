@@ -37,7 +37,7 @@ class Axis:
 
     def __init__(
         self,
-        display_length: Optional[int] = 20,
+        display_length: int = 20,
         label: Optional[str] = None,
         limits: Optional[array_like] = None,
         ticklabels: Optional[array_like] = None,
