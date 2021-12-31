@@ -20,9 +20,9 @@ array_like = Any
 
 
 class Axis:
-    """Enables mapping from data to display coordinates.
+    """Enables mapping from data to display / plot coordinates.
 
-    We loosely follow the sklearn transform api:
+    We loosely follow the sklearn transformer api:
 
     >>> axis = Axis()
     >>> axis = x_axis.fit(x_data)
@@ -49,17 +49,17 @@ class Axis:
         Parameters
         ----------
         display_length : int, optional
-            Length of axis, in characters (default 20)
+            Length of axis, in characters, default 20
         label : Optional[str], optional
-            Axis label, by default None
+            Axis label, default None
         limits : Optional[array_like], optional
-            Axis limits, by default None (auto-generated)
+            Axis limits, default None (auto-generated)
         ticklabels : Optional[array_like], optional
-            Labels for axis ticks, by default None (auto-generated, as ticks)
+            Labels for axis ticks, default None (auto-generated, as ticks)
         ticks : Optional[array_like], optional
-            Where the axis ticks should be. Default None (auto-generated)
+            Where the axis ticks should be, default None (auto-generated)
         nticks : Optional[int], optional
-            Number of axis ticks. Default None (auto-generated)
+            Number of axis ticks, default None (auto-generated)
         """
         self.display_max = display_length - 1
         self._is_datetime = False  # whether or not we are a datetime axis
@@ -90,8 +90,8 @@ class Axis:
     @limits.setter
     def limits(self, limits):
         self._limits = limits
-        if limits is not None:
-            self._limits = to_numeric(np.array(limits))
+        if limits is not None:  # new limits need to update scale and ticks
+            self._limits = to_numeric(limits)
             self._set_scale()
             self._reset_ticks()
 
@@ -124,16 +124,16 @@ class Axis:
         return self._ticklabels
 
     @ticklabels.setter
-    def ticklabels(self, labels):
-        if labels is not None:
-            if len(labels) != len(self.ticks):
+    def ticklabels(self, ticklabels):
+        if ticklabels is not None:
+            if len(ticklabels) != len(self.ticks):
                 raise ValueError("Len of tick labels must equal len of ticks!")
-            if self._is_datetime:
-                labels = np.datetime_as_string(labels)
-        self._ticklabels = numpy_1d(labels)
+            if is_datetime(ticklabels):
+                ticklabels = np.datetime_as_string(ticklabels)
+        self._ticklabels = numpy_1d(ticklabels)
 
     # -------------------------------------------------------------------------
-    # Fit & transform
+    # Public methods: fit, transform and generate ticks
     # -------------------------------------------------------------------------
 
     def fit(self, x):
@@ -145,21 +145,22 @@ class Axis:
             self._limits = self._auto_limits(x)
 
         self._set_scale()
-
         return self
 
     def transform(self, x):
+        """Transform data to the plot coordinates"""
         x = to_numeric(x)
         x_scaled = self._scale * (x - self.limits[0]).astype(float)
         x_display = np.around(x_scaled).astype(int)
         return np.ma.masked_outside(x_display, 0, self.display_max)
 
     def fit_transform(self, x):
+        """Fit axis and transform data to the plot coordinates"""
         self = self.fit(x)
         return self.transform(x)
 
-    def gen_tick_labels(self):
-        """Generate display tick location and labels"""
+    def generate_display_ticks(self):
+        """Generate display tick locations and labels"""
         display_ticks = self.transform(self.ticks)
         within_display = np.logical_and(
             display_ticks >= 0, display_ticks <= self.display_max
@@ -170,14 +171,14 @@ class Axis:
         return zip(display_ticks, display_labels)
 
     # -------------------------------------------------------------------------
-    # Auto scaling & ticks
+    # Private methods: Auto scaling & ticks
     # -------------------------------------------------------------------------
 
     def _set_scale(self):
         self._scale = self.display_max / float(self.limits[1] - self.limits[0])
 
     def _auto_limits(self, x, margin=0.25):
-        """Automatically find reasonable axis limits"""
+        """Automatically find good axis limits"""
         x_max, x_min = x.max(), x.min()
 
         max_difference = margin * (x_max - x_min)
@@ -187,13 +188,14 @@ class Axis:
         return ax_min, ax_max
 
     def _auto_nticks(self):
-        """Automatically find reasonable number of ticks that fit display"""
+        """Automatically find number of ticks that fit display"""
         max_ticks = int(1.5 * self.display_max ** 0.3) + 1
         ticks = np.arange(max_ticks, max_ticks - 2, -1)
         remainders = np.remainder(self.display_max, ticks)
         return ticks[np.argmin(remainders)] + 1
 
     def _auto_ticks(self):
+        """Automatically find good axis ticks"""
         if self.limits is None:
             return None
         elif not self._is_datetime:

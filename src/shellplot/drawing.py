@@ -50,7 +50,7 @@ def draw(canvas, x_axis, y_axis, legend=None) -> str:
     """
     canvas_lines = _draw_canvas(canvas)
 
-    left_pad = max([len(str(val)) for (t, val) in y_axis.gen_tick_labels()]) + 1
+    left_pad = max([len(str(val)) for (t, val) in y_axis.generate_display_ticks()]) + 1
     y_lines = _draw_y_axis(y_axis, left_pad)
     x_lines = _draw_x_axis(x_axis, left_pad)
 
@@ -82,7 +82,7 @@ def _draw_canvas(canvas) -> List[str]:
 def _draw_y_axis(y_axis, left_pad) -> List[str]:
     y_lines = list()
 
-    y_ticks = list(y_axis.gen_tick_labels())
+    y_ticks = list(y_axis.generate_display_ticks())
 
     for i in reversed(range(y_axis.display_max + 1)):
         ax_line = ""
@@ -101,7 +101,7 @@ def _draw_y_axis(y_axis, left_pad) -> List[str]:
 
 
 def _draw_x_axis(x_axis, left_pad) -> List[str]:
-    x_ticks = list(x_axis.gen_tick_labels())
+    x_ticks = list(x_axis.generate_display_ticks())
 
     upper_ax = " " * left_pad + "└"
     lower_ax = " " * left_pad + " "
