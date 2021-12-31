@@ -17,7 +17,7 @@ from shellplot.drawing import (
 
 def test_draw_legend():
     legend = [LegendItem(1, "one"), LegendItem(2, "two")]
-    legend_lines = ["+ one", "* two"]
+    legend_lines = ["  + one", "  * two"]
     assert legend_lines == _draw_legend(legend)
 
 
