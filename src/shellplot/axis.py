@@ -37,7 +37,7 @@ class Axis:
 
     def __init__(
         self,
-        display_length: int = 20,
+        display_length: Optional[int] = 20,
         label: Optional[str] = None,
         limits: Optional[array_like] = None,
         ticklabels: Optional[array_like] = None,
@@ -53,13 +53,13 @@ class Axis:
         label : Optional[str], optional
             Axis label, by default None
         limits : Optional[array_like], optional
-            Axis limits, by default None (auto generated)
+            Axis limits, by default None (auto-generated)
         ticklabels : Optional[array_like], optional
-            Labels for axis ticks, by default None, as ticks
+            Labels for axis ticks, by default None (auto-generated, as ticks)
         ticks : Optional[array_like], optional
-            Where the axis ticks should be. Default None (auto generated)
+            Where the axis ticks should be. Default None (auto-generated)
         nticks : Optional[int], optional
-            Number of axis ticks. Default None (auto generated)
+            Number of axis ticks. Default None (auto-generated)
         """
         self.display_max = display_length - 1
         self._is_datetime = False  # whether or not we are a datetime axis
@@ -93,7 +93,7 @@ class Axis:
         if limits is not None:
             self._limits = to_numeric(np.array(limits))
             self._set_scale()
-            self.reset_ticks()
+            self._reset_ticks()
 
     @property
     def nticks(self):
@@ -103,7 +103,7 @@ class Axis:
 
     @nticks.setter
     def nticks(self, nticks):
-        self.reset_ticks()
+        self._reset_ticks()
         self._nticks = nticks
 
     @property
@@ -114,7 +114,7 @@ class Axis:
 
     @ticks.setter
     def ticks(self, ticks):
-        self.reset_ticks()
+        self._reset_ticks()
         self._ticks = numpy_1d(ticks)
 
     @property
@@ -229,6 +229,6 @@ class Axis:
         else:
             return self.ticks
 
-    def reset_ticks(self):
+    def _reset_ticks(self):
         self._ticks = None
         self._ticklabels = None
