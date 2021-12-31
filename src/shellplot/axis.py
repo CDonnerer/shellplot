@@ -197,7 +197,7 @@ class Axis:
     def _auto_ticks(self):
         """Automatically find good axis ticks"""
         if self.limits is None:
-            return None
+            raise ValueError("Please fit axis or set limits first!")
         elif not self._is_datetime:
             return self._auto_numeric_ticks()
         else:
@@ -210,7 +210,7 @@ class Axis:
         )
         return np.around(
             np.arange(self.limits[0], self.limits[1] + step, step), precision
-        )
+        )[: self.nticks]
 
     def _auto_datetime_ticks(self):
         axis_td = to_datetime(np.array(self.limits, dtype="timedelta64[ns]"))
@@ -223,7 +223,7 @@ class Axis:
             np.datetime64(axis_td[0], unit),
             np.datetime64(axis_td[1], unit) + td_step,
             td_step,
-        )
+        )[: self.nticks]
 
     def _auto_ticklabels(self):
         if self._is_datetime:

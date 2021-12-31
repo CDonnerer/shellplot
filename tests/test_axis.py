@@ -129,11 +129,17 @@ def test_axis_display_ticks(limits, ticks, expected_tick_labels):
 )
 def test_axis_ticklabels_len_error(ticks, labels):
     """Test error raising when tick labels do not match ticks"""
-    axis = Axis(display_length=80)
+    axis = Axis()
     axis.ticks = ticks
 
     with pytest.raises(ValueError):
         axis.ticklabels = labels
+
+
+def test_axis_ticks_before_fit_error():
+    axis = Axis()
+    with pytest.raises(ValueError):
+        axis.ticks
 
 
 # -----------------------------------------------------------------------------
@@ -175,8 +181,7 @@ def test_axis_property_setting(axis_property, value, expected_value):
         assert set_value == expected_value
 
 
-def test_axis_limit_update_changes_ticks():
-    """Check that updating limits leads to new axis ticks"""
+def test_axis_limit_set_updates_ticks():
     axis = Axis(display_length=80)
 
     axis.limits = (0, 300)
@@ -188,10 +193,26 @@ def test_axis_limit_update_changes_ticks():
     np.testing.assert_array_equal(axis.ticks, np.array([50, 55, 60, 65, 70, 75, 80]))
 
 
-def test_axis_properties():
-    """Faux test for property setting"""
-    axis = Axis(display_length=80)
-    axis.title = "title"
-    axis.limits = (1, 9)
-    axis.ticks = np.array([1, 3, 5, 7, 9])
-    axis.labels = np.array(["a", "b", "c", "d", "e"])
+def test_axis_nticks_set_updates_ticks():
+    axis = Axis()
+    axis.limits = (0, 1)
+
+    axis.nticks = 2
+    np.testing.assert_array_equal(axis.ticks, np.array([0.0, 1.0]))
+
+    axis.nticks = 3
+    np.testing.assert_array_equal(axis.ticks, np.array([0.0, 0.5, 1.0]))
+
+    axis.nticks = 5
+    np.testing.assert_array_equal(axis.ticks, np.array([0.0, 0.25, 0.5, 0.75, 1.0]))
+
+
+def test_axis_ticks_set_updates_ticklabels():
+    axis = Axis()
+    axis.limits = (0, 1)
+
+    axis.ticks = (0.0, 0.3, 1.0)
+    np.testing.assert_array_equal(axis.ticklabels, np.array([0.0, 0.3, 1.0]))
+
+    axis.ticks = (0.0, 0.2)
+    np.testing.assert_array_equal(axis.ticklabels, np.array([0.0, 0.2]))
