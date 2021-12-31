@@ -161,7 +161,7 @@ def test_axis_ticklabels_len_error(ticks, labels):
         )
     ],
 )
-def test_axis_property_can_be_set(axis_property, value, expected_value):
+def test_axis_property_setting(axis_property, value, expected_value):
     axis = Axis()
     axis = axis.fit((0, 1))
     axis.nticks = 3
