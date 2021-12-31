@@ -1,17 +1,6 @@
 """Module that contains Axis class (usable for both x and y axis)
-
-The main function of an axis is to transform from the data coordinates to the
-display coordinates, hence we loosely follow an sklearn transformer api.
-
-It can be used like so:
-
-x_axis = Axis(display_length)
-x_axis = x_axis.fit(x)
-x_display = x_axis.transform(x)
-
-where x_display is the data in display coordinates
 """
-from typing import Any, Sequence
+from typing import Any, Optional
 
 import numpy as np
 
@@ -27,17 +16,51 @@ from shellplot.utils import (
     tolerance_round,
 )
 
+array_like = Any
+
 
 class Axis:
+    """Enables mapping from data to display coordinates.
+
+    We loosely follow the sklearn transform api:
+
+    >>> axis = Axis()
+    >>> axis = x_axis.fit(x_data)
+    >>> x_display = x_axis.transform(x_data)
+
+    where `x_data` and `x_display` correspond to data and display coordinates,
+    respectively.
+
+    When calling `.fit`, we will automatically determine 'reasonable' axis
+    limits and tick labels. Note that these can also be set by the user.
+    """
+
     def __init__(
         self,
         display_length: int = 20,
-        label: str = None,
-        limits: Sequence[float] = None,
-        ticklabels: Sequence[Any] = None,
-        ticks: Sequence[float] = None,
-        nticks: int = None,
+        label: Optional[str] = None,
+        limits: Optional[array_like] = None,
+        ticklabels: Optional[array_like] = None,
+        ticks: Optional[array_like] = None,
+        nticks: Optional[int] = None,
     ):
+        """Instantiate a new Axis.
+
+        Parameters
+        ----------
+        display_length : int, optional
+            Length of axis, in characters (default 20)
+        label : Optional[str], optional
+            Axis label, by default None
+        limits : Optional[array_like], optional
+            Axis limits, by default None (auto generated)
+        ticklabels : Optional[array_like], optional
+            Labels for axis ticks, by default None, as ticks
+        ticks : Optional[array_like], optional
+            Where the axis ticks should be. Default None (auto generated)
+        nticks : Optional[int], optional
+            Number of axis ticks. Default None (auto generated)
+        """
         self.display_max = display_length - 1
         self._is_datetime = False  # whether or not we are a datetime axis
         self._scale = None
