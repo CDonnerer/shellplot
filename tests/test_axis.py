@@ -76,10 +76,9 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
     """Test axis ticks generation"""
     axis = Axis(display_length=80)
     axis.limits = limits
-    axis.n_ticks = n_ticks
-    ticks = axis.ticks
+    axis.nticks = n_ticks
 
-    np.testing.assert_array_equal(ticks, expected_ticks)
+    np.testing.assert_array_equal(axis.ticks, expected_ticks)
 
 
 @pytest.mark.parametrize(
@@ -94,11 +93,11 @@ def test_axis_ticks(limits, n_ticks, expected_ticks):
 )
 def test_axis_datetime_ticks(limits, n_ticks, expected_labels):
     axis = Axis(display_length=79)
+    axis.nticks = n_ticks
     axis.fit(np.array(limits))
-    axis.n_ticks = n_ticks
-    labels = axis.ticklabels
+    ticklabels = axis.ticklabels
 
-    assert list(labels) == list(expected_labels)
+    assert list(ticklabels) == list(expected_labels)
 
 
 @pytest.mark.parametrize(
@@ -110,12 +109,12 @@ def test_axis_datetime_ticks(limits, n_ticks, expected_labels):
         ((10, 12), np.array([10, 11, 12]), [(0, 10), (40, 11), (79, 12)]),
     ],
 )
-def test_axis_tick_labels(limits, ticks, expected_tick_labels):
+def test_axis_display_ticks(limits, ticks, expected_tick_labels):
     """Test axis ticks generation"""
     axis = Axis(display_length=80)
     axis.limits = limits
     axis.ticks = ticks
-    tick_labels = list(axis.gen_tick_labels())
+    tick_labels = list(axis.generate_display_ticks())
 
     assert tick_labels == expected_tick_labels
 
@@ -130,34 +129,90 @@ def test_axis_tick_labels(limits, ticks, expected_tick_labels):
 )
 def test_axis_ticklabels_len_error(ticks, labels):
     """Test error raising when tick labels do not match ticks"""
-    axis = Axis(display_length=80)
+    axis = Axis()
     axis.ticks = ticks
 
     with pytest.raises(ValueError):
         axis.ticklabels = labels
 
 
-def test_axis_reset():
-    """Check that updating limits leads to new axis ticks"""
+def test_axis_ticks_before_fit_error():
+    axis = Axis()
+    with pytest.raises(ValueError):
+        axis.ticks
 
-    x = np.array([45, 123])
 
+# -----------------------------------------------------------------------------
+# Test axis property setting
+# -----------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    # fmt: off
+    "axis_property, value, expected_value",
+    [
+        ("label", "my fun label", "my fun label"),
+        ("limits", (4, 5), np.array([4, 5])),
+        ("nticks", 5, 5),
+        ("ticks", (0, 1, 2), np.array([0, 1, 2])),
+        ("ticklabels", ("a", "b", "c"), np.array(["a", "b", "c"])),
+        (
+            "ticklabels",
+            (
+                np.datetime64("2001-01-01"),
+                np.datetime64("2001-01-03"),
+                np.datetime64("2001-01-05"),
+            ),
+            np.array(["2001-01-01", "2001-01-03", "2001-01-05"])
+        )
+    ],
+)
+def test_axis_property_setting(axis_property, value, expected_value):
+    axis = Axis()
+    axis = axis.fit((0, 1))
+    axis.nticks = 3
+
+    setattr(axis, axis_property, value)
+    set_value = getattr(axis, axis_property)
+
+    if isinstance(expected_value, np.ndarray):
+        np.testing.assert_array_equal(set_value, expected_value)
+    else:
+        assert set_value == expected_value
+
+
+def test_axis_limit_set_updates_ticks():
     axis = Axis(display_length=80)
-    axis.fit(x)
 
     axis.limits = (0, 300)
-    ticks = axis.ticks
-    np.testing.assert_array_equal(ticks, np.array([0, 50, 100, 150, 200, 250, 300]))
+    np.testing.assert_array_equal(
+        axis.ticks, np.array([0, 50, 100, 150, 200, 250, 300])
+    )
 
     axis.limits = (50, 80)
-    ticks = axis.ticks
-    np.testing.assert_array_equal(ticks, np.array([50, 55, 60, 65, 70, 75, 80]))
+    np.testing.assert_array_equal(axis.ticks, np.array([50, 55, 60, 65, 70, 75, 80]))
 
 
-def test_axis_properties():
-    """Faux test for property setting"""
-    axis = Axis(display_length=80)
-    axis.title = "title"
-    axis.limits = (1, 9)
-    axis.ticks = np.array([1, 3, 5, 7, 9])
-    axis.labels = np.array(["a", "b", "c", "d", "e"])
+def test_axis_nticks_set_updates_ticks():
+    axis = Axis()
+    axis.limits = (0, 1)
+
+    axis.nticks = 2
+    np.testing.assert_array_equal(axis.ticks, np.array([0.0, 1.0]))
+
+    axis.nticks = 3
+    np.testing.assert_array_equal(axis.ticks, np.array([0.0, 0.5, 1.0]))
+
+    axis.nticks = 5
+    np.testing.assert_array_equal(axis.ticks, np.array([0.0, 0.25, 0.5, 0.75, 1.0]))
+
+
+def test_axis_ticks_set_updates_ticklabels():
+    axis = Axis()
+    axis.limits = (0, 1)
+
+    axis.ticks = (0.0, 0.3, 1.0)
+    np.testing.assert_array_equal(axis.ticklabels, np.array([0.0, 0.3, 1.0]))
+
+    axis.ticks = (0.0, 0.2)
+    np.testing.assert_array_equal(axis.ticklabels, np.array([0.0, 0.2]))
