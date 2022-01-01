@@ -7,14 +7,14 @@ from typing import Optional, Tuple
 import numpy as np
 
 from shellplot._config import _global_config as config
-from shellplot._plotting import PlotCall, Plotter, _barh, _boxplot, _hist, _plot
+from shellplot._plotting import PlotBuilder, PlotCall, _barh, _boxplot, _hist, _plot
 from shellplot.axis import Axis
 from shellplot.drawing import LINE_STYLES, MARKER_STYLES, draw
 from shellplot.utils import array_like, get_index, numpy_1d, numpy_2d, remove_any_nan
 
 
 class Figure:
-    """Encapsulates a shellplot figure. Should be instantiated via `shellplot.figure`"""
+    """Encapsulates a shellplot figure."""
 
     def __init__(
         self,
@@ -75,10 +75,10 @@ class Figure:
 
     def clear(self):
         """Clear the figure, by removing all attached plots."""
-        self.plotter = Plotter()
-        self._init_figure_elements()
+        self._plot_builder = PlotBuilder()
+        self.__init_figure_elements()
 
-    def _init_figure_elements(self):
+    def __init_figure_elements(self):
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
         self.legend = list()
         self.markers = cycle(MARKER_STYLES.keys())
@@ -111,7 +111,7 @@ class Figure:
             for x, y, kwargs in color_split(x, y, color, kwargs):
                 x, y = remove_any_nan(x, y)
                 call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
-                self.plotter.add(call)
+                self._plot_builder.add(call)
 
     def hist(self, x: array_like, **kwargs):
         """Plot a histogram of x
@@ -127,7 +127,7 @@ class Figure:
             The label of the plot for display in the legend
         """
         call = PlotCall(func=_hist, args=[x], kwargs=kwargs)
-        self.plotter.add(call)
+        self._plot_builder.add(call)
 
     def barh(self, x: array_like, **kwargs):
         """Plot horizontal bars
@@ -143,7 +143,7 @@ class Figure:
         if kwargs.get("labels") is None:
             kwargs["labels"] = get_index(x)
         call = PlotCall(func=_barh, args=[x], kwargs=kwargs)
-        self.plotter.add(call)
+        self._plot_builder.add(call)
 
     def boxplot(self, x: array_like, **kwargs):
         """Plot a boxplot of x
@@ -162,7 +162,7 @@ class Figure:
         """
 
         call = PlotCall(func=_boxplot, args=[x], kwargs=kwargs)
-        self.plotter.add(call)
+        self._plot_builder.add(call)
 
     def show(self):
         """Show the figure by printing to stdout.
@@ -184,8 +184,8 @@ class Figure:
             Ascii string of figure
 
         """
-        self._init_figure_elements()
-        self.plotter.fill_figure(self)
+        self.__init_figure_elements()
+        self._plot_builder.fill_figure(self)
 
         return draw(
             canvas=self.canvas,
@@ -199,18 +199,6 @@ class Figure:
     # Axis setters
     # TODO: quite boilerplatey. could  this be done with getatrr, setattr?
     # -------------------------------------------------------------------------
-
-    _setters = {
-        "xlim",
-        "xticks",
-        "xticklabels",
-        "xlabel",
-        "ylim",
-        "yticks",
-        "yticklabels",
-        "ylabel",
-        "title",
-    }
 
     def set_xlim(self, value):
         """Set limits of x-axis"""

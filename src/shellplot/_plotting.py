@@ -24,7 +24,7 @@ class PlotCall:
         self.func(fig, *self.args, **self.kwargs)
 
 
-class Plotter:
+class PlotBuilder:
     """Class that stores and executes plot calls"""
 
     def __init__(self):
@@ -43,18 +43,7 @@ class Plotter:
         fig.x_axis.fit(np.concatenate([x for x in l_x]))
         fig.y_axis.fit(np.concatenate([y for y in l_y]))
 
-    def fill_figure(self, fig):
-        """Fill the a figure using the plot calls stored in self
-
-        Parameters
-        ----------
-        fig : shellplot.figure.Figure
-
-        Returns
-        -------
-        None
-
-        """
+    def create(self, fig):
         if all(plot_call.func is _plot for plot_call in self._plot_calls):
             self.fit(fig)
         else:

@@ -161,7 +161,7 @@ def _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines, title_str):
         plt_str += f"{title_str}\n"
 
     for ax, canvas, leg in zip(y_lines, canvas_lines, legend_lines):
-        plt_str += ax + canvas + leg + "\n"
+        plt_str += f"{ax}{canvas}{leg}\n"
 
     for ax in x_lines:
         plt_str += ax
