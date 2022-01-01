@@ -1,10 +1,11 @@
 """Module that contains Axis class (usable for both x and y axis)
 """
-from typing import Any, Optional
+from typing import Optional
 
 import numpy as np
 
 from shellplot.utils import (
+    array_like,
     difference_round,
     is_datetime,
     numpy_1d,
@@ -15,8 +16,6 @@ from shellplot.utils import (
     to_numeric,
     tolerance_round,
 )
-
-array_like = Any
 
 
 class Axis:
@@ -40,8 +39,8 @@ class Axis:
         display_length: int = 20,
         label: Optional[str] = None,
         limits: Optional[array_like] = None,
-        ticklabels: Optional[array_like] = None,
         ticks: Optional[array_like] = None,
+        ticklabels: Optional[array_like] = None,
         nticks: Optional[int] = None,
     ):
         """Instantiate a new Axis.

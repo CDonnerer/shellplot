@@ -18,6 +18,7 @@ def expected_linear_plot():
     return "\n".join(
         [
             "",
+            "     My linear plot",
             "  y",
             " 9┤                  +",
             "  |                +  ",
@@ -44,6 +45,7 @@ def expected_linear_plot():
     ],
 )
 def test_plot_linear(x, expected_linear_plot):
+    title = "My linear plot"
     plt_str = plot(
         x=x,
         y=x,
@@ -53,15 +55,19 @@ def test_plot_linear(x, expected_linear_plot):
         xlabel="x",
         ylabel="y",
         return_type="str",
+        title=title,
     )
+
     assert plt_str == expected_linear_plot
 
     fig = figure(figsize=(19, 10), xlim=(0, 9), ylim=(0, 9), xlabel="x", ylabel="y")
     fig.plot(x, x)
+    fig.set_title(title)
     assert fig.draw() == expected_linear_plot
 
     fig.clear()
     plot(x, x, fig=fig)
+    fig.set_title(title)
     assert fig.draw() == expected_linear_plot
 
 
@@ -77,6 +83,7 @@ def test_plot_linear_pd_labels(expected_linear_plot):
         ylim=(0, 9),
         xlabel="x",
         ylabel="y",
+        title="My linear plot",
         return_type="str",
     )
     assert plt_str == expected_linear_plot

@@ -2,76 +2,89 @@
 """
 import copy
 from itertools import cycle
+from typing import Optional, Tuple
 
 import numpy as np
 
 from shellplot._config import _global_config as config
-from shellplot._plotting import PlotCall, Plotter, _barh, _boxplot, _hist, _plot
+from shellplot._plotting import PlotBuilder, PlotCall, _barh, _boxplot, _hist, _plot
 from shellplot.axis import Axis
 from shellplot.drawing import LINE_STYLES, MARKER_STYLES, draw
-from shellplot.utils import get_index, numpy_1d, numpy_2d, remove_any_nan
-
-
-def figure(figsize=None, **kwargs):
-    """Create a new shellplot figure
-
-    Parameters
-    ----------
-    figsize : a tuple (width, height) in ascii characters, optional
-        Size of the figure.
-    xlim : 2-tuple/list, optional
-        Set the x limits.
-    ylim : 2-tuple/list, optional
-        Set the y limits.
-    xlabel : str, optional
-        Name to use for the xlabel on x-axis.
-    ylabel : str, optional
-        Name to use for the ylabel on y-axis.
-
-    Returns
-    -------
-    `shellplot.figure.Figure`
-        Instantiated shellplot figure
-
-    """
-    figsize = figsize or config["figsize"]
-    fig = Figure(figsize)
-
-    fig_kwargs = {k: v for k, v in kwargs.items() if k in fig._setters}
-
-    for key, value in fig_kwargs.items():
-        getattr(fig, f"set_{key}")(value)
-    return fig
+from shellplot.utils import array_like, get_index, numpy_1d, numpy_2d, remove_any_nan
 
 
 class Figure:
-    """Encapsulates a shellplot figure. Should be instantiated via `shellplot.figure`"""
+    """Encapsulates a shellplot figure."""
 
-    def __init__(self, figsize):
+    def __init__(
+        self,
+        figsize: Optional[Tuple[int]] = None,
+        xlim: Optional[array_like] = None,
+        xticks: Optional[array_like] = None,
+        xticklabels: Optional[array_like] = None,
+        xlabel: Optional[str] = None,
+        ylim: Optional[array_like] = None,
+        yticks: Optional[array_like] = None,
+        yticklabels: Optional[array_like] = None,
+        ylabel: Optional[str] = None,
+        title: Optional[str] = None,
+        **kwargs
+    ):
         """Instantiate a new figure
 
         Parameters
         ----------
         figsize : a tuple (width, height) in ascii characters, optional
             Size of the figure.
+        xlim : 2-tuple/list, optional
+            Set the x limits.
+        xticks : Optional[array_like], optional
+            [description], by default None
+        xticklabels : Optional[array_like], optional
+            [description], by default None
+        xlabel : Optional[str], optional
+            Name to use for the xlabel on x-axis.
+        ylim : 2-tuple/list, optional
+            Set the y limits.
+        yticks : Optional[array_like], optional
+            [description], by default None
+        yticklabels : Optional[array_like], optional
+            [description], by default None
+        ylabel : Optional[str], optional
+            Name to use for the ylabel on y-axis.
+        title : Optional[str], optional
+            The title of the figure.
         """
-        self.figsize = figsize
-        self.x_axis = Axis(self.figsize[0])
-        self.y_axis = Axis(self.figsize[1])
+        self.figsize = figsize or config["figsize"]
+        self.x_axis = Axis(
+            display_length=self.figsize[0],
+            limits=xlim,
+            ticks=xticks,
+            ticklabels=xticklabels,
+            label=xlabel,
+        )
+        self.y_axis = Axis(
+            display_length=self.figsize[1],
+            limits=ylim,
+            ticks=yticks,
+            ticklabels=yticklabels,
+            label=ylabel,
+        )
+        self.title = title
         self.clear()
 
     def clear(self):
         """Clear the figure, by removing all attached plots."""
-        self.plotter = Plotter()
-        self._init_figure_elements()
+        self._plot_builder = PlotBuilder()
+        self.__init_figure_elements()
 
-    def _init_figure_elements(self):
+    def __init_figure_elements(self):
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
         self.legend = list()
         self.markers = cycle(MARKER_STYLES.keys())
         self.lines = cycle(LINE_STYLES.keys())
 
-    def plot(self, x, y, color=None, **kwargs):
+    def plot(self, x: array_like, y: array_like, color=None, **kwargs):
         """Plot x versus y as scatter.
 
         Parameters
@@ -98,9 +111,9 @@ class Figure:
             for x, y, kwargs in color_split(x, y, color, kwargs):
                 x, y = remove_any_nan(x, y)
                 call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
-                self.plotter.add(call)
+                self._plot_builder.add(call)
 
-    def hist(self, x, **kwargs):
+    def hist(self, x: array_like, **kwargs):
         """Plot a histogram of x
 
         Parameters
@@ -114,9 +127,9 @@ class Figure:
             The label of the plot for display in the legend
         """
         call = PlotCall(func=_hist, args=[x], kwargs=kwargs)
-        self.plotter.add(call)
+        self._plot_builder.add(call)
 
-    def barh(self, x, **kwargs):
+    def barh(self, x: array_like, **kwargs):
         """Plot horizontal bars
 
         Parameters
@@ -130,9 +143,9 @@ class Figure:
         if kwargs.get("labels") is None:
             kwargs["labels"] = get_index(x)
         call = PlotCall(func=_barh, args=[x], kwargs=kwargs)
-        self.plotter.add(call)
+        self._plot_builder.add(call)
 
-    def boxplot(self, x, **kwargs):
+    def boxplot(self, x: array_like, **kwargs):
         """Plot a boxplot of x
 
         Note that currently this makes a boxplot using the quantiles:
@@ -149,7 +162,7 @@ class Figure:
         """
 
         call = PlotCall(func=_boxplot, args=[x], kwargs=kwargs)
-        self.plotter.add(call)
+        self._plot_builder.add(call)
 
     def show(self):
         """Show the figure by printing to stdout.
@@ -171,30 +184,21 @@ class Figure:
             Ascii string of figure
 
         """
-        self._init_figure_elements()
-        self.plotter.fill_figure(self)
+        self.__init_figure_elements()
+        self._plot_builder.create(self)
+
         return draw(
             canvas=self.canvas,
             y_axis=self.y_axis,
             x_axis=self.x_axis,
             legend=self.legend,
+            title=self.title,
         )
 
     # -------------------------------------------------------------------------
     # Axis setters
     # TODO: quite boilerplatey. could  this be done with getatrr, setattr?
     # -------------------------------------------------------------------------
-
-    _setters = {
-        "xlim",
-        "xticks",
-        "xticklabels",
-        "xlabel",
-        "ylim",
-        "yticks",
-        "yticklabels",
-        "ylabel",
-    }
 
     def set_xlim(self, value):
         """Set limits of x-axis"""
@@ -228,6 +232,9 @@ class Figure:
         """Set y-axis tick labels."""
         self.y_axis.label = value
 
+    def set_title(self, value):
+        self.title = value
+
 
 def color_split(x, y, color, kwargs):
     """If a color array is provided, we split on it"""
@@ -258,3 +265,6 @@ def array_split(x, y, kwargs):
             if len(label) != 0:
                 val_kwargs.update({"label": label.pop(0)})
             yield x, y, val_kwargs
+
+
+figure = Figure  # alias for convenience

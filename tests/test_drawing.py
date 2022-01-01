@@ -9,6 +9,7 @@ from shellplot.drawing import (
     LegendItem,
     _draw_canvas,
     _draw_legend,
+    _draw_title,
     _draw_x_axis,
     _draw_y_axis,
     _pad_lines,
@@ -19,6 +20,12 @@ def test_draw_legend():
     legend = [LegendItem(1, "one"), LegendItem(2, "two")]
     legend_lines = ["  + one", "  * two"]
     assert legend_lines == _draw_legend(legend)
+
+
+def test_draw_title():
+    title_str = _draw_title(title="My", x_display_max=39, left_pad=0)
+    expected_title_str = " " * 20 + "My"
+    assert title_str == expected_title_str
 
 
 @pytest.mark.parametrize(
