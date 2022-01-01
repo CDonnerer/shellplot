@@ -39,8 +39,8 @@ class Axis:
         display_length: int = 20,
         label: Optional[str] = None,
         limits: Optional[array_like] = None,
-        ticklabels: Optional[array_like] = None,
         ticks: Optional[array_like] = None,
+        ticklabels: Optional[array_like] = None,
         nticks: Optional[int] = None,
     ):
         """Instantiate a new Axis.

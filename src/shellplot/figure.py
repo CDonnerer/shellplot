@@ -2,6 +2,7 @@
 """
 import copy
 from itertools import cycle
+from typing import Optional, Tuple
 
 import numpy as np
 
@@ -12,58 +13,69 @@ from shellplot.drawing import LINE_STYLES, MARKER_STYLES, draw
 from shellplot.utils import array_like, get_index, numpy_1d, numpy_2d, remove_any_nan
 
 
-def figure(figsize=None, **kwargs):
-    """Create a new shellplot figure
-
-    Parameters
-    ----------
-    figsize : a tuple (width, height) in ascii characters, optional
-        Size of the figure.
-    xlim : 2-tuple/list, optional
-        Set the x limits.
-    ylim : 2-tuple/list, optional
-        Set the y limits.
-    xlabel : str, optional
-        Name to use for the xlabel on x-axis.
-    ylabel : str, optional
-        Name to use for the ylabel on y-axis.
-
-    Returns
-    -------
-    `shellplot.figure.Figure`
-        Instantiated shellplot figure
-
-    """
-    figsize = figsize or config["figsize"]
-    fig = Figure(figsize)
-
-    fig_kwargs = {k: v for k, v in kwargs.items() if k in fig._setters}
-
-    for key, value in fig_kwargs.items():
-        getattr(fig, f"set_{key}")(value)
-    return fig
-
-
 class Figure:
     """Encapsulates a shellplot figure. Should be instantiated via `shellplot.figure`"""
 
-    def __init__(self, figsize):
+    def __init__(
+        self,
+        figsize: Optional[Tuple[int]] = None,
+        xlim: Optional[array_like] = None,
+        xticks: Optional[array_like] = None,
+        xticklabels: Optional[array_like] = None,
+        xlabel: Optional[str] = None,
+        ylim: Optional[array_like] = None,
+        yticks: Optional[array_like] = None,
+        yticklabels: Optional[array_like] = None,
+        ylabel: Optional[str] = None,
+        title: Optional[str] = None,
+        **kwargs
+    ):
         """Instantiate a new figure
 
         Parameters
         ----------
         figsize : a tuple (width, height) in ascii characters, optional
             Size of the figure.
+        xlim : 2-tuple/list, optional
+            Set the x limits.
+        xticks : Optional[array_like], optional
+            [description], by default None
+        xticklabels : Optional[array_like], optional
+            [description], by default None
+        xlabel : Optional[str], optional
+            Name to use for the xlabel on x-axis.
+        ylim : 2-tuple/list, optional
+            Set the y limits.
+        yticks : Optional[array_like], optional
+            [description], by default None
+        yticklabels : Optional[array_like], optional
+            [description], by default None
+        ylabel : Optional[str], optional
+            Name to use for the ylabel on y-axis.
+        title : Optional[str], optional
+            The title of the figure.
         """
-        self.figsize = figsize
-        self.x_axis = Axis(self.figsize[0])
-        self.y_axis = Axis(self.figsize[1])
+        self.figsize = figsize or config["figsize"]
+        self.x_axis = Axis(
+            display_length=self.figsize[0],
+            limits=xlim,
+            ticks=xticks,
+            ticklabels=xticklabels,
+            label=xlabel,
+        )
+        self.y_axis = Axis(
+            display_length=self.figsize[1],
+            limits=ylim,
+            ticks=yticks,
+            ticklabels=yticklabels,
+            label=ylabel,
+        )
+        self.title = title
         self.clear()
 
     def clear(self):
         """Clear the figure, by removing all attached plots."""
         self.plotter = Plotter()
-        self.title = None
         self._init_figure_elements()
 
     def _init_figure_elements(self):
@@ -265,3 +277,6 @@ def array_split(x, y, kwargs):
             if len(label) != 0:
                 val_kwargs.update({"label": label.pop(0)})
             yield x, y, val_kwargs
+
+
+figure = Figure  # alias for convenience
