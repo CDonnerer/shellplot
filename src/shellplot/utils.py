@@ -3,6 +3,7 @@
 import math
 import os
 from functools import singledispatch
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -10,6 +11,7 @@ import pandas as pd
 __all__ = ["load_dataset"]
 
 ANCHOR_DATETIME = np.datetime64("1970-01-01")  # I remember the day well
+array_like = Any
 
 
 def load_dataset(name: str) -> pd.DataFrame:

@@ -9,7 +9,7 @@ from shellplot._config import _global_config as config
 from shellplot._plotting import PlotCall, Plotter, _barh, _boxplot, _hist, _plot
 from shellplot.axis import Axis
 from shellplot.drawing import LINE_STYLES, MARKER_STYLES, draw
-from shellplot.utils import get_index, numpy_1d, numpy_2d, remove_any_nan
+from shellplot.utils import array_like, get_index, numpy_1d, numpy_2d, remove_any_nan
 
 
 def figure(figsize=None, **kwargs):
@@ -72,7 +72,7 @@ class Figure:
         self.markers = cycle(MARKER_STYLES.keys())
         self.lines = cycle(LINE_STYLES.keys())
 
-    def plot(self, x, y, color=None, **kwargs):
+    def plot(self, x: array_like, y: array_like, color=None, **kwargs):
         """Plot x versus y as scatter.
 
         Parameters
@@ -101,7 +101,7 @@ class Figure:
                 call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
                 self.plotter.add(call)
 
-    def hist(self, x, **kwargs):
+    def hist(self, x: array_like, **kwargs):
         """Plot a histogram of x
 
         Parameters
@@ -117,7 +117,7 @@ class Figure:
         call = PlotCall(func=_hist, args=[x], kwargs=kwargs)
         self.plotter.add(call)
 
-    def barh(self, x, **kwargs):
+    def barh(self, x: array_like, **kwargs):
         """Plot horizontal bars
 
         Parameters
@@ -133,7 +133,7 @@ class Figure:
         call = PlotCall(func=_barh, args=[x], kwargs=kwargs)
         self.plotter.add(call)
 
-    def boxplot(self, x, **kwargs):
+    def boxplot(self, x: array_like, **kwargs):
         """Plot a boxplot of x
 
         Note that currently this makes a boxplot using the quantiles:
