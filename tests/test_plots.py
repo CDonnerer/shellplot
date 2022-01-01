@@ -57,6 +57,7 @@ def test_plot_linear(x, expected_linear_plot):
         return_type="str",
         title=title,
     )
+
     assert plt_str == expected_linear_plot
 
     fig = figure(figsize=(19, 10), xlim=(0, 9), ylim=(0, 9), xlabel="x", ylabel="y")
