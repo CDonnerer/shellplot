@@ -185,7 +185,7 @@ class Figure:
 
         """
         self.__init_figure_elements()
-        self._plot_builder.fill_figure(self)
+        self._plot_builder.create(self)
 
         return draw(
             canvas=self.canvas,
