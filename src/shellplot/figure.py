@@ -29,7 +29,7 @@ class Figure:
         ylabel: Optional[str] = None,
         title: Optional[str] = None,
         **kwargs
-    ):
+    ) -> None:
         """Instantiate a new figure
 
         Parameters
@@ -73,18 +73,18 @@ class Figure:
         self.title = title
         self.clear()
 
-    def clear(self):
+    def clear(self) -> None:
         """Clear the figure, by removing all attached plots."""
         self._plot_builder = PlotBuilder()
         self.__init_figure_elements()
 
-    def __init_figure_elements(self):
+    def __init_figure_elements(self) -> None:
         self.canvas = np.zeros(shape=(self.figsize[0], self.figsize[1]), dtype=int)
         self.legend = list()
         self.markers = cycle(MARKER_STYLES.keys())
         self.lines = cycle(LINE_STYLES.keys())
 
-    def plot(self, x: array_like, y: array_like, color=None, **kwargs):
+    def plot(self, x: array_like, y: array_like, color=None, **kwargs) -> None:
         """Plot x versus y as scatter.
 
         Parameters
@@ -113,7 +113,7 @@ class Figure:
                 call = PlotCall(func=_plot, args=[x, y], kwargs=kwargs)
                 self._plot_builder.add(call)
 
-    def hist(self, x: array_like, **kwargs):
+    def hist(self, x: array_like, **kwargs) -> None:
         """Plot a histogram of x
 
         Parameters
@@ -129,7 +129,7 @@ class Figure:
         call = PlotCall(func=_hist, args=[x], kwargs=kwargs)
         self._plot_builder.add(call)
 
-    def barh(self, x: array_like, **kwargs):
+    def barh(self, x: array_like, **kwargs) -> None:
         """Plot horizontal bars
 
         Parameters
@@ -145,7 +145,7 @@ class Figure:
         call = PlotCall(func=_barh, args=[x], kwargs=kwargs)
         self._plot_builder.add(call)
 
-    def boxplot(self, x: array_like, **kwargs):
+    def boxplot(self, x: array_like, **kwargs) -> None:
         """Plot a boxplot of x
 
         Note that currently this makes a boxplot using the quantiles:
@@ -164,7 +164,7 @@ class Figure:
         call = PlotCall(func=_boxplot, args=[x], kwargs=kwargs)
         self._plot_builder.add(call)
 
-    def show(self):
+    def show(self) -> None:
         """Show the figure by printing to stdout.
 
         Returns
@@ -175,7 +175,7 @@ class Figure:
         plt_str = self.draw()
         print(plt_str)
 
-    def draw(self):
+    def draw(self) -> str:
         """Draw the figure as a string
 
         Returns

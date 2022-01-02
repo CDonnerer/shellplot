@@ -2,10 +2,21 @@
 Changelog
 =========
 
-Version 0.2.1
----------------
+Development version
+===================
+
+Version 0.2.X, 2022-xx-xx
+--------------------------
+
+- Added error raising in case of empty figure
+- Added figure title functionality
+- Refactored Axis class
 - Fixed bug to allow legend with non-unique labels
 - Moved line and marker styles options into drawing module
+
+
+Current version
+===============
 
 Version 0.2.0
 ---------------
@@ -16,6 +27,9 @@ Version 0.2.0
 - Default docs now refer to stable versions
 - Added config for global options, such as figsize
 
+
+Older versions
+===============
 
 Version 0.1.5
 -------------
