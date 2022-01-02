@@ -21,6 +21,8 @@ Version 0.2.1
 - Fixed bug to allow legend with non-unique labels
 - Moved line and marker styles options into drawing module
 
+Older versions
+===============
 
 Version 0.2.0
 ---------------
