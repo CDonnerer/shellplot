@@ -8,6 +8,7 @@ Development version
 Version 0.2.X, 2022-xx-xx
 --------------------------
 
+- Added error raising in case of empty figure
 - Added figure title functionality
 - Refactored Axis class
 
