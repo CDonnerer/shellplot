@@ -2,10 +2,24 @@
 Changelog
 =========
 
+Development version
+===================
+
+Version 0.2.X, 2022-xx-xx
+--------------------------
+
+- Added figure title functionality
+- Refactored Axis class
+
+
+Current version
+===============
+
 Version 0.2.1
 ---------------
 - Fixed bug to allow legend with non-unique labels
 - Moved line and marker styles options into drawing module
+
 
 Version 0.2.0
 ---------------
