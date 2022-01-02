@@ -44,6 +44,9 @@ class PlotBuilder:
         fig.y_axis.fit(np.concatenate([y for y in l_y]))
 
     def create(self, fig):
+        if len(self._plot_calls) == 0:
+            raise ValueError("Cannot plot empty figure!")
+
         if all(plot_call.func is _plot for plot_call in self._plot_calls):
             self.fit(fig)
         else:

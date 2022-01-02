@@ -71,3 +71,10 @@ def test_figure_setters():
     }
     for key, val in properties.items():
         getattr(fig, f"set_{key}")(val)
+
+
+def test_empty_figure_show_raises():
+    fig = figure()
+
+    with pytest.raises(ValueError):
+        fig.show()
