@@ -1,7 +1,7 @@
 
-.. image:: https://travis-ci.com/CDonnerer/shellplot.svg?branch=master
-  :alt: Built Status
-  :target: https://travis-ci.com/github/CDonnerer/shellplot?branch=master
+.. image:: https://github.com/CDonnerer/shellplot/actions/workflows/test.yml/badge.svg?branch=main
+  :target: https://github.com/CDonnerer/shellplot/actions/workflows/test.yml
+  :alt: Tests
 
 .. image:: https://readthedocs.org/projects/shellplot/badge/?version=latest
   :target: https://shellplot.readthedocs.io/en/latest/?badge=latest
