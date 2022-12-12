@@ -5,7 +5,7 @@ converts them to strings. Please note that drawing is entirely agnostic to the
 type of plot.
 """
 from collections import namedtuple
-from typing import Generator, List
+from typing import List
 
 MARKER_STYLES = {1: "+", 2: "*", 3: "o", 4: "x", 5: "@", 6: "■"}
 
@@ -22,6 +22,8 @@ PALETTE.update(MARKER_STYLES)
 PALETTE.update(LINE_STYLES)
 
 LegendItem = namedtuple("LegendItem", ["symbol", "name"])
+
+# TODO: drawing should just receive a container (dataclass) of stuff
 
 
 def draw(canvas, x_axis, y_axis, legend=None, title=None) -> str:
@@ -66,12 +68,12 @@ def draw(canvas, x_axis, y_axis, legend=None, title=None) -> str:
     return _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines, title_line)
 
 
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
 # Drawing functions for individual plot elements (canvas, x-axis, y-axis, legend)
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
 
 
-def _draw_canvas(canvas) -> Generator[str]:
+def _draw_canvas(canvas):
     for i in reversed(range(canvas.shape[1])):
         plt_str = ""
         for j in range(canvas.shape[0]):
@@ -91,13 +93,14 @@ def _draw_y_axis(y_axis, left_pad) -> List[str]:
             y_ticks.pop(-1)
         else:
             ax_line += " " * left_pad + "|"
-        y_lines.append(ax_line)
+        yield ax_line
+    #     y_lines.append(ax_line)
 
-    if y_axis.label is not None:
-        label_pad = left_pad - len(y_axis.label) // 2
-        label_str = " " * label_pad + y_axis.label
-        y_lines.insert(0, label_str)
-    return y_lines
+    # if y_axis.label is not None:
+    #     label_pad = left_pad - len(y_axis.label) // 2
+    #     label_str = " " * label_pad + y_axis.label
+    #     y_lines.insert(0, label_str)
+    # return y_lines
 
 
 def _draw_x_axis(x_axis, left_pad) -> List[str]:
@@ -117,24 +120,19 @@ def _draw_x_axis(x_axis, left_pad) -> List[str]:
         else:
             upper_ax += "-"
 
-    ax_lines = [upper_ax + "\n", lower_ax[: len(lower_ax) - overpad] + "\n"]
+    yield upper_ax + "\n"
+    yield lower_ax[: len(lower_ax) - overpad] + "\n"
 
     if x_axis.label is not None:
         label_pad = (x_axis.display_max + 1) // 2 - len(str(x_axis.label)) // 2
         label_str = " " * (left_pad + 1 + label_pad) + str(x_axis.label)
-        ax_lines.append(label_str)
-
-    return ax_lines
+        yield label_str
 
 
 def _draw_legend(legend) -> List[str]:
-    legend_lines = list()
-
     for item in legend:
         legend_str = f"  {PALETTE[item.symbol]} {item.name}"
-        legend_lines.append(legend_str)
-
-    return legend_lines
+        yield legend_str
 
 
 def _draw_title(title, x_display_max, left_pad) -> List[str]:
@@ -150,17 +148,23 @@ def _draw_title(title, x_display_max, left_pad) -> List[str]:
 
 def _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines, title_str):
     plt_str = "\n"
-    canvas_lines = _pad_lines(canvas_lines, y_lines)
-    legend_lines = _pad_lines(legend_lines, y_lines)
+    # canvas_lines = _pad_lines(canvas_lines, y_lines)
+    # legend_lines = _pad_lines(legend_lines, y_lines)
+    import itertools
 
     if title_str is not None:
         plt_str += f"{title_str}\n"
 
-    for ax, canvas, leg in zip(y_lines, canvas_lines, legend_lines):
+    for ax, canvas, leg in itertools.zip_longest(
+        y_lines, canvas_lines, legend_lines, fillvalue=""
+    ):
         plt_str += f"{ax}{canvas}{leg}\n"
 
     for ax in x_lines:
         plt_str += ax
+
+    # for ax, canvas, leg in zip(y_lines, canvas_lines, legend_lines):
+    #     plt_str += f"{ax}{canvas}{leg}\n"
 
     return plt_str
 
