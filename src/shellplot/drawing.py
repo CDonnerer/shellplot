@@ -5,7 +5,7 @@ converts them to strings. Please note that drawing is entirely agnostic to the
 type of plot.
 """
 from collections import namedtuple
-from typing import List
+from typing import Generator, List
 
 MARKER_STYLES = {1: "+", 2: "*", 3: "o", 4: "x", 5: "@", 6: "■"}
 
@@ -71,16 +71,12 @@ def draw(canvas, x_axis, y_axis, legend=None, title=None) -> str:
 # ------------------------------------------------------------------------------
 
 
-def _draw_canvas(canvas) -> List[str]:
-    plt_lines = list()
-
+def _draw_canvas(canvas) -> Generator[str]:
     for i in reversed(range(canvas.shape[1])):
         plt_str = ""
         for j in range(canvas.shape[0]):
             plt_str += PALETTE[canvas[j, i]]
-        plt_lines.append(plt_str)
-
-    return plt_lines
+        yield plt_str
 
 
 def _draw_y_axis(y_axis, left_pad) -> List[str]:
