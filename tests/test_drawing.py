@@ -98,8 +98,8 @@ def test_draw_x_axis(axis, expected_axis_lines):
 def test_draw_y_axis(axis, label, limits, expected_axis_lines):
     axis.label = label
     axis.limits = limits
+    y_lines = list(_draw_y_axis(y_axis=axis, left_pad=10))
 
-    y_lines = _draw_y_axis(y_axis=axis, left_pad=10)
     assert y_lines == expected_axis_lines
 
 

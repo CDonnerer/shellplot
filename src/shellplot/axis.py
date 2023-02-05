@@ -158,7 +158,7 @@ class Axis:
         self = self.fit(x)
         return self.transform(x)
 
-    def generate_display_ticks(self):
+    def generate_ticks_and_labels(self):
         """Generate display tick locations and labels"""
         display_ticks = self.transform(self.ticks)
         within_display = np.logical_and(
@@ -188,7 +188,7 @@ class Axis:
 
     def _auto_nticks(self):
         """Automatically find number of ticks that fit display"""
-        max_ticks = int(1.5 * self.display_max ** 0.3) + 1
+        max_ticks = int(1.5 * self.display_max**0.3) + 1
         ticks = np.arange(max_ticks, max_ticks - 2, -1)
         remainders = np.remainder(self.display_max, ticks)
         return ticks[np.argmin(remainders)] + 1
