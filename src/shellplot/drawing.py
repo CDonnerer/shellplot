@@ -97,7 +97,9 @@ def draw(canvas, x_axis, y_axis, legend, title=None) -> str:
         The drawn figure
 
     """
-    left_pad = max([len(str(val)) for (t, val) in y_axis.generate_display_ticks()]) + 1
+    left_pad = (
+        max([len(str(val)) for (t, val) in y_axis.generate_ticks_and_labels()]) + 1
+    )
 
     title_lines = _draw_title(title, x_axis.display_max, left_pad)
     canvas_lines = _draw_canvas(canvas)
@@ -115,6 +117,7 @@ def draw(canvas, x_axis, y_axis, legend, title=None) -> str:
 
 def _draw_title(title, x_display_max, left_pad) -> List[str]:
     if title:
+        # TODO: this could handle multi line titles
         label_pad = (x_display_max + 1) // 2 - len(str(title)) // 2
         yield " " * (left_pad + 1 + label_pad) + str(title)
 
@@ -190,4 +193,4 @@ def _create_plot_str(canvas_lines, y_lines, x_lines, legend_lines, title_lines):
     for ax in x_lines:
         plt_str += f"{ax}\n"
 
-    return plt_str
+    return plt_str[:-1]
