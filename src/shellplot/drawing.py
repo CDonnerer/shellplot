@@ -21,19 +21,19 @@ How it works:
     ->  [title line]
 
     ii/
-    ->  [y axis label]
+    ->  [y axis title]
 
     iii/
     -> [y axis] [canvas] [legend]
     -> [y axis] [canvas] [legend]
     -> [y axis] [canvas] [legend]
-    -> [y axis] [canvas] [legend]
+    -> [y axis] [canvas]
     -> ...
 
     iv/
     -> [x axis]
     -> [x axis]
-    -> [x axis label]
+    -> [x axis title]
 
 
 """
@@ -97,12 +97,10 @@ def draw(canvas, x_axis, y_axis, legend, title=None) -> str:
         The drawn figure
 
     """
-    left_pad = (
-        max([len(str(val)) for (t, val) in y_axis.generate_ticks_and_labels()]) + 1
-    )
+    left_pad = max(len(str(val)) for (t, val) in y_axis.generate_ticks_and_labels()) + 1
 
     title_lines = _draw_title(title, x_axis.display_max, left_pad)
-    canvas_lines = _draw_canvas(canvas)
+    canvas_lines = _draw_canvas(canvas, top_pad=y_axis.label)
     y_lines = _draw_y_axis(y_axis, left_pad)
     x_lines = _draw_x_axis(x_axis, left_pad)
     legend_lines = _draw_legend(legend)
@@ -122,7 +120,10 @@ def _draw_title(title, x_display_max, left_pad) -> List[str]:
         yield " " * (left_pad + 1 + label_pad) + str(title)
 
 
-def _draw_canvas(canvas):
+def _draw_canvas(canvas, top_pad=None):
+    if top_pad:
+        yield ""
+
     for i in reversed(range(canvas.shape[1])):
         plt_str = ""
         for j in range(canvas.shape[0]):
@@ -131,8 +132,8 @@ def _draw_canvas(canvas):
 
 
 def _draw_y_axis(y_axis, left_pad):
-    axis_label = y_axis.label or ""
-    yield " " * (left_pad - len(axis_label) // 2) + axis_label
+    if y_axis.label:
+        yield " " * (left_pad - len(y_axis.label) // 2) + y_axis.label
 
     ticks_and_labels = {k: v for k, v in y_axis.generate_ticks_and_labels()}
 
@@ -183,11 +184,14 @@ def _create_plot_str(canvas_lines, y_lines, x_lines, legend_lines, title_lines):
     for title_line in title_lines:
         plt_str += f"{title_line}\n"
 
-    plt_str += f"{next(y_lines)}\n"  # pop out y axis title
-
     for ax, canvas, leg in itertools.zip_longest(
         y_lines, canvas_lines, legend_lines, fillvalue=""
     ):
+        # TODO: there's an issue here
+        # inside this we do not know the lengths of things
+        # - if y axis has a title it's one longer
+        # - where should the legend go?
+        # this puts the legend on top
         plt_str += f"{ax}{canvas}{leg}\n"
 
     for ax in x_lines:

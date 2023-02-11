@@ -109,5 +109,4 @@ def test_draw_y_axis(axis, label, limits, expected_axis_lines):
 )
 def test_draw_canvas(canvas, expected_canvas_lines):
     canvas_lines = _draw_canvas(canvas)
-    # breakpoint()
     assert list(canvas_lines) == expected_canvas_lines

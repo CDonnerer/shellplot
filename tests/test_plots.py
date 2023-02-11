@@ -105,7 +105,6 @@ def expected_linear_plot_color():
             " 0┤+                    @ 4",
             "  └┬-----┬-----┬-----┬",
             "   0     3     6     9",
-            "",
         ]
     )
 
@@ -148,7 +147,6 @@ def expected_linear_multi_plot():
             " 0┤+                 *  * down",
             "  └┬-----┬-----┬-----┬",
             "   0     3     6     9",
-            "",
         ]
     )
 
@@ -245,7 +243,6 @@ def expected_interp_plot():
             " 0┤÷÷················ ",
             "  └┬-----┬-----┬-----┬",
             "   0     3     6     9",
-            "",
         ]
     )
 
@@ -294,7 +291,6 @@ def expected_hist():
             " 0┤|        |        |        |  ",
             "  └┬--------┬--------┬--------┬--",
             "   0        1        2        3",
-            "",
         ]
     )
 
@@ -383,7 +379,6 @@ def expected_barh():
             "      |--                            ",
             "      └┬------┬------┬-------┬------┬",
             "       0      30     60      90     120",
-            "",
         ]
     )
 
@@ -435,7 +430,6 @@ def expected_boxplot():
             "    |                                         ",
             "    └┬-------┬-------┬-------┬-------┬-------┬",
             "     0       1       2       3       4       5",
-            "",
         ]
     )
 
@@ -483,7 +477,6 @@ def expected_multi_boxplot():
             "      |                                         ",
             "      └┬-------┬-------┬-------┬-------┬-------┬",
             "       0       1       2       3       4       5",
-            "",
         ]
     )
 
@@ -532,7 +525,6 @@ def expected_hist_with_line():
             " 0┤|        |        |        |  ",
             "  └┬--------┬--------┬--------┬--",
             "   0        1        2        3",
-            "",
         ]
     )
 
@@ -570,6 +562,7 @@ def test_hist_with_line(x, expected_hist_with_line):
     fig = figure(figsize=(30, 10), ylabel="counts")
     fig.hist(x, bins=3)
     fig.plot([0, 3], [9, 9], line=True, marker=None)
+
     assert fig.draw() == expected_hist_with_line
 
     # changing the order should yield the same result
