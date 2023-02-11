@@ -3,9 +3,48 @@
 Functions for taking the elements of the plot (e.g. canvas, axis, legend) and
 converts them to strings. Please note that drawing is entirely agnostic to the
 type of plot.
+
+How it works:
+
+1. Plot elements passed into here (ideally in container)
+
+2. Each plot element has a lazy 'plot lines' generator:
+    - `_draw_canvas`
+    - `_draw_y_axis`
+    - `_draw_x_axis`
+    - `_draw_legend`
+    - `_draw_title`
+
+3. Elements are called in steps
+
+    i/
+    ->  [title line]
+
+    ii/
+    ->  [y axis title]
+
+    iii/
+    -> [y axis] [canvas] [legend]
+    -> [y axis] [canvas] [legend]
+    -> [y axis] [canvas] [legend]
+    -> [y axis] [canvas]
+    -> ...
+
+    iv/
+    -> [x axis]
+    -> [x axis]
+    -> [x axis title]
+
+
 """
+import dataclasses
+import itertools
 from collections import namedtuple
 from typing import List
+
+import numpy as np
+
+from shellplot.axis import Axis
 
 MARKER_STYLES = {1: "+", 2: "*", 3: "o", 4: "x", 5: "@", 6: "■"}
 
@@ -23,8 +62,19 @@ PALETTE.update(LINE_STYLES)
 
 LegendItem = namedtuple("LegendItem", ["symbol", "name"])
 
+# TODO: drawing should just receive a container (dataclass) of stuff
 
-def draw(canvas, x_axis, y_axis, legend=None, title=None) -> str:
+
+@dataclasses.dataclass
+class PlotElements:
+    canvas: np.ndarray
+    x_axis: Axis
+    y_axis: Axis
+    legend: dict[str, str] = tuple()
+    title: str = None
+
+
+def draw(canvas, x_axis, y_axis, legend, title=None) -> str:
     """Draw figure from plot elements (i.e. canvas, x-axis, y-axis, legend)
 
     Internally, this functions draws all elements as list of strings, and then
@@ -47,104 +97,80 @@ def draw(canvas, x_axis, y_axis, legend=None, title=None) -> str:
         The drawn figure
 
     """
-    canvas_lines = _draw_canvas(canvas)
+    left_pad = max(len(str(val)) for (t, val) in y_axis.generate_ticks_and_labels()) + 1
 
-    left_pad = max([len(str(val)) for (t, val) in y_axis.generate_display_ticks()]) + 1
+    title_lines = _draw_title(title, x_axis.display_max, left_pad)
+    canvas_lines = _draw_canvas(canvas, top_pad=y_axis.label)
     y_lines = _draw_y_axis(y_axis, left_pad)
     x_lines = _draw_x_axis(x_axis, left_pad)
+    legend_lines = _draw_legend(legend)
 
-    if legend is not None:
-        legend_lines = _draw_legend(legend)
-    else:
-        legend_lines = None
-
-    if title is not None:
-        title_line = _draw_title(title, x_axis.display_max, left_pad)
-    else:
-        title_line = None
-
-    return _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines, title_line)
+    return _create_plot_str(canvas_lines, y_lines, x_lines, legend_lines, title_lines)
 
 
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
 # Drawing functions for individual plot elements (canvas, x-axis, y-axis, legend)
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
 
 
-def _draw_canvas(canvas) -> List[str]:
-    plt_lines = list()
+def _draw_title(title, x_display_max, left_pad) -> List[str]:
+    if title:
+        # TODO: this could handle multi line titles
+        label_pad = (x_display_max + 1) // 2 - len(str(title)) // 2
+        yield " " * (left_pad + 1 + label_pad) + str(title)
+
+
+def _draw_canvas(canvas, top_pad=None):
+    if top_pad:
+        yield ""
 
     for i in reversed(range(canvas.shape[1])):
         plt_str = ""
         for j in range(canvas.shape[0]):
             plt_str += PALETTE[canvas[j, i]]
-        plt_lines.append(plt_str)
-
-    return plt_lines
+        yield plt_str
 
 
-def _draw_y_axis(y_axis, left_pad) -> List[str]:
-    y_lines = list()
+def _draw_y_axis(y_axis, left_pad):
+    if y_axis.label:
+        yield " " * (left_pad - len(y_axis.label) // 2) + y_axis.label
 
-    y_ticks = list(y_axis.generate_display_ticks())
+    ticks_and_labels = {k: v for k, v in y_axis.generate_ticks_and_labels()}
 
     for i in reversed(range(y_axis.display_max + 1)):
-        ax_line = ""
-        if len(y_ticks) > 0 and i == y_ticks[-1][0]:
-            ax_line += f"{str(y_ticks[-1][1]).rjust(left_pad)}┤"
-            y_ticks.pop(-1)
+        if i in ticks_and_labels:
+            yield str(ticks_and_labels[i]).rjust(left_pad) + "┤"
         else:
-            ax_line += " " * left_pad + "|"
-        y_lines.append(ax_line)
-
-    if y_axis.label is not None:
-        label_pad = left_pad - len(y_axis.label) // 2
-        label_str = " " * label_pad + y_axis.label
-        y_lines.insert(0, label_str)
-    return y_lines
+            yield " " * left_pad + "|"
 
 
-def _draw_x_axis(x_axis, left_pad) -> List[str]:
-    x_ticks = list(x_axis.generate_display_ticks())
+def _draw_x_axis(x_axis, left_pad):
+    ticks_and_labels = {k: v for k, v in x_axis.generate_ticks_and_labels()}
 
     upper_ax = " " * left_pad + "└"
     lower_ax = " " * left_pad + " "
-    marker = "┬"
-    overpad = x_axis.display_max
 
     for j in range(x_axis.display_max + 1):
-        if len(x_ticks) > 0 and j == x_ticks[0][0]:
-            lower_ax = lower_ax[: len(upper_ax)]
-            lower_ax += str(x_ticks[0][1]) + " " * overpad
-            upper_ax += marker
-            x_ticks.pop(0)
+        if j in ticks_and_labels:
+            lower_ax = lower_ax[: len(upper_ax)]  # trim to account for label length
+            lower_ax += str(ticks_and_labels[j])
+            upper_ax += "┬"
         else:
             upper_ax += "-"
+            lower_ax += " "
 
-    ax_lines = [upper_ax + "\n", lower_ax[: len(lower_ax) - overpad] + "\n"]
+    yield upper_ax
+    yield lower_ax
 
     if x_axis.label is not None:
         label_pad = (x_axis.display_max + 1) // 2 - len(str(x_axis.label)) // 2
-        label_str = " " * (left_pad + 1 + label_pad) + str(x_axis.label)
-        ax_lines.append(label_str)
-
-    return ax_lines
+        yield " " * (left_pad + 1 + label_pad) + str(x_axis.label)
 
 
-def _draw_legend(legend) -> List[str]:
-    legend_lines = list()
-
+def _draw_legend(legend):
     for item in legend:
         legend_str = f"  {PALETTE[item.symbol]} {item.name}"
-        legend_lines.append(legend_str)
-
-    return legend_lines
-
-
-def _draw_title(title, x_display_max, left_pad) -> List[str]:
-    label_pad = (x_display_max + 1) // 2 - len(str(title)) // 2
-    title_line = " " * (left_pad + 1 + label_pad) + str(title)
-    return title_line
+        yield legend_str
 
 
 # ------------------------------------------------------------------------------
@@ -152,26 +178,23 @@ def _draw_title(title, x_display_max, left_pad) -> List[str]:
 # ------------------------------------------------------------------------------
 
 
-def _join_plot_lines(canvas_lines, y_lines, x_lines, legend_lines, title_str):
+def _create_plot_str(canvas_lines, y_lines, x_lines, legend_lines, title_lines):
     plt_str = "\n"
-    canvas_lines = _pad_lines(canvas_lines, y_lines)
-    legend_lines = _pad_lines(legend_lines, y_lines)
 
-    if title_str is not None:
-        plt_str += f"{title_str}\n"
+    for title_line in title_lines:
+        plt_str += f"{title_line}\n"
 
-    for ax, canvas, leg in zip(y_lines, canvas_lines, legend_lines):
+    for ax, canvas, leg in itertools.zip_longest(
+        y_lines, canvas_lines, legend_lines, fillvalue=""
+    ):
+        # TODO: there's an issue here
+        # inside this we do not know the lengths of things
+        # - if y axis has a title it's one longer
+        # - where should the legend go?
+        # this puts the legend on top
         plt_str += f"{ax}{canvas}{leg}\n"
 
     for ax in x_lines:
-        plt_str += ax
+        plt_str += f"{ax}\n"
 
-    return plt_str
-
-
-def _pad_lines(lines, ref_lines):
-    if lines is None:
-        lines = list()
-
-    empty_pad = len(ref_lines) - len(lines)
-    return [""] * empty_pad + lines
+    return plt_str[:-1]
